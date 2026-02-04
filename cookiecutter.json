@@ -1,0 +1,14 @@
+{
+  "project_name": "My Project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_slug_dashed": "{{ cookiecutter.project_slug.replace('_', '-') }}",
+  "description": "A full-stack web application",
+  "author_name": "Your Name",
+  "author_email": "your@email.com",
+  "domain_name": "example.com",
+  "aws_region": "us-east-1",
+  "timezone": "America/New_York",
+  "use_ai_integration": "y",
+  "python_version": "3.11",
+  "node_version": "20"
+}

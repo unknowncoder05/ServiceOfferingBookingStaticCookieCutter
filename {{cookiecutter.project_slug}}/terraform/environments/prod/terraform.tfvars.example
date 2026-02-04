@@ -1,0 +1,78 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "prod"
+
+# Project Configuration
+project_name = "storyarchitect"
+
+# S3 Buckets
+frontend_bucket_name = "storyarchitect-frontend-prod"
+database_bucket_name = "storyarchitect-database-prod"
+
+# ECR
+ecr_repository_name = "storyarchitect-backend"
+
+# ECS Task Configuration
+ecs_task_cpu           = "512"   # 0.5 vCPU
+ecs_task_memory        = "1024"  # 1 GB
+task_lifetime_seconds  = 300     # 5 minutes
+
+# Domain Configuration (Optional)
+# Uncomment and configure these if you have a custom domain
+# hosted_zone_name          = "yerson.co"
+# frontend_subdomain        = "app.yerson.co"
+# api_subdomain             = "storyarchitect.yerson.co"
+# frontend_domain_aliases   = ["app.yerson.co"]
+# api_domain_name           = "storyarchitect.yerson.co"
+
+# SSL Certificates (Optional)
+# Create ACM certificates in AWS first, then add the ARNs here
+# frontend_certificate_arn = "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERT_ID"
+# api_certificate_arn      = "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERT_ID"
+
+# IAM Deployment User
+# Set to true to create an IAM user with deployment permissions
+# Access keys will be stored in SSM Parameter Store
+create_deployment_user = true
+
+# ============================================
+# Backend Application Environment Variables
+# ============================================
+# Non-sensitive configuration passed as environment variables to the container
+# These are stored in plaintext in the task definition
+backend_environment_variables = {
+  DEBUG     = "false"
+  LOG_LEVEL = "INFO"
+  # Add other environment variables here
+  # ALLOWED_HOSTS = "storyarchitect.yerson.co,apistoryarchitect.yerson.co"
+  # CORS_ALLOWED_ORIGINS = "https://storyarchitect.yerson.co"
+}
+
+# ============================================
+# Backend Application Secrets
+# ============================================
+# Sensitive data stored in AWS Secrets Manager with KMS encryption
+# The container retrieves these at startup via ECS secrets mechanism
+# IMPORTANT: Change these default values before deploying to production!
+backend_secrets = {
+  DJANGO_SECRET_KEY = "your-django-secret-key-here-change-me"
+  OPENAI_API_KEY    = "sk-your-openai-api-key-here"
+  # Add other secrets here as needed
+  # DATABASE_PASSWORD = "your-database-password"
+  # API_TOKEN = "your-api-token"
+}
+
+# ============================================
+# SECURITY NOTES:
+# ============================================
+# 1. DO NOT commit terraform.tfvars to version control
+# 2. Ensure terraform.tfvars is in .gitignore
+# 3. Secrets are encrypted with KMS and stored in AWS Secrets Manager
+# 4. Secrets are injected into containers at runtime (not in task definition)
+# 5. Environment variables are visible in the task definition (use for non-sensitive data only)
+#
+# To use this file:
+# 1. Copy: cp terraform.tfvars.example terraform.tfvars
+# 2. Edit terraform.tfvars with your actual values
+# 3. Run: terraform plan
+# 4. Run: terraform apply

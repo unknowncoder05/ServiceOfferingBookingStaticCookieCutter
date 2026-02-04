@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  font-family: Georgia, Cambria, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.8;
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0.75em 0;
+}
+
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 1em 0 0.5em;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0 0.5em;
+}
+
+.ProseMirror h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0.75em 0 0.5em;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 2em;
+  margin: 0.75em 0;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #cbd5e0;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #4a5568;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #adb5bd;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+.ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror a:hover {
+  color: #1d4ed8;
+}
+
+/* Mention styling */
+.mention {
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #1976d2;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.mention:hover {
+  background-color: #bbdefb;
+}
+
+/* Entity-specific mention colors */
+.mention.character {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.mention.event {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.mention.location {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.mention.group {
+  background-color: #fff3e0;
+  color: #e65100;
+}

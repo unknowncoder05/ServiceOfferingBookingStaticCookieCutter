@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REGION=$(aws configure get region)
+      - echo $ECR_REPOSITORY_URI
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY_URI
+      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
+      - echo Build started on `date`
+      - echo Building the Docker image...
+  build:
+    commands:
+      - cd BackEndApi
+      - docker build -f compose/production/django/Dockerfile -t $ECR_REPOSITORY_URI:latest -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $ECR_REPOSITORY_URI:latest
+      - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - echo Updating ECS service...
+      - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
+      - echo Deployment initiated successfully
+
+artifacts:
+  files:
+    - '**/*'

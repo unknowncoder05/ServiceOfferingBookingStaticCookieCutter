@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Installing dependencies...
+      - cd frontend
+      - npm ci
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building React application...
+      - npm run build
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo Deploying to S3...
+      - aws s3 sync build/ s3://$S3_BUCKET/ --delete
+      - echo Creating CloudFront invalidation...
+      - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+      - echo Deployment completed successfully
+
+artifacts:
+  files:
+    - 'frontend/build/**/*'
+  base-directory: '.'
+
+cache:
+  paths:
+    - 'frontend/node_modules/**/*'

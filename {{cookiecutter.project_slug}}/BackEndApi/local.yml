@@ -1,0 +1,59 @@
+version: '3'
+
+volumes:
+  local_postgres_data_{{ cookiecutter.project_slug }}: {}
+  local_postgres_data_backups_{{ cookiecutter.project_slug }}: {}
+
+services:
+  postgres:
+    image: postgres:14
+    volumes:
+      - local_postgres_data_{{ cookiecutter.project_slug }}:/var/lib/postgresql/data
+      - local_postgres_data_backups_{{ cookiecutter.project_slug }}:/backups
+    env_file:
+      - ./.envs/.local/.db
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"
+
+  django: &django
+    build:
+      context: ./
+      dockerfile: ./compose/local/django/Dockerfile
+    image: {{ cookiecutter.project_slug_dashed }}-backend
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./src:/app
+    working_dir: /app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.db
+      - ./.envs/.local/.cloud
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    command: /start
+
+  celeryworker:
+    <<: *django
+    image: {{ cookiecutter.project_slug_dashed }}-backend
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: {{ cookiecutter.project_slug_dashed }}-backend
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celerybeat

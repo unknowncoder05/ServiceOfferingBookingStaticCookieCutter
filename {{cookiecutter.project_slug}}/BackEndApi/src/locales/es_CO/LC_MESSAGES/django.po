@@ -1,0 +1,270 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-23 23:00-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: api/investments/status.py:6 api/projects/models/projects.py:25
+msgid "Draft"
+msgstr "Iniciada"
+
+#: api/investments/status.py:7
+msgid "Payed"
+msgstr "Pagada"
+
+#: api/investments/status.py:8
+msgid "Verified"
+msgstr "Verificada"
+
+msgid "Invalid number, check it or register"
+msgstr "Número inválido. Revisa el número ingresado ó Regístrate."
+
+msgid "This phone number already exists, please login."
+msgstr "Este número de teléfono ya se ha registrado. Inicia sesión"
+
+msgid "This email already exists, please login."
+msgstr "Este correo ya se ha registrado. Inicia sesión."
+
+#: api/investments/status.py:9
+msgid "Processed"
+msgstr "Procesada"
+
+#: api/investments/status.py:10 api/projects/models/projects.py:26
+msgid "Cancelled"
+msgstr "Cancelada"
+
+#: api/investments/status.py:11
+msgid "Pending"
+msgstr "Pendiente"
+
+#: api/investments/status.py:15
+msgid "Invalid Amount"
+msgstr "Cantidad incorrecta"
+
+#: api/investments/status.py:16
+msgid "Declined"
+msgstr "Rechazado"
+
+#: api/investments/status.py:17
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: api/investments/status.py:21
+msgid "INCOME"
+msgstr "Ingresos"
+
+#: api/investments/status.py:22
+msgid "REFERRED_PROFIT"
+msgstr "Gananias referidas"
+
+#: api/investments/status.py:23 api/investments/status.py:29
+msgid "WITHDRAWAL"
+msgstr "Retirar"
+
+#: api/investments/status.py:24 api/investments/status.py:30
+msgid "INVESTMENT"
+msgstr "Invertir"
+
+#: api/investments/status.py:25
+msgid "RENT_PAYED"
+msgstr "Renta pagada"
+
+#: api/investments/status.py:34
+msgid "AWAITING_CLOSE_PROJECT"
+msgstr "Esperando cierre del proyecto"
+
+#: api/investments/status.py:35 api/investments/status.py:42
+msgid "PENDING"
+msgstr "Pendiente"
+
+#: api/investments/status.py:36 api/investments/status.py:43
+msgid "CANCEL"
+msgstr "Cancelado"
+
+#: api/investments/status.py:37 api/investments/status.py:44
+msgid "PROCESSED"
+msgstr "Procesado"
+
+#: api/investments/status.py:38 api/investments/status.py:45
+msgid "PAYED"
+msgstr "Pagado"
+
+#: api/investments/views/investments.py:41 api/users/views/transactions.py:42
+#: api/users/views/users.py:78
+msgid "You do not have permission to perform this action."
+msgstr "No tiene permisos para ejecutar esta accion"
+
+#: api/investments/views/investments.py:44
+msgid "Not enough available actions"
+msgstr "No quedan acciones disponibles"
+
+#: api/investments/views/investments.py:49
+msgid "Investment not found"
+msgstr "Inversión no encontrada"
+
+#: api/projects/models/projects.py:14
+msgid "Image"
+msgstr "Imagen"
+
+#: api/projects/models/projects.py:15
+msgid "PDF"
+msgstr ""
+
+#: api/projects/models/projects.py:16
+msgid "Video"
+msgstr ""
+
+#: api/projects/models/projects.py:20
+msgid "Apartment"
+msgstr "Apartamento"
+
+msgid "House"
+msgstr "Casa"
+
+msgid "Local"
+msgstr "Local"
+
+msgid "Office"
+msgstr "Oficina"
+
+msgid "Store"
+msgstr "Bodega"
+
+msgid "Batch"
+msgstr "Lote"
+
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Country House"
+msgstr "Casa campestre"
+
+msgid "Other"
+msgstr "Otro"
+
+#: api/projects/models/projects.py:24
+msgid "Active"
+msgstr "Activo"
+
+#: api/users/admin.py:20
+msgid "Personal info"
+msgstr "Información"
+
+#: api/users/admin.py:22
+msgid "Roles"
+msgstr "Roles"
+
+#: api/users/admin.py:23
+msgid "Deleted"
+msgstr "Eliminado"
+
+#: api/users/admin.py:24
+msgid "Permissions"
+msgstr "Permisos"
+
+#: api/users/admin.py:27
+msgid "Important dates"
+msgstr "Fechas importantes"
+
+#: api/users/auth/external_token/providers.py:12
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: api/users/auth/external_token/providers.py:13
+msgid "SMS"
+msgstr "SMS"
+
+#: api/users/auth/external_token/providers.py:14
+msgid "Console"
+msgstr "Consola"
+
+#: api/users/enums.py:6
+msgid "Validate account"
+msgstr "Validar cuenta"
+
+#: api/users/enums.py:7
+msgid "Sign in"
+msgstr "Entra"
+
+#: api/users/models/user.py:24
+msgid "The phone_number must be set"
+msgstr "El número de teléfono debe ser establecidoo"
+
+#: api/users/models/user.py:40
+msgid "Superuser must have is_staff=True."
+msgstr ""
+
+#: api/users/models/user.py:40
+msgid "Number not valid."
+msgstr "Número no válido"
+
+
+#: api/users/models/user.py:40
+msgid "This field is required."
+msgstr "Este campo es requerido."
+
+#: api/users/models/user.py:40
+msgid "This field must be unique."
+msgstr "Este campo tiene que ser único"
+
+#: api/users/models/user.py:42
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: api/users/roles.py:6
+msgid "Admin"
+msgstr "Administrador"
+
+#: api/users/roles.py:7
+msgid "Support"
+msgstr "Soporte"
+
+#: api/users/roles.py:8
+msgid "Standard"
+msgstr "Estandar"
+
+#: api/users/roles.py:9
+msgid "Superuser"
+msgstr "Super usuario"
+
+#: api/users/serializers/authentication.py:35
+#: api/users/serializers/authentication.py:107
+msgid "User not found"
+msgstr "Usuario no encontrado"
+
+#: api/users/serializers/authentication.py:113
+msgid "User is already active"
+msgstr "EL usuario ya está activo"
+
+#: api/users/serializers/authentication.py:160
+msgid "Phone number should start with a + and the country code"
+msgstr "Los números de teléfonos deben empezar con + y el código del país"
+
+#: api/users/service/user_wallet.py:65
+msgid "This user can not withdrawal."
+msgstr "Este usuario no puede retirar"
+
+#: api/users/service/user_wallet.py:68
+msgid "This user does not have balance to withdrawal."
+msgstr "Este usuario no tiene balance para retirar"
+
+#: config/settings/base.py:216
+msgid "Spanish"
+msgstr "Español"
+
+#: config/settings/base.py:217
+msgid "English"
+msgstr "Inglés"

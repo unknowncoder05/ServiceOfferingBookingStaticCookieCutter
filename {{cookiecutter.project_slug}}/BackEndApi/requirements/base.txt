@@ -1,0 +1,76 @@
+# Base
+pytz
+python-slugify
+jinja2
+
+# Django
+Django
+django-cors-headers
+django-rest-passwordreset
+
+# Environment
+django-environ
+
+# Django REST Framework
+djangorestframework
+drf-nested-routers
+django-filter
+
+# JWT Authentication
+djangorestframework-simplejwt
+pyjwt
+
+# Passwords security
+argon2-cffi
+
+# Static files
+whitenoise
+
+# AWS
+boto3
+
+# Database & Storage
+psycopg2-binary
+django-storages
+
+# Channels & Celery (WebSocket and background tasks)
+channels
+channels_redis
+celery
+redis
+django-celery-beat
+aioredis
+
+# Translation support
+django-modeltranslation
+
+# Images
+pillow
+requests
+
+# Currencies
+django-money
+
+# Admin interface
+django-admin-interface
+
+# Email
+django-sendgrid-v5
+
+# Testing
+factory-boy
+pytest
+pytest-django
+
+{%- if cookiecutter.use_ai_integration == 'y' %}
+
+# AI Integration (Optional)
+# OpenAI
+openai
+pydantic
+httpx
+langchain-openai
+
+# Anthropic / Claude
+anthropic
+{%- endif %}
