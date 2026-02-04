@@ -25,7 +25,7 @@ A production-ready Cookiecutter template for full-stack web applications featuri
 pip install cookiecutter
 
 # Generate project from this template
-cookiecutter gh:your-username/your-repo-name
+cookiecutter gh:unknowncoder05/BaseEphemeralProjectCookieCutter
 
 # Or from a local directory
 cookiecutter path/to/this/template
