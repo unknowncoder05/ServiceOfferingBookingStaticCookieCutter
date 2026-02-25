@@ -25,10 +25,10 @@ A production-ready Cookiecutter template for full-stack web applications featuri
 pip install cookiecutter
 
 # Generate project from this template
-cookiecutter gh:unknowncoder05/BaseEphemeralProjectCookieCutter
+cookiecutter gh:unknowncoder05/BaseEphemeralCookieCutter
 
 # Or from a local directory
-cookiecutter path/to/this/template
+cookiecutter BaseEphemeralCookieCutter
 ```
 
 ### Template Variables

@@ -1,6 +1,6 @@
-# ProjectMaker} Frontend
+# MyProject Frontend
 
-A React frontend for ProjectMaker} - a web-based application for building, visualizing, and managing complex narratives.
+A React frontend for MyProject - a web-based application for building, visualizing, and managing complex narratives.
 
 ## Features
 
@@ -110,4 +110,4 @@ These values are defined in `src/utils/constants.ts` and used throughout the app
 
 ## License
 
-This project is part of the ProjectMaker} application.
+This project is part of the MyProject application.

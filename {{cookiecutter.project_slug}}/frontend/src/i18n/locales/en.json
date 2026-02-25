@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "items": "Items",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "badge": "Cookiecutter Template",
+    "welcome": "Welcome to My Project",
+    "subtitle": "The beginning of something great",
+    "loggedInAs": "Logged in as {{email}}",
+    "features": "What's included",
+    "cta": {
+      "items": "Browse Items",
+      "settings": "Settings"
+    }
+  },
+  "features": {
+    "auth": "Authentication",
+    "authDesc": "JWT-based user auth with signup, login, token refresh, and optional OTP via SMS or WhatsApp.",
+    "items": "Items CRUD",
+    "itemsDesc": "A ready-to-use example resource with full create, read, update, and delete support via REST API.",
+    "realtime": "Real-time WebSockets",
+    "realtimeDesc": "Django Channels + WebSocket service for live bidirectional updates between client and server.",
+    "async": "Async Tasks",
+    "asyncDesc": "Celery workers and beat scheduler for background processing and scheduled jobs.",
+    "cloud": "Cloud Ready",
+    "cloudDesc": "Terraform infrastructure, AWS ECS on-demand backend, S3 persistence, and one-command deploy.",
+    "darkMode": "Dark Mode & i18n",
+    "darkModeDesc": "Built-in dark mode and multi-language support — just add translation keys and go."
+  },
+  "theme": {
+    "light": "Switch to light mode",
+    "dark": "Switch to dark mode"
+  }
+}

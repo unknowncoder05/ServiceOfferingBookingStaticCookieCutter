@@ -200,7 +200,7 @@ The deployment user will be created when you run `terraform apply`. Credentials 
 
 This script will:
 1. Fetch credentials from SSM Parameter Store
-2. Configure AWS CLI profile (`ProjectMaker}-deployment`)
+2. Configure AWS CLI profile (`MyProject-deployment`)
 3. Or export as environment variables
 4. Or add to `.env` file
 
@@ -215,7 +215,7 @@ If using a custom domain, create SSL certificates:
 
 2. **API Certificate** (for API Gateway):
    - Can be in any region
-   - Domain: `ProjectMaker}.yerson.co` (or your subdomain)
+   - Domain: `MyProject.yerson.co` (or your subdomain)
    - Validation: DNS (Route53)
 
 ```bash
@@ -227,7 +227,7 @@ aws acm request-certificate \
 
 # Create API cert (your region)
 aws acm request-certificate \
-  --domain-name ProjectMaker}.yerson.co \
+  --domain-name MyProject.yerson.co \
   --validation-method DNS \
   --region us-east-1
 ```
@@ -249,8 +249,8 @@ aws_region  = "us-east-1"
 environment = "prod"
 
 # S3 Buckets (must be globally unique!)
-frontend_bucket_name = "ProjectMaker}-frontend-prod-yourname"
-database_bucket_name = "ProjectMaker}-database-prod-yourname"
+frontend_bucket_name = "MyProject-frontend-prod-yourname"
+database_bucket_name = "MyProject-database-prod-yourname"
 
 # ECS Configuration
 ecs_task_cpu          = "512"   # 0.5 vCPU
@@ -260,9 +260,9 @@ task_lifetime_seconds = 300     # 5 minutes
 # Domain Configuration (Optional)
 hosted_zone_name        = "yerson.co"
 frontend_subdomain      = "app.yerson.co"
-api_subdomain           = "ProjectMaker}.yerson.co"
+api_subdomain           = "MyProject.yerson.co"
 frontend_domain_aliases = ["app.yerson.co"]
-api_domain_name         = "ProjectMaker}.yerson.co"
+api_domain_name         = "MyProject.yerson.co"
 
 # SSL Certificates (from Step 2)
 frontend_certificate_arn = "arn:aws:acm:us-east-1:ACCOUNT:certificate/CERT_ID"
@@ -301,7 +301,7 @@ This script will:
 3. Or export as environment variables
 4. Or add to `.env` file
 
-**Recommended:** Choose option 1 to create an AWS CLI profile named `ProjectMaker}-deployment`.
+**Recommended:** Choose option 1 to create an AWS CLI profile named `MyProject-deployment`.
 
 ### Step 6: Configure Environment Variables
 
@@ -311,7 +311,7 @@ Create a `.env` file in the project root with Terraform outputs:
 cat > .env <<EOF
 # AWS Configuration
 export AWS_REGION=us-east-1
-export AWS_PROFILE=ProjectMaker}-deployment  # Use deployment user profile
+export AWS_PROFILE=MyProject-deployment  # Use deployment user profile
 
 # S3 & CloudFront (from Terraform outputs)
 export FRONTEND_S3_BUCKET=$(cd terraform/environments/prod && terraform output -raw frontend_bucket_name)
@@ -319,7 +319,7 @@ export CLOUDFRONT_DISTRIBUTION_ID=$(cd terraform/environments/prod && terraform 
 export DATABASE_S3_BUCKET=$(cd terraform/environments/prod && terraform output -raw database_bucket_name)
 
 # ECR
-export ECR_REPOSITORY=ProjectMaker}-backend
+export ECR_REPOSITORY=MyProject-backend
 EOF
 
 # Add .env to .gitignore (already done if following guide)
@@ -378,7 +378,7 @@ Or deploy specific components:
 
 ```bash
 # Start backend task
-curl https://ProjectMaker}.yerson.co/start
+curl https://MyProject.yerson.co/start
 
 # Response:
 {
@@ -399,7 +399,7 @@ curl http://<public-ip>:8000/api/story/projects/
 #### Test auto-extend
 
 ```bash
-curl https://ProjectMaker}.yerson.co/start?action=ping
+curl https://MyProject.yerson.co/start?action=ping
 ```
 
 #### Test frontend
@@ -515,23 +515,23 @@ docker-compose -f local.yml up
 
 ```bash
 # Task Manager logs
-aws logs tail /aws/lambda/ProjectMaker}-task-manager-prod --follow
+aws logs tail /aws/lambda/MyProject-task-manager-prod --follow
 
 # Task Monitor logs
-aws logs tail /aws/lambda/ProjectMaker}-task-monitor-prod --follow
+aws logs tail /aws/lambda/MyProject-task-monitor-prod --follow
 ```
 
 ### View ECS Task Logs
 
 ```bash
-aws logs tail /ecs/ProjectMaker}-prod --follow
+aws logs tail /ecs/MyProject-prod --follow
 ```
 
 ### Check Task State
 
 ```bash
 aws dynamodb get-item \
-  --table-name ProjectMaker}-task-state-prod \
+  --table-name MyProject-task-state-prod \
   --key '{"task_id": {"S": "main"}}' \
   --output json | jq
 ```
@@ -541,16 +541,16 @@ aws dynamodb get-item \
 ```bash
 # Check current alarm state
 aws cloudwatch describe-alarms \
-  --alarm-names ProjectMaker}-task-inactivity-prod
+  --alarm-names MyProject-task-inactivity-prod
 
 # View alarm history
 aws cloudwatch describe-alarm-history \
-  --alarm-name ProjectMaker}-task-inactivity-prod \
+  --alarm-name MyProject-task-inactivity-prod \
   --max-records 10
 
 # View TaskPing metrics
 aws cloudwatch get-metric-statistics \
-  --namespace ProjectMaker}/ECS \
+  --namespace MyProject/ECS \
   --metric-name TaskPing \
   --dimensions Name=Environment,Value=prod \
   --start-time $(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%S) \
@@ -560,7 +560,7 @@ aws cloudwatch get-metric-statistics \
 
 # Manually trigger alarm (for testing)
 aws cloudwatch set-alarm-state \
-  --alarm-name ProjectMaker}-task-inactivity-prod \
+  --alarm-name MyProject-task-inactivity-prod \
   --state-value ALARM \
   --state-reason "Manual test"
 ```
@@ -568,14 +568,14 @@ aws cloudwatch set-alarm-state \
 ### List Running Tasks
 
 ```bash
-aws ecs list-tasks --cluster ProjectMaker}-prod
+aws ecs list-tasks --cluster MyProject-prod
 ```
 
 ### Describe Task
 
 ```bash
 aws ecs describe-tasks \
-  --cluster ProjectMaker}-prod \
+  --cluster MyProject-prod \
   --tasks <task-arn>
 ```
 
@@ -609,18 +609,18 @@ aws ecs describe-tasks \
 ### Task Won't Start
 
 1. Check Lambda logs for errors
-2. Verify ECR has images: `aws ecr describe-images --repository-name ProjectMaker}-backend`
-3. Check task definition: `aws ecs describe-task-definition --task-definition ProjectMaker}-backend-prod`
+2. Verify ECR has images: `aws ecr describe-images --repository-name MyProject-backend`
+3. Check task definition: `aws ecs describe-task-definition --task-definition MyProject-backend-prod`
 
 ### Database Not Syncing
 
-1. Check S3 bucket exists: `aws s3 ls s3://ProjectMaker}-database-prod/`
+1. Check S3 bucket exists: `aws s3 ls s3://MyProject-database-prod/`
 2. Verify task IAM role has S3 permissions
 3. View task logs for sync errors
 
 ### Frontend Not Updating
 
-1. Check S3 sync: `aws s3 ls s3://ProjectMaker}-frontend-prod/`
+1. Check S3 sync: `aws s3 ls s3://MyProject-frontend-prod/`
 2. Verify CloudFront invalidation: `aws cloudfront list-invalidations --distribution-id <id>`
 3. Clear browser cache
 
@@ -644,7 +644,7 @@ terraform destroy
 **Warning**: This deletes everything including your database! Make sure to backup first:
 
 ```bash
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./backup-db.sqlite3
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 ./backup-db.sqlite3
 ```
 
 ## Next Steps

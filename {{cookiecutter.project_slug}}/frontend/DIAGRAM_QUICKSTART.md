@@ -243,4 +243,4 @@ Visit: `http://localhost:3000` → Login → Click "Open Diagram"
 
 🎉 **The Interactive Story Diagram is now fully functional!**
 
-You have a production-ready diagram interface powered by ReactFlow that seamlessly integrates with your existing ProjectMaker} application. The implementation includes custom nodes, state management, API integration, and a polished user interface ready for your storytelling needs.
+You have a production-ready diagram interface powered by ReactFlow that seamlessly integrates with your existing MyProject application. The implementation includes custom nodes, state management, API integration, and a polished user interface ready for your storytelling needs.

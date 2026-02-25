@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "dashboard": "Inicio",
+    "items": "Elementos",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "dashboard": {
+    "badge": "Plantilla Cookiecutter",
+    "welcome": "Bienvenido a My Project",
+    "subtitle": "El comienzo de algo grandioso",
+    "loggedInAs": "Sesión iniciada como {{email}}",
+    "features": "Qué incluye",
+    "cta": {
+      "items": "Ver Elementos",
+      "settings": "Configuración"
+    }
+  },
+  "features": {
+    "auth": "Autenticación",
+    "authDesc": "Autenticación JWT con registro, inicio de sesión, renovación de tokens y OTP opcional por SMS o WhatsApp.",
+    "items": "CRUD de Elementos",
+    "itemsDesc": "Un recurso de ejemplo listo para usar con soporte completo de creación, lectura, actualización y eliminación.",
+    "realtime": "WebSockets en tiempo real",
+    "realtimeDesc": "Django Channels + servicio WebSocket para actualizaciones bidireccionales en vivo entre cliente y servidor.",
+    "async": "Tareas asíncronas",
+    "asyncDesc": "Workers de Celery y planificador beat para procesamiento en segundo plano y tareas programadas.",
+    "cloud": "Listo para la nube",
+    "cloudDesc": "Infraestructura con Terraform, backend bajo demanda en AWS ECS, persistencia en S3 y despliegue en un comando.",
+    "darkMode": "Modo oscuro e i18n",
+    "darkModeDesc": "Soporte integrado de modo oscuro y múltiples idiomas — solo agrega claves de traducción y listo."
+  },
+  "theme": {
+    "light": "Cambiar a modo claro",
+    "dark": "Cambiar a modo oscuro"
+  }
+}

@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { useWebSocket } from './useWebSocket';
-import { WebSocketMessage } from '../types/projectmaker';
+import { WebSocketMessage } from '../types/websocket';
 import toast from 'react-hot-toast';
 
 interface FunctionCallNotificationData {

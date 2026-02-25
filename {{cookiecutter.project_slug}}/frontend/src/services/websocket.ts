@@ -5,7 +5,7 @@
  * Supports automatic reconnection, message queuing, and subscription management.
  */
 
-import { WebSocketMessage } from '../types/projectmaker';
+import { WebSocketMessage } from '../types/websocket';
 import backendManager from './BackendManager';
 
 export type WebSocketCallback = (message: WebSocketMessage) => void;

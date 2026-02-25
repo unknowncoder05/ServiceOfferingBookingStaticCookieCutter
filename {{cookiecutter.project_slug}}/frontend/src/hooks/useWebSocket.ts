@@ -7,7 +7,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import websocketService, { WebSocketCallback } from '../services/websocket';
-import { WebSocketMessage } from '../types/projectmaker';
+import { WebSocketMessage } from '../types/websocket';
 
 interface UseWebSocketOptions {
   projectId?: number;

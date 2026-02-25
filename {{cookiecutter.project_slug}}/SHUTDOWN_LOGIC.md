@@ -51,12 +51,12 @@ This document explains the complete implementation of the CloudWatch-based autom
 4. Gracefully handles metric push failures
 
 **CloudWatch Metric Details:**
-- Namespace: `ProjectMaker}/Backend`
+- Namespace: `MyProject/Backend`
 - Metric Name: `BackendActivity`
 - Value: 1.0 (Count)
 - Dimensions:
   - `Environment`: prod/dev
-  - `Project`: ProjectMaker}
+  - `Project`: MyProject
 
 **Response Format:**
 ```json
@@ -74,8 +74,8 @@ This document explains the complete implementation of the CloudWatch-based autom
 #### **CloudWatch Alarm** (`terraform/modules/cloudwatch/main.tf`)
 
 **Alarm Configuration:**
-- **Name**: `ProjectMaker}-backend-inactivity-prod`
-- **Metric**: `BackendActivity` in `ProjectMaker}/Backend` namespace
+- **Name**: `MyProject-backend-inactivity-prod`
+- **Metric**: `BackendActivity` in `MyProject/Backend` namespace
 - **Comparison**: Sum < 1 over 10 minutes
 - **Evaluation**: 1 period of 600 seconds (10 minutes)
 - **Missing Data**: Treated as breaching (no metric = inactive)
@@ -85,7 +85,7 @@ This document explains the complete implementation of the CloudWatch-based autom
 - Publishes to SNS topic
 
 #### **SNS Topic**
-- **Name**: `ProjectMaker}-backend-inactivity-prod`
+- **Name**: `MyProject-backend-inactivity-prod`
 - **Subscriber**: Task Shutdown Lambda function
 
 ### 4. Lambda Functions
@@ -123,7 +123,7 @@ This document explains the complete implementation of the CloudWatch-based autom
 **Added IAM Policy:** `cloudwatch_metrics`
 - **Action**: `cloudwatch:PutMetricData`
 - **Resource**: `*`
-- **Condition**: Namespace = `ProjectMaker}/Backend`
+- **Condition**: Namespace = `MyProject/Backend`
 
 This allows ECS tasks to push custom CloudWatch metrics from Django.
 
@@ -137,14 +137,14 @@ Task Shutdown Lambda has permissions for:
 #### **Environment Variables** (`terraform/environments/prod/main.tf`)
 
 **ECS Container:**
-- `CLOUDWATCH_NAMESPACE`: "ProjectMaker}/Backend"
+- `CLOUDWATCH_NAMESPACE`: "MyProject/Backend"
 - `PING_FREQUENCY_SECONDS`: "300" (5 minutes)
-- `PROJECT_NAME`: "ProjectMaker}"
+- `PROJECT_NAME`: "MyProject"
 - `ENVIRONMENT`: "prod"
 - `AWS_REGION`: (from config)
 
 **Terraform Variables:**
-- `cloudwatch_namespace` (default: "ProjectMaker}/Backend")
+- `cloudwatch_namespace` (default: "MyProject/Backend")
 - `inactivity_timeout_minutes` (default: 10)
 - `ping_frequency_seconds` (default: 300)
 
@@ -288,21 +288,21 @@ Keep ping frequency < inactivity timeout to ensure reliable tracking:
 ### CloudWatch Logs
 
 **Backend Activity:**
-- Log Group: `/ecs/ProjectMaker}-prod`
+- Log Group: `/ecs/MyProject-prod`
 - Check for: "CloudWatch metric pushed successfully"
 
 **Task Shutdown:**
-- Log Group: `/aws/lambda/ProjectMaker}-task-shutdown-prod`
+- Log Group: `/aws/lambda/MyProject-task-shutdown-prod`
 - Shows: Which tasks were stopped and why
 
 **Task Manager (Startup):**
-- Log Group: `/aws/lambda/ProjectMaker}-task-manager-prod`
+- Log Group: `/aws/lambda/MyProject-task-manager-prod`
 - Shows: Task startup process
 
 ### CloudWatch Metrics
 
-**Custom Metric:** `ProjectMaker}/Backend > BackendActivity`
-- Dimensions: Environment=prod, Project=ProjectMaker}
+**Custom Metric:** `MyProject/Backend > BackendActivity`
+- Dimensions: Environment=prod, Project=MyProject
 - Should show spikes every 5 minutes when users are active
 
 **ECS Metrics:**
@@ -311,7 +311,7 @@ Keep ping frequency < inactivity timeout to ensure reliable tracking:
 
 ### CloudWatch Alarms
 
-**Alarm:** `ProjectMaker}-backend-inactivity-prod`
+**Alarm:** `MyProject-backend-inactivity-prod`
 - State: OK = backend active, ALARM = backend inactive
 - History: Shows when alarm triggered and SNS notifications sent
 

@@ -74,7 +74,7 @@ Implemented a **fully autonomous on-demand backend lifecycle management system**
 **Configuration:**
 ```bash
 # Required for on-demand mode
-REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiProjectMaker}.yerson.co/start
+REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiMyProject.yerson.co/start
 
 # Optional overrides
 REACT_APP_API_URL=https://sandbox.yerson.co/api/v1
@@ -252,7 +252,7 @@ Every URL, timeout, and interval comes from environment variables:
 
 2. **Test start endpoint:**
    ```bash
-   curl https://apiProjectMaker}.yerson.co/start
+   curl https://apiMyProject.yerson.co/start
    ```
 
 3. **Test frontend:**
@@ -310,7 +310,7 @@ Every URL, timeout, and interval comes from environment variables:
 ```bash
 cd frontend
 vim .env
-# Add: REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiProjectMaker}.yerson.co/start
+# Add: REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiMyProject.yerson.co/start
 ```
 
 ### Step 2: Deploy
@@ -331,7 +331,7 @@ cd ..
 
 ```bash
 # Test start endpoint
-curl https://apiProjectMaker}.yerson.co/start
+curl https://apiMyProject.yerson.co/start
 
 # Open app and check console
 ```
@@ -360,13 +360,13 @@ Backend keep-alive ping successful: alive
 
 ```bash
 # Lambda logs
-aws logs tail /aws/lambda/ProjectMaker}-task-manager-prod --follow
+aws logs tail /aws/lambda/MyProject-task-manager-prod --follow
 
 # Backend logs
-aws logs tail /ecs/ProjectMaker}-prod --follow
+aws logs tail /ecs/MyProject-prod --follow
 
 # API Gateway logs
-aws logs tail /aws/apigateway/ProjectMaker}-prod --follow
+aws logs tail /aws/apigateway/MyProject-prod --follow
 ```
 
 ## Troubleshooting
@@ -375,10 +375,10 @@ aws logs tail /aws/apigateway/ProjectMaker}-prod --follow
 
 ```bash
 # Test endpoint
-curl https://apiProjectMaker}.yerson.co/start
+curl https://apiMyProject.yerson.co/start
 
 # Check Lambda
-aws logs tail /aws/lambda/ProjectMaker}-task-manager-prod --follow
+aws logs tail /aws/lambda/MyProject-task-manager-prod --follow
 ```
 
 ### Keep-Alive Not Working

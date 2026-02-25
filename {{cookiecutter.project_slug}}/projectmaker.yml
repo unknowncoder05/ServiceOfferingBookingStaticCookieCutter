@@ -1,0 +1,206 @@
+version: "1"
+services:
+  frontend:
+    type: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL:
+          default: "http://backend:8000/api/v1"
+          required: false
+        REACT_APP_API_GATEWAY_START_ENDPOINT:
+          default: ""
+          required: false
+        REACT_APP_KEEP_ALIVE_INTERVAL:
+          default: "300000"
+          required: false
+        REACT_APP_STARTUP_TIMEOUT:
+          default: "90000"
+          required: false
+        REACT_APP_HEALTH_CHECK_TIMEOUT:
+          default: "5000"
+          required: false
+        REACT_APP_POLLING_INTERVAL:
+          default: "2000"
+          required: false
+        REACT_APP_NAVIGATION_DELAY:
+          default: "1000"
+          required: false
+    port: 80
+    public: true
+    route: /
+    env:
+      BACKEND_URL:
+        default: "http://backend:8000"
+        required: false
+
+  backend:
+    type: backend
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    port: 8000
+    public: true
+    route: /api
+    env:
+      DJANGO_SETTINGS_MODULE:
+        default: "config.settings.production"
+        required: false
+      DJANGO_SECRET_KEY:
+        required: true
+        secret: true
+      DJANGO_DEBUG:
+        default: "false"
+        required: false
+      ENVIRONMENT:
+        default: "production"
+        required: false
+      DB_NAME:
+        required: true
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+        secret: true
+      DB_HOST:
+        default: "postgres"
+        required: false
+      DB_PORT:
+        default: "5432"
+        required: false
+      REDIS_URL:
+        default: "redis://redis:6379/0"
+        required: false
+      REDIS_CHANNEL_LAYER_HOST:
+        default: "redis"
+        required: false
+      CORS_ALLOWED_ORIGINS:
+        default: "*"
+        required: false
+      DJANGO_EMAIL_BACKEND:
+        default: "django.core.mail.backends.console.EmailBackend"
+        required: false
+      OPENAI_API_KEY:
+        required: false
+        secret: true
+      GITHUB_CLIENT_ID:
+        required: false
+      GITHUB_CLIENT_SECRET:
+        required: false
+        secret: true
+      GITHUB_REDIRECT_URI:
+        default: "{{deployment_url}}/settings/github/callback"
+        required: false
+      WHATSAPP_AUTHORIZATION_TOKEN:
+        required: false
+        secret: true
+      WHATSAPP_MESSAGE_URI:
+        required: false
+      AWS_REGION_NAME:
+        default: "us-east-1"
+        required: false
+      AWS_ACCESS_KEY_ID:
+        required: false
+        secret: true
+      AWS_SECRET_ACCESS_KEY:
+        required: false
+        secret: true
+      AWS_STORAGE_BUCKET_NAME:
+        required: false
+
+  celery-worker:
+    type: worker
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    command: celery -A config.celery worker --loglevel=info
+    env:
+      DJANGO_SETTINGS_MODULE:
+        default: "config.settings.production"
+        required: false
+      DJANGO_SECRET_KEY:
+        required: true
+        secret: true
+      DJANGO_DEBUG:
+        default: "false"
+        required: false
+      ENVIRONMENT:
+        default: "production"
+        required: false
+      DB_NAME:
+        required: true
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+        secret: true
+      DB_HOST:
+        default: "postgres"
+        required: false
+      DB_PORT:
+        default: "5432"
+        required: false
+      REDIS_URL:
+        default: "redis://redis:6379/0"
+        required: false
+      OPENAI_API_KEY:
+        required: false
+        secret: true
+
+  celery-beat:
+    type: worker
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    command: celery -A config.celery beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env:
+      DJANGO_SETTINGS_MODULE:
+        default: "config.settings.production"
+        required: false
+      DJANGO_SECRET_KEY:
+        required: true
+        secret: true
+      DJANGO_DEBUG:
+        default: "false"
+        required: false
+      ENVIRONMENT:
+        default: "production"
+        required: false
+      DB_NAME:
+        required: true
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+        secret: true
+      DB_HOST:
+        default: "postgres"
+        required: false
+      DB_PORT:
+        default: "5432"
+        required: false
+      REDIS_URL:
+        default: "redis://redis:6379/0"
+        required: false
+
+  postgres:
+    type: internal
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env:
+      POSTGRES_DB:
+        required: true
+      POSTGRES_USER:
+        required: true
+      POSTGRES_PASSWORD:
+        required: true
+        secret: true
+
+  redis:
+    type: internal
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data

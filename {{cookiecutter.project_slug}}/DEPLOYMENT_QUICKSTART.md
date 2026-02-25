@@ -1,4 +1,4 @@
-# ProjectMaker} Deployment Quick Start
+# MyProject Deployment Quick Start
 
 ## TL;DR - Get Running in 10 Minutes
 
@@ -12,8 +12,8 @@ cp terraform.tfvars.example terraform.tfvars
 Edit `terraform.tfvars` - **minimum required**:
 ```hcl
 aws_region           = "us-east-1"
-frontend_bucket_name = "ProjectMaker}-frontend-yourname"  # Must be unique!
-database_bucket_name = "ProjectMaker}-database-yourname"  # Must be unique!
+frontend_bucket_name = "MyProject-frontend-yourname"  # Must be unique!
+database_bucket_name = "MyProject-database-yourname"  # Must be unique!
 ```
 
 ### 2. Deploy Infrastructure (5 min)
@@ -37,7 +37,7 @@ Retrieve automatically-created deployment credentials:
 ./scripts/get-deployment-credentials.sh
 ```
 
-Choose option 1 to create AWS CLI profile `ProjectMaker}-deployment`.
+Choose option 1 to create AWS CLI profile `MyProject-deployment`.
 
 ### 4. Configure Environment Variables (1 min)
 
@@ -46,11 +46,11 @@ Create a `.env` file in project root:
 ```bash
 cat > .env <<EOF
 export AWS_REGION=us-east-1
-export AWS_PROFILE=ProjectMaker}-deployment
+export AWS_PROFILE=MyProject-deployment
 export FRONTEND_S3_BUCKET=$(cd terraform/environments/prod && terraform output -raw frontend_bucket_name)
 export CLOUDFRONT_DISTRIBUTION_ID=$(cd terraform/environments/prod && terraform output -raw cloudfront_distribution_id)
 export DATABASE_S3_BUCKET=$(cd terraform/environments/prod && terraform output -raw database_bucket_name)
-export ECR_REPOSITORY=ProjectMaker}-backend
+export ECR_REPOSITORY=MyProject-backend
 EOF
 
 # Add to .gitignore
@@ -154,23 +154,23 @@ The `deploy.sh` script:
 ### View Logs
 ```bash
 # Task Manager Lambda logs (handles /start requests)
-aws logs tail /aws/lambda/ProjectMaker}-task-manager-prod --follow
+aws logs tail /aws/lambda/MyProject-task-manager-prod --follow
 
 # Task Monitor Lambda logs (triggered by alarm)
-aws logs tail /aws/lambda/ProjectMaker}-task-monitor-prod --follow
+aws logs tail /aws/lambda/MyProject-task-monitor-prod --follow
 
 # Backend ECS logs
-aws logs tail /ecs/ProjectMaker}-prod --follow
+aws logs tail /ecs/MyProject-prod --follow
 ```
 
 ### Monitor Alarm
 ```bash
 # Check if alarm is active
-aws cloudwatch describe-alarms --alarm-names ProjectMaker}-task-inactivity-prod
+aws cloudwatch describe-alarms --alarm-names MyProject-task-inactivity-prod
 
 # Manually trigger alarm (for testing)
 aws cloudwatch set-alarm-state \
-  --alarm-name ProjectMaker}-task-inactivity-prod \
+  --alarm-name MyProject-task-inactivity-prod \
   --state-value ALARM \
   --state-reason "Manual test"
 ```
@@ -184,19 +184,19 @@ curl https://<api-url>/start
 curl https://<api-url>/start?action=ping
 
 # Stop backend (it auto-stops after 5 min idle)
-aws ecs stop-task --cluster ProjectMaker}-prod --task <task-arn>
+aws ecs stop-task --cluster MyProject-prod --task <task-arn>
 ```
 
 ### Database Operations
 ```bash
 # Backup database
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./backup.sqlite3
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 ./backup.sqlite3
 
 # Restore database
-aws s3 cp ./backup.sqlite3 s3://ProjectMaker}-database-prod/db.sqlite3
+aws s3 cp ./backup.sqlite3 s3://MyProject-database-prod/db.sqlite3
 
 # List backups
-aws s3api list-object-versions --bucket ProjectMaker}-database-prod --prefix db.sqlite3
+aws s3api list-object-versions --bucket MyProject-database-prod --prefix db.sqlite3
 ```
 
 ## Cost Estimate
@@ -209,9 +209,9 @@ aws s3api list-object-versions --bucket ProjectMaker}-database-prod --prefix db.
 
 | Issue | Solution |
 |-------|----------|
-| Task won't start | Check Lambda logs: `aws logs tail /aws/lambda/ProjectMaker}-task-manager-prod` |
+| Task won't start | Check Lambda logs: `aws logs tail /aws/lambda/MyProject-task-manager-prod` |
 | Frontend not updating | Invalidate CloudFront: `aws cloudfront create-invalidation --distribution-id <id> --paths "/*"` |
-| Database not syncing | Check task logs: `aws logs tail /ecs/ProjectMaker}-prod` |
+| Database not syncing | Check task logs: `aws logs tail /ecs/MyProject-prod` |
 | Deploy script failing | Check environment variables: `echo $FRONTEND_S3_BUCKET`, verify AWS credentials: `aws sts get-caller-identity` |
 | Docker build fails | Ensure Docker is running: `docker ps` |
 
@@ -233,7 +233,7 @@ aws s3api list-object-versions --bucket ProjectMaker}-database-prod --prefix db.
 
 ```bash
 # Backup database first!
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./backup-$(date +%Y%m%d).sqlite3
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 ./backup-$(date +%Y%m%d).sqlite3
 
 # Destroy all infrastructure
 cd terraform/environments/prod

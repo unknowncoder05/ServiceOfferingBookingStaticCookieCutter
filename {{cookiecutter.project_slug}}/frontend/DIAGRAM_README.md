@@ -240,4 +240,4 @@ ReactFlow (and thus the diagram feature) supports:
 
 ## Conclusion
 
-The Interactive Story Diagram is now fully functional with a solid foundation for future enhancements. The implementation leverages ReactFlow's powerful features while maintaining clean, type-safe code that integrates seamlessly with the existing ProjectMaker} application.
+The Interactive Story Diagram is now fully functional with a solid foundation for future enhancements. The implementation leverages ReactFlow's powerful features while maintaining clean, type-safe code that integrates seamlessly with the existing MyProject application.

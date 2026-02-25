@@ -1,4 +1,4 @@
-FROM python:3.14-alpine
+FROM python:3.12-alpine
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH /app
@@ -15,11 +15,13 @@ RUN apk --no-cache add bash mc \
             ttf-liberation \
             git \
         && rm -rf /var/cache/apk/*
-        
+
 
 RUN apk update \
   # psycopg2 dependencies
-  && apk add --virtual build-deps gcc musl-dev \
+  && apk add --virtual build-deps gcc python3-dev musl-dev libxslt-dev \
+  && apk add postgresql-dev \
+  && apk add postgresql-client \
   # Pillow dependencies
   && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
   # CFFI dependencies
@@ -35,7 +37,6 @@ RUN apk add python3-dev
 RUN apk add postgresql-client
 
 COPY ./requirements /requirements
-RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN pip install -r /requirements/local.txt
 
 COPY ./compose/production/django/wait_for_postgres.py /wait_for_postgres.py
@@ -53,6 +54,8 @@ COPY ./compose/local/django/celery/beat/start /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
 
+COPY src/ /app/
+
 WORKDIR /app
 
-#ENTRYPOINT ["/entrypoint"]
+CMD ["/start"]

@@ -1,6 +1,6 @@
 # Configuration Guide - Avoiding Hardcoded Values
 
-This document describes all configurable values in the ProjectMaker} application and where to set them.
+This document describes all configurable values in the MyProject application and where to set them.
 
 ## Frontend Configuration
 
@@ -44,9 +44,9 @@ Set these in your ECS task definition or `.env` file:
 AWS_REGION=us-east-1                    # AWS region for CloudWatch
 
 # CloudWatch Monitoring
-CLOUDWATCH_NAMESPACE=ProjectMaker}/Backend  # CloudWatch namespace
+CLOUDWATCH_NAMESPACE=MyProject/Backend  # CloudWatch namespace
 PING_FREQUENCY_SECONDS=300              # How often frontend should ping
-PROJECT_NAME=ProjectMaker}             # Project name
+PROJECT_NAME=MyProject             # Project name
 ENVIRONMENT=prod                        # Environment name
 
 # Application Settings
@@ -96,7 +96,7 @@ ENVIRONMENT            # Environment name
 ```hcl
 # CloudWatch Configuration
 variable "cloudwatch_namespace" {
-  default = "ProjectMaker}/Backend"
+  default = "MyProject/Backend"
 }
 
 variable "inactivity_timeout_minutes" {
@@ -146,8 +146,8 @@ Create a `terraform.tfvars` file for environment-specific values:
 ```hcl
 # terraform/environments/prod/terraform.tfvars
 hosted_zone_name = "yerson.co"
-frontend_subdomain = "ProjectMaker}"
-api_subdomain = "apiProjectMaker}"
+frontend_subdomain = "MyProject"
+api_subdomain = "apiMyProject"
 inactivity_timeout_minutes = 15  # Override default
 ping_frequency_seconds = 240      # Override default
 ```
@@ -222,8 +222,8 @@ python manage.py runserver
 
 **Frontend:**
 ```bash
-REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiProjectMaker}.yerson.co/start
-REACT_APP_API_URL=https://apiProjectMaker}.yerson.co/api/v1
+REACT_APP_API_GATEWAY_START_ENDPOINT=https://apiMyProject.yerson.co/start
+REACT_APP_API_URL=https://apiMyProject.yerson.co/api/v1
 REACT_APP_KEEP_ALIVE_INTERVAL=300000  # 5 minutes
 ```
 

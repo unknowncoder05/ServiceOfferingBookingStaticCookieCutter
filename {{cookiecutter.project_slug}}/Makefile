@@ -1,4 +1,4 @@
-# ProjectMaker} Makefile
+# MyProject Makefile
 # Quick commands for deployment and management
 
 .PHONY: help install-hooks deploy deploy-frontend deploy-backend deploy-infra \
@@ -17,7 +17,7 @@ NC := \033[0m # No Color
 # Configuration
 AWS_REGION ?= us-east-1
 TF_DIR := terraform/environments/prod
-PROJECT_NAME := ProjectMaker}
+PROJECT_NAME := MyProject
 ENVIRONMENT := prod
 
 ##@ Help
@@ -216,11 +216,11 @@ db-list-backups: ## List all database backup versions in S3
 
 build-backend: ## Build backend Docker image locally
 	@echo "$(BLUE)Building backend Docker image...$(NC)"
-	@cd BackEndApi && docker build -f compose/production/django/Dockerfile -t ProjectMaker}-backend:local .
+	@cd BackEndApi && docker build -f compose/production/django/Dockerfile -t MyProject-backend:local .
 
 run-backend-local: ## Run backend Docker container locally
 	@echo "$(BLUE)Running backend locally...$(NC)"
-	@docker run -p 8000:8000 --rm ProjectMaker}-backend:local
+	@docker run -p 8000:8000 --rm MyProject-backend:local
 
 push-backend: ## Push backend image to ECR
 	@$(MAKE) deploy-backend
@@ -229,7 +229,7 @@ push-backend: ## Push backend image to ECR
 
 status: ## Show overall system status
 	@echo "$(BLUE)========================================$(NC)"
-	@echo "$(BLUE)   ProjectMaker} System Status$(NC)"
+	@echo "$(BLUE)   MyProject System Status$(NC)"
 	@echo "$(BLUE)========================================$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Infrastructure:$(NC)"

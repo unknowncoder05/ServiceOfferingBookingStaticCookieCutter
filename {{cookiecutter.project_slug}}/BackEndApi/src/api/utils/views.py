@@ -57,8 +57,8 @@ def keep_alive(request):
     """
     try:
         # Get configuration from environment
-        cloudwatch_namespace = os.environ.get('CLOUDWATCH_NAMESPACE', 'ProjectMaker}/Backend')
-        project_name = os.environ.get('PROJECT_NAME', 'ProjectMaker}')
+        cloudwatch_namespace = os.environ.get('CLOUDWATCH_NAMESPACE', 'MyProject/Backend')
+        project_name = os.environ.get('PROJECT_NAME', 'myproject')
         environment = os.environ.get('ENVIRONMENT', 'prod')
         ping_frequency = int(os.environ.get('PING_FREQUENCY_SECONDS', '300'))
 

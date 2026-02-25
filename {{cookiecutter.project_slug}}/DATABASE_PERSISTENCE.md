@@ -2,14 +2,14 @@
 
 ## Overview
 
-ProjectMaker} uses SQLite as its database with **S3-based persistence** for the on-demand backend architecture. The database is synchronized between the ECS container and S3 bucket on startup and shutdown.
+MyProject uses SQLite as its database with **S3-based persistence** for the on-demand backend architecture. The database is synchronized between the ECS container and S3 bucket on startup and shutdown.
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    S3 Bucket (Persistent)                    │
-│           s3://ProjectMaker}-database-prod/                 │
+│           s3://MyProject-database-prod/                 │
 │                    db.sqlite3                                │
 └─────────────────────────────────────────────────────────────┘
                         ▲              │
@@ -143,7 +143,7 @@ daphne config.asgi:application -b 0.0.0.0 -p 8000
 **S3 Bucket** (`terraform/modules/s3/main.tf`):
 ```hcl
 resource "aws_s3_bucket" "database" {
-  bucket = "ProjectMaker}-database-prod"
+  bucket = "MyProject-database-prod"
 }
 
 resource "aws_s3_bucket_versioning" "database" {
@@ -165,8 +165,8 @@ resource "aws_s3_bucket_versioning" "database" {
     "s3:ListBucket"
   ],
   "Resource": [
-    "arn:aws:s3:::ProjectMaker}-database-prod",
-    "arn:aws:s3:::ProjectMaker}-database-prod/*"
+    "arn:aws:s3:::MyProject-database-prod",
+    "arn:aws:s3:::MyProject-database-prod/*"
   ]
 }
 ```
@@ -179,7 +179,7 @@ resource "aws_s3_bucket_versioning" "database" {
   "environment": [
     {
       "name": "DB_S3_BUCKET",
-      "value": "ProjectMaker}-database-prod"
+      "value": "MyProject-database-prod"
     },
     {
       "name": "DB_S3_KEY",
@@ -220,7 +220,7 @@ resource "aws_s3_bucket_versioning" "database" {
 docker exec <container-id> /db-sync.sh download
 
 # Or directly with AWS CLI
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./db.sqlite3
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 ./db.sqlite3
 ```
 
 **Upload Database:**
@@ -229,17 +229,17 @@ aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./db.sqlite3
 docker exec <container-id> /db-sync.sh upload
 
 # Or directly with AWS CLI
-aws s3 cp ./db.sqlite3 s3://ProjectMaker}-database-prod/db.sqlite3
+aws s3 cp ./db.sqlite3 s3://MyProject-database-prod/db.sqlite3
 ```
 
 **Restore from Backup:**
 ```bash
 # List available backups
-aws s3 ls s3://ProjectMaker}-database-prod/ | grep backup
+aws s3 ls s3://MyProject-database-prod/ | grep backup
 
 # Restore specific backup
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3.backup.20231202_143022 \
-          s3://ProjectMaker}-database-prod/db.sqlite3
+aws s3 cp s3://MyProject-database-prod/db.sqlite3.backup.20231202_143022 \
+          s3://MyProject-database-prod/db.sqlite3
 ```
 
 ## Data Safety Considerations
@@ -388,7 +388,7 @@ DATABASES = {
 
 **Check sync operations:**
 ```bash
-aws logs tail /ecs/ProjectMaker}-prod --follow --filter-pattern "[INFO]"
+aws logs tail /ecs/MyProject-prod --follow --filter-pattern "[INFO]"
 ```
 
 **Look for:**
@@ -401,7 +401,7 @@ aws logs tail /ecs/ProjectMaker}-prod --follow --filter-pattern "[INFO]"
 **Check last upload:**
 ```bash
 aws s3api head-object \
-  --bucket ProjectMaker}-database-prod \
+  --bucket MyProject-database-prod \
   --key db.sqlite3
 ```
 
@@ -418,7 +418,7 @@ aws s3api head-object \
 
 **List all backups:**
 ```bash
-aws s3 ls s3://ProjectMaker}-database-prod/ \
+aws s3 ls s3://MyProject-database-prod/ \
   | grep backup \
   | sort -r
 ```
@@ -434,13 +434,13 @@ aws s3 ls s3://ProjectMaker}-database-prod/ \
 **Debug:**
 ```bash
 # Check if S3 bucket exists
-aws s3 ls s3://ProjectMaker}-database-prod/
+aws s3 ls s3://MyProject-database-prod/
 
 # Check IAM permissions
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 /tmp/test.db
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 /tmp/test.db
 
 # Check container logs
-aws logs tail /ecs/ProjectMaker}-prod --follow
+aws logs tail /ecs/MyProject-prod --follow
 ```
 
 ### Database Not Uploading
@@ -466,10 +466,10 @@ docker exec <container-id> /db-sync.sh upload
 **Recovery:**
 ```bash
 # 1. List available backups
-aws s3 ls s3://ProjectMaker}-database-prod/ | grep backup
+aws s3 ls s3://MyProject-database-prod/ | grep backup
 
 # 2. Download known good backup
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3.backup.TIMESTAMP \
+aws s3 cp s3://MyProject-database-prod/db.sqlite3.backup.TIMESTAMP \
           ./db-good.sqlite3
 
 # 3. Test database integrity
@@ -477,7 +477,7 @@ sqlite3 db-good.sqlite3 "PRAGMA integrity_check;"
 
 # 4. Restore to S3
 aws s3 cp ./db-good.sqlite3 \
-          s3://ProjectMaker}-database-prod/db.sqlite3
+          s3://MyProject-database-prod/db.sqlite3
 ```
 
 ## Testing
@@ -487,7 +487,7 @@ aws s3 cp ./db-good.sqlite3 \
 ```bash
 # 1. Upload test database
 echo "test data" > test.db
-aws s3 cp test.db s3://ProjectMaker}-database-prod/db.sqlite3
+aws s3 cp test.db s3://MyProject-database-prod/db.sqlite3
 
 # 2. Start container
 # Should see: "Database downloaded successfully"
@@ -505,7 +505,7 @@ docker exec <container-id> cat /app/db.sqlite3
 docker stop <container-id>  # Sends SIGTERM
 
 # 4. Check S3
-aws s3 cp s3://ProjectMaker}-database-prod/db.sqlite3 ./test-downloaded.db
+aws s3 cp s3://MyProject-database-prod/db.sqlite3 ./test-downloaded.db
 
 # 5. Verify changes are present
 ```
