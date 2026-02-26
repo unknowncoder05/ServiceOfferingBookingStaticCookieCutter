@@ -16,7 +16,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.users.auth.external_token.providers import ExternalAuthenticationTokenProviders
 # Models
 from api.users.models import User, ExternalAuthenticationToken, ExternalAuthenticationTokenType
-from api.users.service.email_service import EmailService
 
 
 class RequestAuthenticationCodeSerializer(serializers.Serializer):

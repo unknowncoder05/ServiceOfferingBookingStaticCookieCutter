@@ -16,9 +16,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
-# Explicitly include tasks from api.agents
-app.autodiscover_tasks(['api.agents'])
-
 
 @app.task(bind=True)
 def debug_task(self):

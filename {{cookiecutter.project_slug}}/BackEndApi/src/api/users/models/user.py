@@ -78,8 +78,6 @@ class User(BaseModel, AbstractUser):
 
     identity_number = models.CharField(max_length=20, null=True, blank=True)
 
-    wallet = models.CharField(max_length=64, null=True, blank=True)
-
     is_verified = models.BooleanField(default=False)
 
     verified_at = models.DateTimeField(null=True, blank=True)

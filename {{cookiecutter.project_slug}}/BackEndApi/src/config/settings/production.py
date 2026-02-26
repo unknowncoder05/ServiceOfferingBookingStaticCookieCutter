@@ -4,10 +4,6 @@ import json
 import os
 from datetime import timedelta
 
-# Sentry
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
 from .base import *  # NOQA
 from .base import env
 
@@ -23,7 +19,7 @@ ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 # Base
 SECRET_KEY = '$!*vq%gk*aj^624m)koo#myp5tdlx%hlk%)&1p9tca-10*mas-'
 # OpenAI
-OPENAI_API_KEY = env('OPENAI_API_KEY')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ALLOWED_HOSTS = ['*']
 
 # Databases
@@ -150,6 +146,8 @@ CHANNEL_LAYERS = {
 # Sentry
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 if SENTRY_DSN and ENVIRONMENT == 'PRODUCTION':
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration 
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
@@ -181,8 +179,9 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
 # CORS
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
-if os.getenv('CORS_ALLOWED_ORIGINS', None) != '*':
-    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
+_cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', '*')                                                                                         
+if _cors_origins != '*':                                                                                                                  
+    CORS_ALLOWED_ORIGINS = _cors_origins.split(',')
     print('CORS_ALLOWED_ORIGINS', CORS_ALLOWED_ORIGINS)
 else:
     CORS_ALLOW_ALL_ORIGINS = True

@@ -9,7 +9,6 @@ from rest_framework import serializers
 from api.users.models import User
 from api.users.serializers.identity_files import IdentityFileSerializer
 from api.users.service.levels_service import LevelsSearch
-from api.users.service.user_wallet import UserWalletService
 
 
 class UserSerializer(serializers.ModelSerializer):

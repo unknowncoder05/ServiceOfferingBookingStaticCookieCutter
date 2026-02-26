@@ -1,0 +1,170 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-todoapp}
+      POSTGRES_USER: ${POSTGRES_USER:-todoapp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-todoapp_user} -d ${POSTGRES_DB:-todoapp}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Redis Cache/Message Broker
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Django Backend API
+  backend:
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-todoapp}
+      DB_USER: ${POSTGRES_USER:-todoapp_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      REDIS_CHANNEL_LAYER_HOST: ${REDIS_CHANNEL_LAYER_HOST:-redis}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-*}
+      DJANGO_EMAIL_BACKEND: ${DJANGO_EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      GITHUB_REDIRECT_URI: ${GITHUB_REDIRECT_URI:-}
+      WHATSAPP_AUTHORIZATION_TOKEN: ${WHATSAPP_AUTHORIZATION_TOKEN:-}
+      WHATSAPP_MESSAGE_URI: ${WHATSAPP_MESSAGE_URI:-}
+      AWS_REGION_NAME: ${AWS_REGION_NAME:-us-east-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/admin/login/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Celery Worker for Background Tasks
+  celery-worker:
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    command: celery -A config.celery worker --loglevel=info
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-todoapp}
+      DB_USER: ${POSTGRES_USER:-todoapp_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Celery Beat for Scheduled Tasks
+  celery-beat:
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/local/django/Dockerfile
+    command: celery -A config.celery beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-todoapp}
+      DB_USER: ${POSTGRES_USER:-todoapp_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api/v1}
+        REACT_APP_API_GATEWAY_START_ENDPOINT: ${REACT_APP_API_GATEWAY_START_ENDPOINT:-}
+        REACT_APP_KEEP_ALIVE_INTERVAL: ${REACT_APP_KEEP_ALIVE_INTERVAL:-300000}
+        REACT_APP_STARTUP_TIMEOUT: ${REACT_APP_STARTUP_TIMEOUT:-90000}
+        REACT_APP_HEALTH_CHECK_TIMEOUT: ${REACT_APP_HEALTH_CHECK_TIMEOUT:-5000}
+        REACT_APP_POLLING_INTERVAL: ${REACT_APP_POLLING_INTERVAL:-2000}
+        REACT_APP_NAVIGATION_DELAY: ${REACT_APP_NAVIGATION_DELAY:-1000}
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://backend:8000}
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: ${COMPOSE_PROJECT_NAME:-todoappfullstack}-network

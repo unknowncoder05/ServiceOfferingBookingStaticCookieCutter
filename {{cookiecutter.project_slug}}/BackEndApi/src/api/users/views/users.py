@@ -17,7 +17,6 @@ from api.users.permissions import IsAdminPermission, CanCrudPermission, CanWithd
 # Serializers
 from api.users.serializers import UserSerializer, CheckEmailOrPhone
 # Utils
-from api.users.service.user_wallet import UserWalletService
 from api.utils.pagination import StartEndPagination
 
 
