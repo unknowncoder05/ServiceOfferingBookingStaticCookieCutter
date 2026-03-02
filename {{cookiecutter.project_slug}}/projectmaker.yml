@@ -1,203 +1,874 @@
 version: "1"
 services:
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Frontend — React SPA (built with Create React App / react-scripts)
+  # Build-time REACT_APP_* vars are baked into the static bundle at image
+  # build time.  Runtime vars (BACKEND_URL) are consumed by Nginx at startup.
+  # ──────────────────────────────────────────────────────────────────────────
   frontend:
     type: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
+
+        # ── Application ──────────────────────────────────────────────────────
         REACT_APP_API_URL:
-          default: "http://backend:8000/api/v1"
+          type: url
+          label: "API Base URL"
+          description: "Base URL of the backend REST API that the browser connects to. Defaults to the deployment URL with the /api/v1 path."
+          placeholder: "https://myapp.example.com/api/v1"
+          section: Application
           required: false
+          default: "${DEPLOYMENT_URL}/api/v1"
+          translations:
+            es:
+              label: "URL base de la API"
+              description: "URL base de la API REST del backend a la que se conecta el navegador. Por defecto usa la URL de despliegue con la ruta /api/v1."
+              placeholder: "https://miaplicacion.ejemplo.com/api/v1"
+
         REACT_APP_API_GATEWAY_START_ENDPOINT:
+          type: url
+          label: "API Gateway Wake Endpoint"
+          description: "AWS API Gateway URL that wakes the backend from sleep. Leave blank if you are not using a serverless wake-up mechanism."
+          placeholder: "https://xxxxxx.execute-api.us-east-1.amazonaws.com/prod/start"
+          section: Application
+          required: false
           default: ""
-          required: false
+          translations:
+            es:
+              label: "Endpoint de inicio del API Gateway"
+              description: "URL del API Gateway de AWS para despertar el backend del modo sleep. Dejar vacío si no se usa un mecanismo de activación serverless."
+
+        # ── Timeouts & Polling ────────────────────────────────────────────────
         REACT_APP_KEEP_ALIVE_INTERVAL:
+          type: slider
+          label: "Keep-Alive Interval (ms)"
+          description: "How often the frontend pings the backend to prevent auto-sleep. Shorter intervals consume more bandwidth; longer ones risk cold starts."
+          section: "Timeouts & Polling"
+          required: false
           default: "300000"
-          required: false
+          min: 60000
+          max: 900000
+          step: 60000
+          translations:
+            es:
+              label: "Intervalo de keep-alive (ms)"
+              description: "Frecuencia con la que el frontend hace ping al backend para evitar el auto-sleep. Intervalos más cortos consumen más ancho de banda."
+
         REACT_APP_STARTUP_TIMEOUT:
+          type: slider
+          label: "Startup Timeout (ms)"
+          description: "Maximum time to wait for the backend to become available during the startup screen. Increase this if your backend takes a long time to boot."
+          section: "Timeouts & Polling"
+          required: false
           default: "90000"
-          required: false
+          min: 15000
+          max: 300000
+          step: 15000
+          translations:
+            es:
+              label: "Tiempo de espera de inicio (ms)"
+              description: "Tiempo máximo para esperar que el backend esté disponible durante la pantalla de inicio. Aumentar si el backend tarda mucho en arrancar."
+
         REACT_APP_HEALTH_CHECK_TIMEOUT:
+          type: slider
+          label: "Health Check Timeout (ms)"
+          description: "Per-request timeout for individual backend health-check calls made during startup."
+          section: "Timeouts & Polling"
+          required: false
           default: "5000"
-          required: false
+          min: 1000
+          max: 30000
+          step: 1000
+          translations:
+            es:
+              label: "Tiempo de espera de health check (ms)"
+              description: "Tiempo máximo por solicitud para las llamadas de verificación de salud del backend durante el inicio."
+
         REACT_APP_POLLING_INTERVAL:
+          type: slider
+          label: "Polling Interval (ms)"
+          description: "Interval between consecutive backend availability polls during the startup screen."
+          section: "Timeouts & Polling"
+          required: false
           default: "2000"
-          required: false
+          min: 500
+          max: 10000
+          step: 500
+          translations:
+            es:
+              label: "Intervalo de sondeo (ms)"
+              description: "Intervalo entre sondeos consecutivos de disponibilidad del backend durante la pantalla de inicio."
+
         REACT_APP_NAVIGATION_DELAY:
-          default: "1000"
+          type: slider
+          label: "Navigation Delay (ms)"
+          description: "Delay before navigating away from the startup screen once the backend responds successfully."
+          section: "Timeouts & Polling"
           required: false
+          default: "1000"
+          min: 0
+          max: 5000
+          step: 250
+          translations:
+            es:
+              label: "Retraso de navegación (ms)"
+              description: "Retraso antes de salir de la pantalla de inicio cuando el backend responde correctamente."
+
     port: 80
     public: true
     route: /
     env:
-      BACKEND_URL:
-        default: "http://backend:8000"
-        required: false
 
+      # ── Application ──────────────────────────────────────────────────────
+      BACKEND_URL:
+        type: url
+        label: "Internal Backend URL"
+        description: "Docker-internal URL used by Nginx to proxy /api requests to the backend service. Should use the Docker Compose service name, not localhost."
+        placeholder: "http://backend:8000"
+        section: Application
+        required: false
+        default: "http://backend:8000"
+        translations:
+          es:
+            label: "URL interna del backend"
+            description: "URL interna de Docker usada por Nginx para hacer proxy de las solicitudes /api al servicio backend. Usar el nombre del servicio Docker Compose, no localhost."
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Backend — Django REST Framework + Channels + Celery
+  # ──────────────────────────────────────────────────────────────────────────
   backend:
     type: backend
     build:
       context: ./BackEndApi
-      dockerfile: compose/local/django/Dockerfile
+      dockerfile: compose/production/django/Dockerfile
     port: 8000
     public: true
     route: /api
     env:
-      DJANGO_SETTINGS_MODULE:
-        default: "config.settings.production"
-        required: false
-      DJANGO_SECRET_KEY:
-        required: true
-        secret: true
-      DJANGO_DEBUG:
-        default: "false"
-        required: false
-      ENVIRONMENT:
-        default: "production"
-        required: false
-      DB_NAME:
-        required: true
-      DB_USER:
-        required: true
-      DB_PASSWORD:
-        required: true
-        secret: true
-      DB_HOST:
-        default: "postgres"
-        required: false
-      DB_PORT:
-        default: "5432"
-        required: false
-      REDIS_URL:
-        default: "redis://redis:6379/0"
-        required: false
-      REDIS_CHANNEL_LAYER_HOST:
-        default: "redis"
-        required: false
-      CORS_ALLOWED_ORIGINS:
-        default: "*"
-        required: false
-      DJANGO_EMAIL_BACKEND:
-        default: "django.core.mail.backends.console.EmailBackend"
-        required: false
-      OPENAI_API_KEY:
-        required: false
-        secret: true
-      GITHUB_CLIENT_ID:
-        required: false
-      GITHUB_CLIENT_SECRET:
-        required: false
-        secret: true
-      GITHUB_REDIRECT_URI:
-        default: "{{deployment_url}}/settings/github/callback"
-        required: false
-      WHATSAPP_AUTHORIZATION_TOKEN:
-        required: false
-        secret: true
-      WHATSAPP_MESSAGE_URI:
-        required: false
-      AWS_REGION_NAME:
-        default: "us-east-1"
-        required: false
-      AWS_ACCESS_KEY_ID:
-        required: false
-        secret: true
-      AWS_SECRET_ACCESS_KEY:
-        required: false
-        secret: true
-      AWS_STORAGE_BUCKET_NAME:
-        required: false
 
+      # ── Application ────────────────────────────────────────────────────────
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        description: "Python dotted path to the Django settings file. Keep 'production' for deployed environments."
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+        translations:
+          es:
+            label: "Módulo de configuración de Django"
+            description: "Ruta Python al archivo de configuración de Django. Mantener 'production' para entornos desplegados."
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        description: "Runtime environment label. Affects logging, feature flags, and Sentry error grouping."
+        section: Application
+        required: false
+        default: "production"
+        options:
+          - "production"
+          - "staging"
+          - "local"
+        translations:
+          es:
+            label: "Entorno"
+            description: "Etiqueta del entorno de ejecución. Afecta el registro, los indicadores de características y el agrupamiento de errores en Sentry."
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        description: "Enable Django debug mode. Must be disabled in production — debug mode exposes full stack traces and disables security hardening."
+        section: Application
+        required: false
+        default: "false"
+        translations:
+          es:
+            label: "Modo de depuración"
+            description: "Activa el modo debug de Django. Debe estar desactivado en producción — el modo debug expone trazas completas y deshabilita el endurecimiento de seguridad."
+
+      # ── Security ───────────────────────────────────────────────────────────
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        description: "Cryptographic key for signing cookies, sessions, and CSRF tokens. Must be long (50+ chars), random, and kept private. Rotate if ever exposed."
+        placeholder: "django-insecure-xxxxxxxxxxxxxxxxxxxx"
+        section: Security
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Clave secreta de Django"
+            description: "Clave criptográfica para firmar cookies, sesiones y tokens CSRF. Debe ser larga (50+ caracteres), aleatoria y mantenerse privada. Rotar si alguna vez se expone."
+
+      DJANGO_ADMIN_URL:
+        type: string
+        label: "Admin URL Path"
+        description: "URL path segment for the Django admin panel (security through obscurity). Change from the default 'admin/' to make it harder to find."
+        placeholder: "secret-admin-path/"
+        section: Security
+        required: false
+        default: "admin/"
+        translations:
+          es:
+            label: "Ruta del panel de administración"
+            description: "Segmento de ruta URL del panel de administración de Django (oscuridad por seguridad). Cambiar el valor por defecto 'admin/' para dificultar su descubrimiento."
+
+      # ── Database ───────────────────────────────────────────────────────────
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        description: "Name of the PostgreSQL database. Must match POSTGRES_DB in the postgres service."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Nombre de la base de datos"
+            description: "Nombre de la base de datos PostgreSQL. Debe coincidir con POSTGRES_DB en el servicio postgres."
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        description: "PostgreSQL username. Must match POSTGRES_USER in the postgres service."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Usuario de la base de datos"
+            description: "Nombre de usuario PostgreSQL. Debe coincidir con POSTGRES_USER en el servicio postgres."
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        description: "PostgreSQL password. Must match POSTGRES_PASSWORD in the postgres service."
+        section: Database
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Contraseña de la base de datos"
+            description: "Contraseña PostgreSQL. Debe coincidir con POSTGRES_PASSWORD en el servicio postgres."
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        description: "Hostname of the PostgreSQL server. Use the Docker Compose service name when running with Compose."
+        placeholder: "postgres"
+        section: Database
+        required: false
+        default: "postgres"
+        translations:
+          es:
+            label: "Host de la base de datos"
+            description: "Nombre de host del servidor PostgreSQL. Usar el nombre del servicio Docker Compose cuando se ejecuta con Compose."
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        description: "TCP port on which PostgreSQL is listening."
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+        translations:
+          es:
+            label: "Puerto de la base de datos"
+            description: "Puerto TCP en el que escucha PostgreSQL."
+
+      # ── Cache ──────────────────────────────────────────────────────────────
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        description: "Redis connection string used as the Celery broker and result backend. Uses the Docker service name by default."
+        placeholder: "redis://redis:6379/0"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+        translations:
+          es:
+            label: "URL de Redis"
+            description: "Cadena de conexión Redis usada como broker y backend de resultados de Celery. Usa el nombre del servicio Docker por defecto."
+
+      REDIS_CHANNEL_LAYER_HOST:
+        type: string
+        label: "Redis Channel Layer Host"
+        description: "Hostname of the Redis instance used for the Django Channels WebSocket layer."
+        placeholder: "redis"
+        section: Cache
+        required: false
+        default: "redis"
+        translations:
+          es:
+            label: "Host Redis para Channel Layer"
+            description: "Nombre de host de la instancia Redis usada para la capa WebSocket de Django Channels."
+
+      # ── CORS ───────────────────────────────────────────────────────────────
+      CORS_ALLOWED_ORIGINS:
+        type: string
+        label: "CORS Allowed Origins"
+        description: "Comma-separated list of origins permitted to make cross-site requests (e.g. https://myapp.example.com). Use * to allow all origins — not recommended in production."
+        placeholder: "https://myapp.example.com"
+        section: CORS
+        required: false
+        default: "*"
+        translations:
+          es:
+            label: "Orígenes CORS permitidos"
+            description: "Lista de orígenes separados por comas autorizados para solicitudes cross-site (ej. https://miaplicacion.ejemplo.com). Usar * para permitir todos — no recomendado en producción."
+            placeholder: "https://miaplicacion.ejemplo.com"
+
+      # ── Email ──────────────────────────────────────────────────────────────
+      DJANGO_EMAIL_BACKEND:
+        type: select
+        label: "Email Backend"
+        description: "Django email backend class. Use 'SMTP' for real email delivery. 'Console' prints emails to container logs — useful for debugging."
+        section: Email
+        required: false
+        default: "django.core.mail.backends.console.EmailBackend"
+        options:
+          - "django.core.mail.backends.console.EmailBackend"
+          - "django.core.mail.backends.smtp.EmailBackend"
+          - "django.core.mail.backends.dummy.EmailBackend"
+        translations:
+          es:
+            label: "Backend de correo electrónico"
+            description: "Clase de backend de correo de Django. Usar 'SMTP' para envío real. 'Console' imprime los correos en los logs del contenedor — útil para depuración."
+
+      EMAIL_NO_REPLY:
+        type: string
+        label: "No-Reply Email Address"
+        description: "Sender address used for system-generated emails (notifications, password resets, etc.)."
+        placeholder: "noreply@example.com"
+        section: Email
+        required: false
+        default: "info@app.com"
+        translations:
+          es:
+            label: "Dirección de correo sin respuesta"
+            description: "Dirección remitente usada para correos generados por el sistema (notificaciones, restablecimiento de contraseña, etc.)."
+            placeholder: "noreply@ejemplo.com"
+
+      # ── Monitoring ─────────────────────────────────────────────────────────
+      SENTRY_DSN:
+        type: secret
+        label: "Sentry DSN"
+        description: "Data Source Name from your Sentry project. Enables error tracking and performance monitoring. Leave blank to disable Sentry."
+        placeholder: "https://xxxx@oxxxx.ingest.sentry.io/xxxx"
+        section: Monitoring
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "DSN de Sentry"
+            description: "Data Source Name de tu proyecto Sentry. Activa el seguimiento de errores y monitoreo de rendimiento. Dejar vacío para deshabilitar Sentry."
+
+      # ── AI Integration ─────────────────────────────────────────────────────
+      OPENAI_API_KEY:
+        type: secret
+        label: "OpenAI API Key"
+        description: "API key for OpenAI integrations (GPT-powered features, embeddings, etc.). Leave blank to disable AI features."
+        placeholder: "sk-..."
+        section: "AI Integration"
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Clave de API de OpenAI"
+            description: "Clave de API para integraciones de OpenAI (funciones GPT, embeddings, etc.). Dejar vacío para deshabilitar las funciones de IA."
+
+      # ── GitHub OAuth ───────────────────────────────────────────────────────
+      GITHUB_CLIENT_ID:
+        type: string
+        label: "GitHub OAuth Client ID"
+        description: "Client ID from your GitHub OAuth App. Required to enable GitHub login. Create one at github.com/settings/developers."
+        placeholder: "Ov23liXXXXXXXXXXXXXX"
+        section: "GitHub OAuth"
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Client ID de GitHub OAuth"
+            description: "Client ID de tu aplicación OAuth de GitHub. Requerido para habilitar el inicio de sesión con GitHub. Crear en github.com/settings/developers."
+
+      GITHUB_CLIENT_SECRET:
+        type: secret
+        label: "GitHub OAuth Client Secret"
+        description: "Client secret from your GitHub OAuth App. Keep this private."
+        section: "GitHub OAuth"
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Client Secret de GitHub OAuth"
+            description: "Client secret de tu aplicación OAuth de GitHub. Mantener privado."
+
+      GITHUB_REDIRECT_URI:
+        type: url
+        label: "GitHub OAuth Redirect URI"
+        description: "Callback URL that GitHub redirects to after authentication. Must exactly match the URL registered in your GitHub OAuth App."
+        placeholder: "${DEPLOYMENT_URL}/settings/github/callback"
+        section: "GitHub OAuth"
+        required: false
+        default: "${DEPLOYMENT_URL}/settings/github/callback"
+        translations:
+          es:
+            label: "URI de redirección de GitHub OAuth"
+            description: "URL de retorno a la que GitHub redirige tras la autenticación. Debe coincidir exactamente con la URL registrada en tu aplicación OAuth de GitHub."
+
+      # ── WhatsApp ───────────────────────────────────────────────────────────
+      WHATSAPP_AUTHORIZATION_TOKEN:
+        type: secret
+        label: "WhatsApp Authorization Token"
+        description: "Bearer token for the WhatsApp Business Cloud API. Leave blank to disable WhatsApp messaging."
+        section: WhatsApp
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Token de autorización de WhatsApp"
+            description: "Token Bearer para la API de WhatsApp Business Cloud. Dejar vacío para deshabilitar la mensajería de WhatsApp."
+
+      WHATSAPP_MESSAGE_URI:
+        type: url
+        label: "WhatsApp Messages API URI"
+        description: "Endpoint URL for sending WhatsApp messages via the Business Cloud API."
+        placeholder: "https://graph.facebook.com/v18.0/YOUR_PHONE_NUMBER_ID/messages"
+        section: WhatsApp
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "URI de la API de mensajes de WhatsApp"
+            description: "URL del endpoint para enviar mensajes de WhatsApp a través de la API Business Cloud."
+
+      # ── Storage ────────────────────────────────────────────────────────────
+      AWS_REGION_NAME:
+        type: string
+        label: "AWS Region"
+        description: "AWS region for S3 media storage and other AWS services (e.g. us-east-1, eu-west-1)."
+        placeholder: "us-east-1"
+        section: Storage
+        required: false
+        default: "us-east-1"
+        translations:
+          es:
+            label: "Región de AWS"
+            description: "Región de AWS para el almacenamiento de medios en S3 y otros servicios de AWS."
+
+      AWS_ACCESS_KEY_ID:
+        type: secret
+        label: "AWS Access Key ID"
+        description: "Access key ID for S3 media file storage. Leave blank to use local disk storage instead."
+        placeholder: "AKIAIOSFODNN7EXAMPLE"
+        section: Storage
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "ID de clave de acceso de AWS"
+            description: "ID de clave de acceso para el almacenamiento de archivos multimedia en S3. Dejar vacío para usar el almacenamiento en disco local."
+
+      AWS_SECRET_ACCESS_KEY:
+        type: secret
+        label: "AWS Secret Access Key"
+        description: "Secret access key paired with AWS_ACCESS_KEY_ID for S3 access."
+        section: Storage
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Clave de acceso secreta de AWS"
+            description: "Clave de acceso secreta emparejada con AWS_ACCESS_KEY_ID para el acceso a S3."
+
+      AWS_STORAGE_BUCKET_NAME:
+        type: string
+        label: "S3 Bucket Name"
+        description: "Name of the S3 bucket where user-uploaded media files are stored."
+        placeholder: "my-app-media-prod"
+        section: Storage
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Nombre del bucket S3"
+            description: "Nombre del bucket S3 donde se almacenan los archivos multimedia subidos por usuarios."
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Celery Worker — processes async background tasks
+  # Shares most configuration with the backend service.
+  # ──────────────────────────────────────────────────────────────────────────
   celery-worker:
     type: worker
     build:
       context: ./BackEndApi
-      dockerfile: compose/local/django/Dockerfile
+      dockerfile: compose/production/django/Dockerfile
     command: celery -A config.celery worker --loglevel=info
     env:
-      DJANGO_SETTINGS_MODULE:
-        default: "config.settings.production"
-        required: false
-      DJANGO_SECRET_KEY:
-        required: true
-        secret: true
-      DJANGO_DEBUG:
-        default: "false"
-        required: false
-      ENVIRONMENT:
-        default: "production"
-        required: false
-      DB_NAME:
-        required: true
-      DB_USER:
-        required: true
-      DB_PASSWORD:
-        required: true
-        secret: true
-      DB_HOST:
-        default: "postgres"
-        required: false
-      DB_PORT:
-        default: "5432"
-        required: false
-      REDIS_URL:
-        default: "redis://redis:6379/0"
-        required: false
-      OPENAI_API_KEY:
-        required: false
-        secret: true
 
+      # ── Application ────────────────────────────────────────────────────────
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        description: "Must match the backend service settings module."
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+        translations:
+          es:
+            label: "Módulo de configuración de Django"
+            description: "Debe coincidir con el módulo de configuración del servicio backend."
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        description: "Runtime environment label. Must match the backend service."
+        section: Application
+        required: false
+        default: "production"
+        options:
+          - "production"
+          - "staging"
+          - "local"
+        translations:
+          es:
+            label: "Entorno"
+            description: "Etiqueta del entorno de ejecución. Debe coincidir con el servicio backend."
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        description: "Enable Django debug mode. Must match the backend service and be disabled in production."
+        section: Application
+        required: false
+        default: "false"
+        translations:
+          es:
+            label: "Modo de depuración"
+            description: "Activa el modo debug de Django. Debe coincidir con el servicio backend y estar desactivado en producción."
+
+      # ── Security ───────────────────────────────────────────────────────────
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        description: "Must be identical to the backend service secret key."
+        section: Security
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Clave secreta de Django"
+            description: "Debe ser idéntica a la clave secreta del servicio backend."
+
+      # ── Database ───────────────────────────────────────────────────────────
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        description: "Must match the backend and postgres service database name."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Nombre de la base de datos"
+            description: "Debe coincidir con el nombre de base de datos del backend y el servicio postgres."
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        description: "Must match the backend and postgres service database user."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Usuario de la base de datos"
+            description: "Debe coincidir con el usuario de base de datos del backend y el servicio postgres."
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        description: "Must match the backend and postgres service database password."
+        section: Database
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Contraseña de la base de datos"
+            description: "Debe coincidir con la contraseña de base de datos del backend y el servicio postgres."
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        description: "Hostname of the PostgreSQL server."
+        placeholder: "postgres"
+        section: Database
+        required: false
+        default: "postgres"
+        translations:
+          es:
+            label: "Host de la base de datos"
+            description: "Nombre de host del servidor PostgreSQL."
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        description: "Port on which PostgreSQL is listening."
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+        translations:
+          es:
+            label: "Puerto de la base de datos"
+            description: "Puerto en el que escucha PostgreSQL."
+
+      # ── Cache ──────────────────────────────────────────────────────────────
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        description: "Redis connection string for the Celery task broker and result backend."
+        placeholder: "redis://redis:6379/0"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+        translations:
+          es:
+            label: "URL de Redis"
+            description: "Cadena de conexión Redis para el broker de tareas Celery y el backend de resultados."
+
+      # ── AI Integration ─────────────────────────────────────────────────────
+      OPENAI_API_KEY:
+        type: secret
+        label: "OpenAI API Key"
+        description: "API key for OpenAI-powered background tasks. Must match the backend service key."
+        placeholder: "sk-..."
+        section: "AI Integration"
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Clave de API de OpenAI"
+            description: "Clave de API para tareas en segundo plano basadas en OpenAI. Debe coincidir con la clave del servicio backend."
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Celery Beat — periodic task scheduler (cron-style)
+  # Shares most configuration with the backend service.
+  # ──────────────────────────────────────────────────────────────────────────
   celery-beat:
     type: worker
     build:
       context: ./BackEndApi
-      dockerfile: compose/local/django/Dockerfile
+      dockerfile: compose/production/django/Dockerfile
     command: celery -A config.celery beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     env:
-      DJANGO_SETTINGS_MODULE:
-        default: "config.settings.production"
-        required: false
-      DJANGO_SECRET_KEY:
-        required: true
-        secret: true
-      DJANGO_DEBUG:
-        default: "false"
-        required: false
-      ENVIRONMENT:
-        default: "production"
-        required: false
-      DB_NAME:
-        required: true
-      DB_USER:
-        required: true
-      DB_PASSWORD:
-        required: true
-        secret: true
-      DB_HOST:
-        default: "postgres"
-        required: false
-      DB_PORT:
-        default: "5432"
-        required: false
-      REDIS_URL:
-        default: "redis://redis:6379/0"
-        required: false
 
+      # ── Application ────────────────────────────────────────────────────────
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        description: "Must match the backend service settings module."
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+        translations:
+          es:
+            label: "Módulo de configuración de Django"
+            description: "Debe coincidir con el módulo de configuración del servicio backend."
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        description: "Runtime environment label. Must match the backend service."
+        section: Application
+        required: false
+        default: "production"
+        options:
+          - "production"
+          - "staging"
+          - "local"
+        translations:
+          es:
+            label: "Entorno"
+            description: "Etiqueta del entorno de ejecución. Debe coincidir con el servicio backend."
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        description: "Enable Django debug mode. Must match the backend service and be disabled in production."
+        section: Application
+        required: false
+        default: "false"
+        translations:
+          es:
+            label: "Modo de depuración"
+            description: "Activa el modo debug de Django. Debe coincidir con el servicio backend y estar desactivado en producción."
+
+      # ── Security ───────────────────────────────────────────────────────────
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        description: "Must be identical to the backend service secret key."
+        section: Security
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Clave secreta de Django"
+            description: "Debe ser idéntica a la clave secreta del servicio backend."
+
+      # ── Database ───────────────────────────────────────────────────────────
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        description: "Must match the backend and postgres service database name."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Nombre de la base de datos"
+            description: "Debe coincidir con el nombre de base de datos del backend y el servicio postgres."
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        description: "Must match the backend and postgres service database user."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Usuario de la base de datos"
+            description: "Debe coincidir con el usuario de base de datos del backend y el servicio postgres."
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        description: "Must match the backend and postgres service database password."
+        section: Database
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Contraseña de la base de datos"
+            description: "Debe coincidir con la contraseña de base de datos del backend y el servicio postgres."
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        description: "Hostname of the PostgreSQL server."
+        placeholder: "postgres"
+        section: Database
+        required: false
+        default: "postgres"
+        translations:
+          es:
+            label: "Host de la base de datos"
+            description: "Nombre de host del servidor PostgreSQL."
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        description: "Port on which PostgreSQL is listening."
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+        translations:
+          es:
+            label: "Puerto de la base de datos"
+            description: "Puerto en el que escucha PostgreSQL."
+
+      # ── Cache ──────────────────────────────────────────────────────────────
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        description: "Redis connection string for the Celery beat scheduler."
+        placeholder: "redis://redis:6379/0"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+        translations:
+          es:
+            label: "URL de Redis"
+            description: "Cadena de conexión Redis para el planificador de Celery beat."
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PostgreSQL — relational database
+  # ──────────────────────────────────────────────────────────────────────────
   postgres:
     type: internal
     image: postgres:15-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env:
-      POSTGRES_DB:
-        required: true
-      POSTGRES_USER:
-        required: true
-      POSTGRES_PASSWORD:
-        required: true
-        secret: true
 
+      # ── Database ───────────────────────────────────────────────────────────
+      POSTGRES_DB:
+        type: string
+        label: "Database Name"
+        description: "Name of the database created on first boot. Must match DB_NAME in the backend, celery-worker, and celery-beat services."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Nombre de la base de datos"
+            description: "Nombre de la base de datos creada en el primer arranque. Debe coincidir con DB_NAME en los servicios backend, celery-worker y celery-beat."
+
+      POSTGRES_USER:
+        type: string
+        label: "Database User"
+        description: "PostgreSQL user created on first boot. Must match DB_USER in the backend, celery-worker, and celery-beat services."
+        placeholder: "postgres"
+        section: Database
+        required: true
+        default: "postgres"
+        translations:
+          es:
+            label: "Usuario de la base de datos"
+            description: "Usuario PostgreSQL creado en el primer arranque. Debe coincidir con DB_USER en los servicios backend, celery-worker y celery-beat."
+
+      POSTGRES_PASSWORD:
+        type: secret
+        label: "Database Password"
+        description: "Password for the PostgreSQL user. Must match DB_PASSWORD in the backend, celery-worker, and celery-beat services."
+        section: Database
+        required: true
+        default: ""
+        translations:
+          es:
+            label: "Contraseña de la base de datos"
+            description: "Contraseña del usuario PostgreSQL. Debe coincidir con DB_PASSWORD en los servicios backend, celery-worker y celery-beat."
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Redis — message broker and cache
+  # No user-configurable settings required.
+  # ──────────────────────────────────────────────────────────────────────────
   redis:
     type: internal
     image: redis:7-alpine
