@@ -45,6 +45,12 @@ services:
     port: 3000
     public: true
     route: /
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3000/ || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
     env:
 
       # ── Application ──────────────────────────────────────────────────────
@@ -127,6 +133,12 @@ services:
     port: 8000
     public: true
     route: /api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     env:
 
       # ── Application ────────────────────────────────────────────────────────

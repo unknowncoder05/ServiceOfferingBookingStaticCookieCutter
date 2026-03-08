@@ -158,6 +158,12 @@ services:
     port: 80
     public: true
     route: /
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     env:
 
       # ── Application ──────────────────────────────────────────────────────
@@ -185,6 +191,12 @@ services:
     port: 8000
     public: true
     route: /api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     env:
 
       # ── Application ────────────────────────────────────────────────────────
