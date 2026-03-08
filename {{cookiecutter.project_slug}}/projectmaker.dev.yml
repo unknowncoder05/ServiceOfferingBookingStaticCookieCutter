@@ -1,0 +1,595 @@
+version: "1"
+
+# Development variant — bind-mounted source, hot-reload servers, cached deps.
+# Used automatically when deployment.environment == 'development'.
+#
+# Key differences from projectmaker.yml:
+#   - Source code is bind-mounted (.:/project) — no image rebuild for code changes
+#   - Backend runs uvicorn --reload; frontend runs npm start with HMR
+#   - Python packages cached in dev_python_venv volume (reinstalled only on requirements change)
+#   - node_modules cached in dev_node_modules volume
+#   - REACT_APP_* vars are runtime env (read by dev server at startup, not baked at build)
+#   - Dev-friendly defaults: DJANGO_DEBUG=true, ENVIRONMENT=development
+
+commands:
+  migrate:
+    label: "Run Migrations"
+    description: "Apply any pending database migrations."
+    run: "python manage.py migrate --noinput"
+    service: backend
+
+  createsuperuser:
+    label: "Create Superuser"
+    description: "Create a Django admin superuser (interactive — check container logs)."
+    run: "python manage.py createsuperuser"
+    service: backend
+
+  test:
+    label: "Run Tests"
+    description: "Execute the full test suite."
+    run: "python manage.py test --verbosity 2"
+    service: backend
+
+services:
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Frontend — React dev server (npm start / react-scripts start)
+  # REACT_APP_* vars are injected into process.env at server startup.
+  # ────────────────────────────────────────────────────────────────────────────
+  frontend:
+    type: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+
+    port: 3000
+    public: true
+    route: /
+    env:
+
+      # ── Application ──────────────────────────────────────────────────────
+      REACT_APP_API_URL:
+        type: url
+        label: "API Base URL"
+        description: "Base URL of the backend REST API. In dev this hits the Traefik-proxied /api route."
+        placeholder: "https://myapp.example.com/api/v1"
+        section: Application
+        required: false
+        default: "${DEPLOYMENT_URL}/api/v1"
+
+      REACT_APP_API_GATEWAY_START_ENDPOINT:
+        type: url
+        label: "API Gateway Wake Endpoint"
+        description: "AWS API Gateway URL that wakes the backend from sleep. Leave blank to disable."
+        section: Application
+        required: false
+        default: ""
+
+      # ── Timeouts & Polling ────────────────────────────────────────────────
+      REACT_APP_KEEP_ALIVE_INTERVAL:
+        type: slider
+        label: "Keep-Alive Interval (ms)"
+        section: "Timeouts & Polling"
+        required: false
+        default: "300000"
+        min: 60000
+        max: 900000
+        step: 60000
+
+      REACT_APP_STARTUP_TIMEOUT:
+        type: slider
+        label: "Startup Timeout (ms)"
+        section: "Timeouts & Polling"
+        required: false
+        default: "90000"
+        min: 15000
+        max: 300000
+        step: 15000
+
+      REACT_APP_HEALTH_CHECK_TIMEOUT:
+        type: slider
+        label: "Health Check Timeout (ms)"
+        section: "Timeouts & Polling"
+        required: false
+        default: "5000"
+        min: 1000
+        max: 30000
+        step: 1000
+
+      REACT_APP_POLLING_INTERVAL:
+        type: slider
+        label: "Polling Interval (ms)"
+        section: "Timeouts & Polling"
+        required: false
+        default: "2000"
+        min: 500
+        max: 10000
+        step: 500
+
+      REACT_APP_NAVIGATION_DELAY:
+        type: slider
+        label: "Navigation Delay (ms)"
+        section: "Timeouts & Polling"
+        required: false
+        default: "1000"
+        min: 0
+        max: 5000
+        step: 250
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Backend — Django + uvicorn --reload (hot-reload on source change)
+  # ────────────────────────────────────────────────────────────────────────────
+  backend:
+    type: backend
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/dev/django/Dockerfile
+    port: 8000
+    public: true
+    route: /api
+    env:
+
+      # ── Application ────────────────────────────────────────────────────────
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        section: Application
+        required: false
+        default: "development"
+        options:
+          - "development"
+          - "production"
+          - "staging"
+          - "local"
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        section: Application
+        required: false
+        default: "true"
+
+      REQUIREMENTS_FILE:
+        type: select
+        label: "Requirements File"
+        description: "pip requirements file installed at container startup from the named venv volume."
+        section: Application
+        required: false
+        default: "local.txt"
+        options:
+          - "local.txt"
+          - "production.txt"
+          - "base.txt"
+
+      # ── Security ───────────────────────────────────────────────────────────
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        section: Security
+        required: true
+        default: ""
+
+      DJANGO_ADMIN_URL:
+        type: string
+        label: "Admin URL Path"
+        section: Security
+        required: false
+        default: "admin/"
+
+      # ── Database ───────────────────────────────────────────────────────────
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        section: Database
+        required: true
+        default: ""
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        section: Database
+        required: false
+        default: "postgres"
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+
+      # ── Cache ──────────────────────────────────────────────────────────────
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+
+      REDIS_CHANNEL_LAYER_HOST:
+        type: string
+        label: "Redis Channel Layer Host"
+        section: Cache
+        required: false
+        default: "redis"
+
+      # ── CORS ───────────────────────────────────────────────────────────────
+      CORS_ALLOWED_ORIGINS:
+        type: string
+        label: "CORS Allowed Origins"
+        section: CORS
+        required: false
+        default: "*"
+
+      # ── Email ──────────────────────────────────────────────────────────────
+      DJANGO_EMAIL_BACKEND:
+        type: select
+        label: "Email Backend"
+        section: Email
+        required: false
+        default: "django.core.mail.backends.console.EmailBackend"
+        options:
+          - "django.core.mail.backends.console.EmailBackend"
+          - "django.core.mail.backends.smtp.EmailBackend"
+          - "django.core.mail.backends.dummy.EmailBackend"
+
+      EMAIL_NO_REPLY:
+        type: string
+        label: "No-Reply Email Address"
+        section: Email
+        required: false
+        default: "info@app.com"
+
+      # ── AI Integration ─────────────────────────────────────────────────────
+      OPENAI_API_KEY:
+        type: secret
+        label: "OpenAI API Key"
+        section: "AI Integration"
+        required: false
+        default: ""
+
+      # ── GitHub OAuth ───────────────────────────────────────────────────────
+      GITHUB_CLIENT_ID:
+        type: string
+        label: "GitHub OAuth Client ID"
+        section: "GitHub OAuth"
+        required: false
+        default: ""
+
+      GITHUB_CLIENT_SECRET:
+        type: secret
+        label: "GitHub OAuth Client Secret"
+        section: "GitHub OAuth"
+        required: false
+        default: ""
+
+      GITHUB_REDIRECT_URI:
+        type: url
+        label: "GitHub OAuth Redirect URI"
+        section: "GitHub OAuth"
+        required: false
+        default: "${DEPLOYMENT_URL}/settings/github/callback"
+
+      # ── WhatsApp ───────────────────────────────────────────────────────────
+      WHATSAPP_AUTHORIZATION_TOKEN:
+        type: secret
+        label: "WhatsApp Authorization Token"
+        section: WhatsApp
+        required: false
+        default: ""
+
+      WHATSAPP_MESSAGE_URI:
+        type: url
+        label: "WhatsApp Messages API URI"
+        section: WhatsApp
+        required: false
+        default: ""
+
+      # ── Storage ────────────────────────────────────────────────────────────
+      AWS_REGION_NAME:
+        type: string
+        label: "AWS Region"
+        section: Storage
+        required: false
+        default: "us-east-1"
+
+      AWS_ACCESS_KEY_ID:
+        type: secret
+        label: "AWS Access Key ID"
+        section: Storage
+        required: false
+        default: ""
+
+      AWS_SECRET_ACCESS_KEY:
+        type: secret
+        label: "AWS Secret Access Key"
+        section: Storage
+        required: false
+        default: ""
+
+      AWS_STORAGE_BUCKET_NAME:
+        type: string
+        label: "S3 Bucket Name"
+        section: Storage
+        required: false
+        default: ""
+
+      # ── Monitoring ─────────────────────────────────────────────────────────
+      SENTRY_DSN:
+        type: secret
+        label: "Sentry DSN"
+        section: Monitoring
+        required: false
+        default: ""
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Celery Worker — async background tasks (hot-reload via watchfiles)
+  # ────────────────────────────────────────────────────────────────────────────
+  celery-worker:
+    type: worker
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/dev/django/Dockerfile
+    env:
+
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        section: Application
+        required: false
+        default: "development"
+        options:
+          - "development"
+          - "production"
+          - "staging"
+          - "local"
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        section: Application
+        required: false
+        default: "true"
+
+      REQUIREMENTS_FILE:
+        type: select
+        label: "Requirements File"
+        section: Application
+        required: false
+        default: "local.txt"
+        options:
+          - "local.txt"
+          - "production.txt"
+          - "base.txt"
+
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        section: Security
+        required: true
+        default: ""
+
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        section: Database
+        required: true
+        default: ""
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        section: Database
+        required: false
+        default: "postgres"
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+
+      OPENAI_API_KEY:
+        type: secret
+        label: "OpenAI API Key"
+        section: "AI Integration"
+        required: false
+        default: ""
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Celery Beat — periodic task scheduler
+  # ────────────────────────────────────────────────────────────────────────────
+  celery-beat:
+    type: worker
+    build:
+      context: ./BackEndApi
+      dockerfile: compose/dev/django/Dockerfile
+    env:
+
+      DJANGO_SETTINGS_MODULE:
+        type: select
+        label: "Django Settings Module"
+        section: Application
+        required: false
+        default: "config.settings.production"
+        options:
+          - "config.settings.production"
+          - "config.settings.local"
+
+      ENVIRONMENT:
+        type: select
+        label: "Environment"
+        section: Application
+        required: false
+        default: "development"
+        options:
+          - "development"
+          - "production"
+          - "staging"
+          - "local"
+
+      DJANGO_DEBUG:
+        type: boolean
+        label: "Debug Mode"
+        section: Application
+        required: false
+        default: "true"
+
+      REQUIREMENTS_FILE:
+        type: select
+        label: "Requirements File"
+        section: Application
+        required: false
+        default: "local.txt"
+        options:
+          - "local.txt"
+          - "production.txt"
+          - "base.txt"
+
+      DJANGO_SECRET_KEY:
+        type: secret
+        label: "Django Secret Key"
+        section: Security
+        required: true
+        default: ""
+
+      DB_NAME:
+        type: string
+        label: "Database Name"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_USER:
+        type: string
+        label: "Database User"
+        section: Database
+        required: true
+        default: "postgres"
+
+      DB_PASSWORD:
+        type: secret
+        label: "Database Password"
+        section: Database
+        required: true
+        default: ""
+
+      DB_HOST:
+        type: string
+        label: "Database Host"
+        section: Database
+        required: false
+        default: "postgres"
+
+      DB_PORT:
+        type: number
+        label: "Database Port"
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+
+      REDIS_URL:
+        type: string
+        label: "Redis URL"
+        section: Cache
+        required: false
+        default: "redis://redis:6379/0"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # PostgreSQL — relational database (same as production)
+  # ────────────────────────────────────────────────────────────────────────────
+  postgres:
+    type: internal
+    image: postgres:15-alpine
+    env:
+
+      POSTGRES_DB:
+        type: string
+        label: "Database Name"
+        section: Database
+        required: true
+        default: "postgres"
+
+      POSTGRES_USER:
+        type: string
+        label: "Database User"
+        section: Database
+        required: true
+        default: "postgres"
+
+      POSTGRES_PASSWORD:
+        type: secret
+        label: "Database Password"
+        section: Database
+        required: true
+        default: ""
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Redis — message broker and cache (same as production)
+  # ────────────────────────────────────────────────────────────────────────────
+  redis:
+    type: internal
+    image: redis:7-alpine
+    command: redis-server --appendonly yes

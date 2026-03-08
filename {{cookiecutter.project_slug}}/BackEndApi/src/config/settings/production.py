@@ -28,7 +28,7 @@ if DB_CREDENTIALS:
     DB_CREDENTIALS = json.loads(DB_CREDENTIALS)
     DATABASE_DEFAULT = {
         'ENGINE': DB_CREDENTIALS.get('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': DB_CREDENTIALS.get('DB_DATABASE'),
+        'NAME': DB_CREDENTIALS.get('DB_NAME'),
         'USER': DB_CREDENTIALS.get('DB_USER'),
         'PASSWORD': DB_CREDENTIALS.get('DB_PASSWORD'),
         'PORT': DB_CREDENTIALS.get('DB_PORT'),
@@ -37,7 +37,7 @@ if DB_CREDENTIALS:
 else:
     DATABASE_DEFAULT = {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_DATABASE'),
+        'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'PORT': os.getenv('DB_PORT'),

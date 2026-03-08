@@ -8,7 +8,7 @@ check_timeout = os.getenv("DB_CHECK_TIMEOUT", 30)
 check_interval = os.getenv("DB_CHECK_INTERVAL", 1)
 interval_unit = "second" if check_interval == 1 else "seconds"
 config = {
-    "dbname": os.getenv("DB_DATABASE", "postgres"),
+    "dbname": os.getenv("DB_NAME", "postgres"),
     "user": os.getenv("DB_USER", "postgres"),
     "password": os.getenv("DB_PASSWORD", ""),
     "host": os.getenv("DB_HOST", "postgres"),

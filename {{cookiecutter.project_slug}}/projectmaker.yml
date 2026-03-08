@@ -1,4 +1,42 @@
 version: "1"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Commands — run against the deployed containers via the ProjectMaker UI.
+#
+# Each entry is a named operation:
+#   run:         shell command to execute inside the container
+#   service:     docker compose service to run it in (required)
+#   label:       human-readable name shown in the UI
+#   description: optional tooltip / help text
+#
+# Commands are executed with `docker compose run --rm <service> <run>` so they
+# work regardless of whether the target container is currently up.
+# ──────────────────────────────────────────────────────────────────────────────
+commands:
+  migrate:
+    label: "Run Migrations"
+    description: "Apply any pending database migrations."
+    run: "python manage.py migrate --noinput"
+    service: backend
+
+  collectstatic:
+    label: "Collect Static Files"
+    description: "Gather Django static files into the static root."
+    run: "python manage.py collectstatic --noinput"
+    service: backend
+
+  createsuperuser:
+    label: "Create Superuser"
+    description: "Create a Django admin superuser (interactive — check container logs)."
+    run: "python manage.py createsuperuser"
+    service: backend
+
+  test:
+    label: "Run Tests"
+    description: "Execute the full test suite."
+    run: "python manage.py test --verbosity 2"
+    service: backend
+
 services:
 
   # ──────────────────────────────────────────────────────────────────────────

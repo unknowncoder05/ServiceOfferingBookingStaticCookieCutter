@@ -1,0 +1,146 @@
+# Development compose — hot-reload servers, volume-mounted source, cached deps.
+#
+# Key differences from docker-compose.yml:
+#   - Source code is bind-mounted (.:/project) instead of baked into the image
+#   - Python packages cached in named volume /venv (reinstalled only on requirements change)
+#   - node_modules cached in named volume (reinstalled only on package.json change)
+#   - Django runs with uvicorn --reload; React runs with npm start
+#   - Repo pulls are handled by the deployment service before containers start,
+#     never from inside the container (user code runs here)
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up
+#   docker compose -f docker-compose.dev.yml up --build   # after system dep changes
+
+x-backend-env: &backend-env
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_NAME: ${POSTGRES_DB:-{{ cookiecutter.project_slug }}}
+  DB_USER: ${POSTGRES_USER:-{{ cookiecutter.project_slug }}_user}
+  DB_PASSWORD: ${POSTGRES_PASSWORD}
+  REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+  REDIS_CHANNEL_LAYER_HOST: ${REDIS_CHANNEL_LAYER_HOST:-redis}
+  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+  DJANGO_DEBUG: ${DJANGO_DEBUG:-true}
+  ENVIRONMENT: ${ENVIRONMENT:-development}
+  CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-*}
+  DJANGO_EMAIL_BACKEND: ${DJANGO_EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+  GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+  GITHUB_REDIRECT_URI: ${GITHUB_REDIRECT_URI:-}
+  WHATSAPP_AUTHORIZATION_TOKEN: ${WHATSAPP_AUTHORIZATION_TOKEN:-}
+  WHATSAPP_MESSAGE_URI: ${WHATSAPP_MESSAGE_URI:-}
+  AWS_REGION_NAME: ${AWS_REGION_NAME:-us-east-1}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+  AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME:-}
+  REQUIREMENTS_FILE: ${REQUIREMENTS_FILE:-local.txt}
+
+x-backend-base: &backend-base
+  build:
+    context: ./BackEndApi
+    dockerfile: compose/dev/django/Dockerfile
+  volumes:
+    - .:/project                  # full repo bind-mount (read-write for manage.py artifacts)
+    - dev_python_venv:/venv       # cached pip packages — survives restarts
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-{{ cookiecutter.project_slug }}}
+      POSTGRES_USER: ${POSTGRES_USER:-{{ cookiecutter.project_slug }}_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-{{ cookiecutter.project_slug }}_user} -d ${POSTGRES_DB:-{{ cookiecutter.project_slug }}}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - dev_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    <<: *backend-base
+    environment:
+      <<: *backend-env
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    security_opt:
+      - no-new-privileges:true
+
+  celery-worker:
+    <<: *backend-base
+    command: /start-celeryworker
+    environment:
+      <<: *backend-env
+    ports: []
+    security_opt:
+      - no-new-privileges:true
+
+  celery-beat:
+    <<: *backend-base
+    command: /start-celerybeat
+    environment:
+      <<: *backend-env
+    ports: []
+    security_opt:
+      - no-new-privileges:true
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app               # source bind-mount
+      - dev_node_modules:/app/node_modules  # cached — survives restarts
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api/v1}
+      REACT_APP_WS_URL: ${REACT_APP_WS_URL:-ws://localhost:8000/ws}
+      REACT_APP_KEEP_ALIVE_INTERVAL: ${REACT_APP_KEEP_ALIVE_INTERVAL:-300000}
+      REACT_APP_STARTUP_TIMEOUT: ${REACT_APP_STARTUP_TIMEOUT:-90000}
+      REACT_APP_HEALTH_CHECK_TIMEOUT: ${REACT_APP_HEALTH_CHECK_TIMEOUT:-5000}
+      REACT_APP_POLLING_INTERVAL: ${REACT_APP_POLLING_INTERVAL:-2000}
+      REACT_APP_NAVIGATION_DELAY: ${REACT_APP_NAVIGATION_DELAY:-1000}
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-true}
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  dev_postgres_data:
+  dev_redis_data:
+  dev_python_venv:
+  dev_node_modules:
+
+networks:
+  default:
+    name: ${COMPOSE_PROJECT_NAME:-{{ cookiecutter.project_slug_dashed }}}-dev-network
