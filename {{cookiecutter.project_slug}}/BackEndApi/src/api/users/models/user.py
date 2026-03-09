@@ -85,8 +85,6 @@ class User(BaseModel, AbstractUser):
     recommendation = models.TextField(blank=True, null=True)
     extra_info = models.TextField(blank=True, null=True)
 
-    is_first_investment = models.BooleanField(default=True)
-
     # GitHub OAuth fields
     github_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
     github_username = models.CharField(max_length=100, null=True, blank=True)

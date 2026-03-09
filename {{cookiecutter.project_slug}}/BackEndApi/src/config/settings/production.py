@@ -28,20 +28,20 @@ if DB_CREDENTIALS:
     DB_CREDENTIALS = json.loads(DB_CREDENTIALS)
     DATABASE_DEFAULT = {
         'ENGINE': DB_CREDENTIALS.get('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': DB_CREDENTIALS.get('DB_NAME'),
-        'USER': DB_CREDENTIALS.get('DB_USER'),
-        'PASSWORD': DB_CREDENTIALS.get('DB_PASSWORD'),
-        'PORT': DB_CREDENTIALS.get('DB_PORT'),
-        'HOST': DB_CREDENTIALS.get('DB_HOST'),
+        'NAME': DB_CREDENTIALS.get('POSTGRES_DB'),
+        'USER': DB_CREDENTIALS.get('POSTGRES_USER'),
+        'PASSWORD': DB_CREDENTIALS.get('POSTGRES_PASSWORD'),
+        'PORT': DB_CREDENTIALS.get('POSTGRES_PORT'),
+        'HOST': DB_CREDENTIALS.get('POSTGRES_HOST'),
     }
 else:
     DATABASE_DEFAULT = {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'PORT': os.getenv('DB_PORT'),
-        'HOST': os.getenv('DB_HOST'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'HOST': os.getenv('POSTGRES_HOST'),
     }
 
 DATABASES = {

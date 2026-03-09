@@ -13,11 +13,11 @@
 #   docker compose -f docker-compose.dev.yml up --build   # after system dep changes
 
 x-backend-env: &backend-env
-  DB_HOST: postgres
-  DB_PORT: "5432"
-  DB_NAME: ${POSTGRES_DB:-{{ cookiecutter.project_slug }}}
-  DB_USER: ${POSTGRES_USER:-{{ cookiecutter.project_slug }}_user}
-  DB_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: ${POSTGRES_DB:-{{ cookiecutter.project_slug }}}
+  POSTGRES_USER: ${POSTGRES_USER:-{{ cookiecutter.project_slug }}_user}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
   REDIS_CHANNEL_LAYER_HOST: ${REDIS_CHANNEL_LAYER_HOST:-redis}
   DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}

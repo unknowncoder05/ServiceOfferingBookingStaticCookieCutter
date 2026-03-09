@@ -26,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'),
          {'fields': ('first_name', 'last_name', 'email', 'dob', 'phone_number', 'preferred_provider', 'recommendation')}),
-        (_('Roles'), {'fields': ('role', 'is_first_investment')}),
+        (_('Roles'), {'fields': ('role')}),
         (_('Deleted'), {'fields': ('deleted',)}),
         (_('Permissions'), {
             'fields': (

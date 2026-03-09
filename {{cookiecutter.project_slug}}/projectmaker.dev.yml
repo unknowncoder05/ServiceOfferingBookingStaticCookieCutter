@@ -147,7 +147,7 @@ services:
         label: "Django Settings Module"
         section: Application
         required: false
-        default: "config.settings.production"
+        default: "config.settings.local"
         options:
           - "config.settings.production"
           - "config.settings.local"
@@ -199,35 +199,35 @@ services:
         default: "admin/"
 
       # ── Database ───────────────────────────────────────────────────────────
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
         section: Database
         required: true
         default: "postgres"
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
         section: Database
         required: true
         default: "postgres"
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
         section: Database
         required: true
         default: ""
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         section: Database
         required: false
         default: "postgres"
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         section: Database
@@ -417,35 +417,35 @@ services:
         required: true
         default: ""
 
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
         section: Database
         required: true
         default: "postgres"
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
         section: Database
         required: true
         default: "postgres"
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
         section: Database
         required: true
         default: ""
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         section: Database
         required: false
         default: "postgres"
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         section: Database
@@ -525,35 +525,35 @@ services:
         required: true
         default: ""
 
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
         section: Database
         required: true
         default: "postgres"
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
         section: Database
         required: true
         default: "postgres"
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
         section: Database
         required: true
         default: ""
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         section: Database
         required: false
         default: "postgres"
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         section: Database

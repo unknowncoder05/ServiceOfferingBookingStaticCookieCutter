@@ -271,10 +271,10 @@ services:
             description: "Segmento de ruta URL del panel de administración de Django (oscuridad por seguridad). Cambiar el valor por defecto 'admin/' para dificultar su descubrimiento."
 
       # ── Database ───────────────────────────────────────────────────────────
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
-        description: "Name of the PostgreSQL database. Must match POSTGRES_DB in the postgres service."
+        description: "Name of the PostgreSQL database."
         placeholder: "postgres"
         section: Database
         required: true
@@ -282,12 +282,12 @@ services:
         translations:
           es:
             label: "Nombre de la base de datos"
-            description: "Nombre de la base de datos PostgreSQL. Debe coincidir con POSTGRES_DB en el servicio postgres."
+            description: "Nombre de la base de datos PostgreSQL."
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
-        description: "PostgreSQL username. Must match POSTGRES_USER in the postgres service."
+        description: "PostgreSQL username."
         placeholder: "postgres"
         section: Database
         required: true
@@ -295,21 +295,21 @@ services:
         translations:
           es:
             label: "Usuario de la base de datos"
-            description: "Nombre de usuario PostgreSQL. Debe coincidir con POSTGRES_USER en el servicio postgres."
+            description: "Nombre de usuario PostgreSQL."
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
-        description: "PostgreSQL password. Must match POSTGRES_PASSWORD in the postgres service."
+        description: "Password for the PostgreSQL user."
         section: Database
         required: true
         default: ""
         translations:
           es:
             label: "Contraseña de la base de datos"
-            description: "Contraseña PostgreSQL. Debe coincidir con POSTGRES_PASSWORD en el servicio postgres."
+            description: "Contraseña del usuario PostgreSQL."
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         description: "Hostname of the PostgreSQL server. Use the Docker Compose service name when running with Compose."
@@ -322,7 +322,7 @@ services:
             label: "Host de la base de datos"
             description: "Nombre de host del servidor PostgreSQL. Usar el nombre del servicio Docker Compose cuando se ejecuta con Compose."
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         description: "TCP port on which PostgreSQL is listening."
@@ -624,7 +624,7 @@ services:
             description: "Debe ser idéntica a la clave secreta del servicio backend."
 
       # ── Database ───────────────────────────────────────────────────────────
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
         description: "Must match the backend and postgres service database name."
@@ -637,7 +637,7 @@ services:
             label: "Nombre de la base de datos"
             description: "Debe coincidir con el nombre de base de datos del backend y el servicio postgres."
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
         description: "Must match the backend and postgres service database user."
@@ -650,7 +650,7 @@ services:
             label: "Usuario de la base de datos"
             description: "Debe coincidir con el usuario de base de datos del backend y el servicio postgres."
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
         description: "Must match the backend and postgres service database password."
@@ -662,7 +662,7 @@ services:
             label: "Contraseña de la base de datos"
             description: "Debe coincidir con la contraseña de base de datos del backend y el servicio postgres."
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         description: "Hostname of the PostgreSQL server."
@@ -675,7 +675,7 @@ services:
             label: "Host de la base de datos"
             description: "Nombre de host del servidor PostgreSQL."
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         description: "Port on which PostgreSQL is listening."
@@ -787,7 +787,7 @@ services:
             description: "Debe ser idéntica a la clave secreta del servicio backend."
 
       # ── Database ───────────────────────────────────────────────────────────
-      DB_NAME:
+      POSTGRES_DB:
         type: string
         label: "Database Name"
         description: "Must match the backend and postgres service database name."
@@ -800,7 +800,7 @@ services:
             label: "Nombre de la base de datos"
             description: "Debe coincidir con el nombre de base de datos del backend y el servicio postgres."
 
-      DB_USER:
+      POSTGRES_USER:
         type: string
         label: "Database User"
         description: "Must match the backend and postgres service database user."
@@ -813,7 +813,7 @@ services:
             label: "Usuario de la base de datos"
             description: "Debe coincidir con el usuario de base de datos del backend y el servicio postgres."
 
-      DB_PASSWORD:
+      POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
         description: "Must match the backend and postgres service database password."
@@ -825,7 +825,7 @@ services:
             label: "Contraseña de la base de datos"
             description: "Debe coincidir con la contraseña de base de datos del backend y el servicio postgres."
 
-      DB_HOST:
+      POSTGRES_HOST:
         type: string
         label: "Database Host"
         description: "Hostname of the PostgreSQL server."
@@ -838,7 +838,7 @@ services:
             label: "Host de la base de datos"
             description: "Nombre de host del servidor PostgreSQL."
 
-      DB_PORT:
+      POSTGRES_PORT:
         type: number
         label: "Database Port"
         description: "Port on which PostgreSQL is listening."
@@ -880,7 +880,7 @@ services:
       POSTGRES_DB:
         type: string
         label: "Database Name"
-        description: "Name of the database created on first boot. Must match DB_NAME in the backend, celery-worker, and celery-beat services."
+        description: "Name of the database created on first boot. Shared across backend, celery-worker, and celery-beat services."
         placeholder: "postgres"
         section: Database
         required: true
@@ -888,12 +888,12 @@ services:
         translations:
           es:
             label: "Nombre de la base de datos"
-            description: "Nombre de la base de datos creada en el primer arranque. Debe coincidir con DB_NAME en los servicios backend, celery-worker y celery-beat."
+            description: "Nombre de la base de datos creada en el primer arranque. Compartido con los servicios backend, celery-worker y celery-beat."
 
       POSTGRES_USER:
         type: string
         label: "Database User"
-        description: "PostgreSQL user created on first boot. Must match DB_USER in the backend, celery-worker, and celery-beat services."
+        description: "PostgreSQL user created on first boot. Shared across backend, celery-worker, and celery-beat services."
         placeholder: "postgres"
         section: Database
         required: true
@@ -901,19 +901,19 @@ services:
         translations:
           es:
             label: "Usuario de la base de datos"
-            description: "Usuario PostgreSQL creado en el primer arranque. Debe coincidir con DB_USER en los servicios backend, celery-worker y celery-beat."
+            description: "Usuario PostgreSQL creado en el primer arranque. Compartido con los servicios backend, celery-worker y celery-beat."
 
       POSTGRES_PASSWORD:
         type: secret
         label: "Database Password"
-        description: "Password for the PostgreSQL user. Must match DB_PASSWORD in the backend, celery-worker, and celery-beat services."
+        description: "Password for the PostgreSQL user. Shared across backend, celery-worker, and celery-beat services."
         section: Database
         required: true
         default: ""
         translations:
           es:
             label: "Contraseña de la base de datos"
-            description: "Contraseña del usuario PostgreSQL. Debe coincidir con DB_PASSWORD en los servicios backend, celery-worker y celery-beat."
+            description: "Contraseña del usuario PostgreSQL. Compartida con los servicios backend, celery-worker y celery-beat."
 
   # ──────────────────────────────────────────────────────────────────────────
   # Redis — message broker and cache
