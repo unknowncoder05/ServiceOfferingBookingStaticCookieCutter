@@ -27,11 +27,6 @@ class BackendManager {
   private startupPromise: Promise<void> | null = null;
   private healthCheckAttempted: boolean = false;
 
-  constructor() {
-    // Don't auto-start anymore - wait for explicit user action
-    // Keep-alive will be initialized after successful start
-  }
-
   /**
    * Get the current API base URL (dynamically updated based on backend state)
    */

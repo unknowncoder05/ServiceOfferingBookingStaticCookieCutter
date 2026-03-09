@@ -40,7 +40,7 @@ export const signUp = createAsyncThunk(
   async (data: SignUpRequest, { rejectWithValue }) => {
     try {
       const response = await apiService.signUp(data);
-      const { access, refresh, user } = response.data;
+      const { access, refresh } = response.data;
 
       // Store tokens in localStorage
       localStorage.setItem('access_token', access);

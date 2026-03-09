@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentUser } from '../store/authSlice';
@@ -12,6 +12,20 @@ export const SettingsPage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [isConnectingGitHub, setIsConnectingGitHub] = useState(false);
   const [isDisconnectingGitHub, setIsDisconnectingGitHub] = useState(false);
+
+  const handleGitHubCallback = useCallback(async (code: string, state: string) => {
+    setIsConnectingGitHub(true);
+    try {
+      await apiService.gitHubCallback({ code, state });
+      toast.success('GitHub account connected successfully!');
+      // Refresh user data to get updated GitHub info
+      dispatch(getCurrentUser());
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Failed to connect GitHub account');
+    } finally {
+      setIsConnectingGitHub(false);
+    }
+  }, [dispatch]);
 
   // Handle GitHub OAuth callback
   useEffect(() => {
@@ -33,21 +47,7 @@ export const SettingsPage: React.FC = () => {
       // Exchange code for token
       handleGitHubCallback(code, state);
     }
-  }, [searchParams]);
-
-  const handleGitHubCallback = async (code: string, state: string) => {
-    setIsConnectingGitHub(true);
-    try {
-      await apiService.gitHubCallback({ code, state });
-      toast.success('GitHub account connected successfully!');
-      // Refresh user data to get updated GitHub info
-      dispatch(getCurrentUser());
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to connect GitHub account');
-    } finally {
-      setIsConnectingGitHub(false);
-    }
-  };
+  }, [searchParams, handleGitHubCallback]);
 
   const handleConnectGitHub = async () => {
     setIsConnectingGitHub(true);

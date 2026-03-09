@@ -29,14 +29,6 @@ import {
 import backendManager from './BackendManager';
 import env from '../config/environment';
 
-// Generic paginated response type
-interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
-}
-
 class ApiService {
   private api: AxiosInstance;
 
