@@ -20,8 +20,9 @@ RUN apk update && apk add --no-cache \
     jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev \
     gettext
 
-# Pre-create empty virtualenv; packages are installed by entrypoint at runtime
-RUN python -m venv /venv
+# Pre-create virtualenv with psycopg2-binary so wait_for_postgres.py always works,
+# even on first boot before requirements are installed by the entrypoint.
+RUN python -m venv /venv && /venv/bin/pip install --no-cache-dir psycopg2-binary
 
 # Copy startup scripts — these are small helpers, never the source code itself
 COPY compose/dev/django/entrypoint.sh        /entrypoint.sh
