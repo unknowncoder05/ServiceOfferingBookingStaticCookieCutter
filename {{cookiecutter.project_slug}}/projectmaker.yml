@@ -59,7 +59,7 @@ services:
           placeholder: "https://myapp.example.com/api/v1"
           section: Application
           required: false
-          default: "${DEPLOYMENT_URL}/api/v1"
+          default: "{{backend.url}}/api/v1"
           translations:
             es:
               label: "URL base de la API"
@@ -171,10 +171,10 @@ services:
         type: url
         label: "Internal Backend URL"
         description: "Docker-internal URL used by Nginx to proxy /api requests to the backend service. Should use the Docker Compose service name, not localhost."
-        placeholder: "http://backend:8000"
+        placeholder: "{{backend.internal_url}}"
         section: Application
         required: false
-        default: "http://backend:8000"
+        default: "{{backend.internal_url}}"
         translations:
           es:
             label: "URL interna del backend"
@@ -467,10 +467,10 @@ services:
         type: url
         label: "GitHub OAuth Redirect URI"
         description: "Callback URL that GitHub redirects to after authentication. Must exactly match the URL registered in your GitHub OAuth App."
-        placeholder: "${DEPLOYMENT_URL}/settings/github/callback"
+        placeholder: "{{deployment_url}}/settings/github/callback"
         section: "GitHub OAuth"
         required: false
-        default: "${DEPLOYMENT_URL}/settings/github/callback"
+        default: "{{deployment_url}}/settings/github/callback"
         translations:
           es:
             label: "URI de redirección de GitHub OAuth"
