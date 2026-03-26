@@ -1,32 +1,10 @@
-"""
-Item models - Example CRUD module demonstrating Django model patterns.
-
-This module provides a simple Item model that can be used as a starting point
-for building your own models. It demonstrates:
-- User ownership (ForeignKey to User)
-- Timestamps (created_at, updated_at)
-- Status field with choices
-- JSON metadata field
-- String representation
-- Ordering
-"""
-from django.db import models
+"""Item model — example CRUD module demonstrating Django model patterns."""
 from django.conf import settings
+from django.db import models
 
 
 class Item(models.Model):
-    """
-    Example Item model with common field patterns.
-
-    Attributes:
-        name: The item's display name
-        description: Optional detailed description
-        status: Current status (draft, active, archived)
-        owner: The user who owns this item
-        metadata: Flexible JSON field for additional data
-        created_at: When the item was created
-        updated_at: When the item was last modified
-    """
+    """Example Item model with common field patterns."""
 
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Draft'

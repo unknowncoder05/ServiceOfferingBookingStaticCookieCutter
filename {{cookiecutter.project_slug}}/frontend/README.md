@@ -1,113 +1,117 @@
-# MyProject Frontend
+# {{ cookiecutter.project_name }} — Frontend
 
-A React frontend for MyProject - a web-based application for building, visualizing, and managing complex narratives.
+React 19 + TypeScript frontend for **{{ cookiecutter.project_name }}**.
 
-## Features
+## Tech Stack
 
-- **Authentication**: Phone number-based authentication with SMS/WhatsApp verification
-- **User Registration**: Complete signup flow with account verification
-- **Modern UI**: Built with React, TypeScript, Tailwind CSS, and Redux
-- **Responsive Design**: Mobile-first approach with beautiful, modern interface
+- **React 19** with TypeScript
+- **Redux Toolkit** — global state management
+- **React Router 7** — client-side routing
+- **Tailwind CSS** — utility-first styling
+- **Axios** — HTTP client with JWT interceptors
+- **i18next** — EN/ES translations
+- **WebSocket** — real-time updates via Django Channels
+- **Tiptap** — rich text editor (available, import as needed)
+- **React Flow** — node graph UI (available, import as needed)
 
-## Technology Stack
+## Existing Pages & Routes
 
-- React 19 with TypeScript
-- Redux Toolkit for state management
-- React Router for navigation
-- Tailwind CSS for styling
-- Axios for API communication
+All routes are registered in `src/App.tsx`.
 
-## Getting Started
+| Route | Component | Auth required |
+|---|---|---|
+| `/login` | `AuthPage` | No |
+| `/signup` | `AuthPage` | No |
+| `/verify` | `VerifyAccount` | No |
+| `/verify-login` | `VerifyLogin` | No |
+| `/dashboard` | `Dashboard` | Yes |
+| `/items` | `ItemsPage` | Yes |
+| `/items/:id` | `ItemsPage` | Yes |
+| `/settings` | `SettingsPage` | Yes |
+| `/server-down` | `ServerDown` | No |
+| `/start-server` | `ServerStartPage` | No |
 
-### Prerequisites
+## Existing Redux Slices
 
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Set up environment variables:
-```bash
-cp .env.example .env
-```
-
-3. Update the API URL in `.env`:
-```
-REACT_APP_API_URL=http://localhost:8000/api/v1
-```
-
-### Development
-
-Start the development server:
-```bash
-npm start
-```
-
-The app will open at `http://localhost:3000`.
-
-### Building for Production
-
-```bash
-npm run build
-```
+| Slice | File | Purpose |
+|---|---|---|
+| `auth` | `store/authSlice.ts` | User auth state, login/signup/logout thunks |
 
 ## Project Structure
 
 ```
 src/
-├── components/          # Reusable UI components
-│   ├── LoginForm.tsx   # Login form component
-│   ├── SignUpForm.tsx  # Signup form component
-│   └── Dashboard.tsx   # Main dashboard component
-├── pages/              # Page components
-│   └── AuthPage.tsx    # Authentication page wrapper
-├── store/              # Redux store configuration
-│   ├── authSlice.ts    # Authentication state management
-│   ├── index.ts        # Store configuration
-│   └── hooks.ts        # Typed Redux hooks
-├── services/           # API services
-│   └── api.ts          # API client configuration
-├── types/              # TypeScript type definitions
-│   └── auth.ts         # Authentication types
-└── App.tsx             # Main app component
+├── App.tsx                 # Router setup and auth guard
+├── components/             # Reusable UI components
+│   ├── LoginForm.tsx
+│   ├── SignUpForm.tsx
+│   ├── VerifyAccount.tsx
+│   └── VerifyLogin.tsx
+├── pages/                  # One file per route
+│   ├── AuthPage.tsx
+│   ├── Dashboard.tsx
+│   ├── ItemsPage.tsx
+│   ├── SettingsPage.tsx
+│   ├── ServerDown.tsx
+│   └── ServerStartPage.tsx
+├── store/                  # Redux store
+│   ├── index.ts            # Store configuration
+│   ├── hooks.ts            # useAppDispatch / useAppSelector
+│   └── authSlice.ts        # Auth state
+├── services/               # API and external services
+│   ├── api.ts              # Axios instance + JWT interceptors
+│   └── BackendManager.ts   # Backend health polling
+├── context/
+│   └── ThemeContext.tsx     # Dark mode toggle
+├── config/
+│   └── environment.ts      # Typed env vars (REACT_APP_*)
+├── types/                  # Shared TypeScript types
+│   └── auth.ts
+└── i18n/                   # Translation files (EN / ES)
 ```
+
+## Getting Started
+
+```bash
+npm install
+cp .env.example .env      # set REACT_APP_API_URL
+npm start                 # → http://localhost:3000
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## Environment Variables
+
+Declared in `.env` (local) and `projectmaker.yml` (deployed). Accessed via `src/config/environment.ts`.
+
+| Variable | Description |
+|---|---|
+| `REACT_APP_API_URL` | Backend API base URL (e.g. `http://localhost:8000/api/v1`) |
+| `REACT_APP_API_GATEWAY_START_ENDPOINT` | Backend wake-up URL (optional, for sleep-mode backends) |
+| `REACT_APP_KEEP_ALIVE_INTERVAL` | Keep-alive polling interval in ms |
+| `REACT_APP_STARTUP_TIMEOUT` | Backend startup timeout in ms |
 
 ## Authentication Flow
 
-1. **Login**: Users enter their phone number, receive a verification code, and enter it to sign in
-2. **Signup**: New users provide their details, create an account, and verify it with a code
-3. **Dashboard**: Authenticated users access the main application interface
+1. User submits email + password on `/login` → receives JWT access + refresh tokens
+2. Tokens stored in `localStorage`; Axios interceptor attaches `Authorization: Bearer <token>` to every request
+3. On 401, the interceptor refreshes the token and retries automatically
+4. `/verify` and `/verify-login` handle account verification codes
+5. Redux `auth` slice holds `isAuthenticated`, `user`, `isLoading`
 
-## API Integration
+## Adding a New Page
 
-The frontend communicates with the Django REST API backend using:
-- Cookie-based authentication with JWT tokens
-- Automatic token refresh handling
-- Error handling and user feedback
+1. Create `src/pages/MyPage.tsx`
+2. Add route in `src/App.tsx` (wrap in auth guard if needed)
+3. Add Redux slice in `src/store/mySlice.ts` if global state is needed
+4. Add navigation link in `Dashboard.tsx` or relevant layout
 
-### Authentication Provider Values
+## Running Tests
 
-The frontend uses the correct short values for external authentication providers that match the Django backend:
-
-- `SMS` - SMS verification
-- `WH` - WhatsApp verification  
-- `D` - Console verification (Development only)
-
-These values are defined in `src/utils/constants.ts` and used throughout the application.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is part of the MyProject application.
+```bash
+npm test
+```

@@ -14,7 +14,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 # Serializers
 from api.users.serializers import *
-from api.users.service.email_service import EmailService
 
 
 def django_user_jwt(user):

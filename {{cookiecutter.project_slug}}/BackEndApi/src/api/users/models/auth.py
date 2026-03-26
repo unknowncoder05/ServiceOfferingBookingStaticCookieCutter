@@ -1,11 +1,11 @@
 # Django
-from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
 # Utilities
+from api.users.conf import users_settings
 from api.users.auth.external_token.providers import ExternalAuthenticationTokenProviders, send_token
 from api.users.auth.external_token.token import random_token
 from api.users.enums import ExternalAuthenticationTokenType
@@ -33,7 +33,7 @@ class ExternalAuthenticationToken(BaseModel):
 
     @classmethod
     def get_phone_valid_tokens(cls, phone_number, type):
-        token_validity_range = now() - settings.AUTHENTICATION_EXTERNAL_TOKEN_EXPIRY
+        token_validity_range = now() - users_settings.external_token_expiry
         return cls.objects.filter(user__phone_number=phone_number, created__gte=token_validity_range, type=type)
 
 

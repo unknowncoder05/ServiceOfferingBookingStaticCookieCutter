@@ -198,6 +198,32 @@ services:
         required: false
         default: "admin/"
 
+      PASSWORD_RESET_METHOD:
+        type: select
+        label: "Password Reset Method"
+        description: "How users receive password reset and account recovery tokens. 'console' is recommended for dev — tokens print to container logs."
+        section: Security
+        required: false
+        default: "console"
+        options:
+          - "email"
+          - "otp"
+          - "console"
+
+      PASSWORD_RESET_FRONTEND_URL:
+        type: url
+        label: "Password Reset Frontend URL"
+        section: Security
+        required: false
+        default: "${DEPLOYMENT_URL}/reset-password"
+
+      ACCOUNT_RECOVERY_FRONTEND_URL:
+        type: url
+        label: "Account Recovery Frontend URL"
+        section: Security
+        required: false
+        default: "${DEPLOYMENT_URL}/recover-account"
+
       # ── Database ───────────────────────────────────────────────────────────
       POSTGRES_DB:
         type: string

@@ -1,4 +1,63 @@
 {
+  "auth": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back",
+      "email": "Email address",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "signup": {
+      "title": "Create an account",
+      "subtitle": "Start building today",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "middleName": "Middle name",
+      "optional": "optional",
+      "email": "Email address",
+      "password": "Password",
+      "passwordHint": "Min. 8 characters",
+      "passwordConfirm": "Confirm password",
+      "passwordStrength": {
+        "weak": "Weak",
+        "fair": "Fair",
+        "strong": "Strong"
+      },
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordsNoMatch": "Passwords do not match",
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required"
+    }
+  },
+  "home": {
+    "nav": {
+      "login": "Log in",
+      "signup": "Sign up",
+      "dashboard": "Dashboard"
+    },
+    "hero": {
+      "title": "{{cookiecutter.project_name}}",
+      "subtitle": "A production-ready starting point. Authentication, real-time updates, async tasks, and cloud deployment — all wired up and ready to go.",
+      "ctaSignup": "Get started",
+      "ctaLogin": "Log in",
+      "ctaDashboard": "Go to dashboard"
+    }
+  },
   "nav": {
     "dashboard": "Dashboard",
     "items": "Items",

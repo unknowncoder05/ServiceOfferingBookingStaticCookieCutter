@@ -34,6 +34,7 @@ class UserTestHelper(DefaultTestHelper):
             'dob': '2000-01-01',
             'phone_number': '+14003002010',
             'password': 'SecurePassword#1',
+            'password_confirm': 'SecurePassword#1',
         }
     }
 
@@ -71,6 +72,9 @@ class UserTestHelper(DefaultTestHelper):
 
 from unittest.mock import patch
 
+BASE = '/' + settings.API_URI
+
+
 class AdminUserPostApiTestCase(APITestCase):
 
     def setUp(self):
@@ -83,17 +87,119 @@ class AdminUserPostApiTestCase(APITestCase):
         creation_request = UserTestHelper.create(self.client, sample_name='john_doe')
         self.assertEqual(creation_request.status_code, status.HTTP_200_OK)
 
-        user_data = UserTestHelper.get_sample_data('john_doe')
-        # list_request = UserTestHelper.auth(self.client,
-        #                                    data=dict(phone_number=user_data['phone_number'],
-        #                                              token=user_data['token']))
-        # self.assertEqual(list_request.status_code, status.HTTP_200_OK)
-        #
-        # retrieve_request = UserTestHelper.refresh(self.client, data=dict(refresh=list_request.data['refresh']))
-        # self.assertEqual(retrieve_request.status_code, status.HTTP_200_OK)
-
-    #
     def test_object_creation(self):
         self.assertEqual(UserTestHelper.non_deleted_objects_count(), 0)
         UserTestHelper.create(self.client, sample_name='john_doe')
         self.assertEqual(UserTestHelper.non_deleted_objects_count(), 1)
+
+
+class MeEndpointTests(APITestCase):
+    """Tests for GET /users/me/ — current-user profile retrieval."""
+
+    def setUp(self):
+        patch('boto3.client').start()
+        self.user = UserFactory(is_active=True)
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_requires_auth(self):
+        from rest_framework.test import APIClient
+        anon = APIClient()
+        resp = anon.get(f'{BASE}/users/me/')
+        self.assertIn(resp.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
+
+    def test_returns_own_profile(self):
+        resp = self.client.get(f'{BASE}/users/me/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
+        self.assertEqual(resp.data['email'], self.user.email)
+
+    def test_response_includes_expected_fields(self):
+        resp = self.client.get(f'{BASE}/users/me/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        for field in ('id', 'email', 'first_name', 'last_name'):
+            self.assertIn(field, resp.data, f"Missing field: {field}")
+
+    def test_does_not_return_other_users_data(self):
+        other = UserFactory(is_active=True)
+        resp = self.client.get(f'{BASE}/users/me/')
+        self.assertNotEqual(resp.data.get('email'), other.email)
+
+
+class ProfileUpdateTests(APITestCase):
+    """Tests for PATCH /users/{id}/ — profile updates."""
+
+    def setUp(self):
+        patch('boto3.client').start()
+        self.user = UserFactory(is_active=True, first_name='Original')
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_update_own_first_name(self):
+        resp = self.client.patch(
+            f'{BASE}/users/me/',
+            {'first_name': 'Updated'},
+            format='json',
+        )
+        # Accept 200 (updated) or 405 (method not allowed on 'me') — verify via pk if 405
+        if resp.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
+            resp = self.client.patch(
+                f'{BASE}/users/{self.user.pk}/',
+                {'first_name': 'Updated'},
+                format='json',
+            )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, 'Updated')
+
+    def test_cannot_update_other_user(self):
+        other = UserFactory(is_active=True, first_name='Other')
+        resp = self.client.patch(
+            f'{BASE}/users/{other.pk}/',
+            {'first_name': 'Hijacked'},
+            format='json',
+        )
+        # Should be 403 or 404, never 200
+        self.assertNotEqual(resp.status_code, status.HTTP_200_OK)
+        other.refresh_from_db()
+        self.assertEqual(other.first_name, 'Other')
+
+    def test_update_requires_auth(self):
+        from rest_framework.test import APIClient
+        anon = APIClient()
+        resp = anon.patch(f'{BASE}/users/{self.user.pk}/', {'first_name': 'X'}, format='json')
+        self.assertIn(resp.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
+
+
+class CheckEndpointTests(APITestCase):
+    """Tests for /users/check/ — email/phone availability."""
+
+    def setUp(self):
+        patch('boto3.client').start()
+
+    def tearDown(self):
+        patch.stopall()
+
+    def _check(self, data):
+        # Try both GET and POST — the action may support either
+        resp = self.client.get(f'{BASE}/users/check/', data)
+        if resp.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
+            resp = self.client.post(f'{BASE}/users/check/', data, format='json')
+        return resp
+
+    def test_available_email_returns_ok(self):
+        resp = self._check({'email': 'notused@example.com'})
+        self.assertIn(resp.status_code, [status.HTTP_200_OK, status.HTTP_204_NO_CONTENT])
+
+    def test_taken_email_returns_conflict_or_error(self):
+        user = UserFactory(email='taken@example.com')
+        resp = self._check({'email': 'taken@example.com'})
+        # Must NOT return 2xx for a taken email
+        self.assertNotIn(resp.status_code, [status.HTTP_200_OK, status.HTTP_204_NO_CONTENT])
+
+    def test_invalid_email_format_returns_400(self):
+        resp = self._check({'email': 'not-an-email'})
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)

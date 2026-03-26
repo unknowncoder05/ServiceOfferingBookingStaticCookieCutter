@@ -80,6 +80,9 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'api.users.apps.UsersAppConfig',
     'api.items.apps.ItemsConfig',
+    'api.billing.apps.BillingAppConfig',
+    'api.ai.apps.AIConfig',
+    'api.ws.apps.WebSocketConfig',
 ]
 
 INSTALLED_APPS = THIRD_PARTY_APPS + DJANGO_APPS + LOCAL_APPS
@@ -191,6 +194,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
+    'EXCEPTION_HANDLER': 'api.utils.exceptions.custom_exception_handler',
 }
 
 # AUTOFIELD
@@ -284,6 +288,19 @@ OPENAI_MAX_TOKENS = env.int('OPENAI_MAX_TOKENS', default=20000)
 ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY', default=None)
 ANTHROPIC_MODEL = env('ANTHROPIC_MODEL', default='claude-sonnet-4-5-20250929')
 ANTHROPIC_MAX_TOKENS = env.int('ANTHROPIC_MAX_TOKENS', default=8000)
+
+# Billing
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
+STRIPE_SUCCESS_URL = env('STRIPE_SUCCESS_URL', default='http://localhost:3000/settings/billing?session_id={CHECKOUT_SESSION_ID}')
+STRIPE_CANCEL_URL = env('STRIPE_CANCEL_URL', default='http://localhost:3000/settings/billing?cancelled=true')
+CREDIT_MINIMUM_BALANCE = env('CREDIT_MINIMUM_BALANCE', default='0.00')
+CREDIT_COST_MARKUP = env('CREDIT_COST_MARKUP', default='1.0')
+
+# Password Reset
+PASSWORD_RESET_METHOD = env('PASSWORD_RESET_METHOD', default='email')
+PASSWORD_RESET_FRONTEND_URL = env('PASSWORD_RESET_FRONTEND_URL', default='http://localhost:3000/reset-password')
+ACCOUNT_RECOVERY_FRONTEND_URL = env('ACCOUNT_RECOVERY_FRONTEND_URL', default='http://localhost:3000/recover-account')
 
 # GitHub OAuth
 GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default=None)

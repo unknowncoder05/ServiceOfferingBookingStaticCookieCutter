@@ -14,7 +14,8 @@ const AuthPage: React.FC = () => {
   }, [location.pathname]);
 
   const handleAuthSuccess = () => {
-    navigate('/dashboard');
+    const from = (location.state as { from?: Location })?.from?.pathname;
+    navigate(from && from !== '/login' && from !== '/signup' ? from : '/dashboard', { replace: true });
   };
 
   const switchToSignUp = () => {

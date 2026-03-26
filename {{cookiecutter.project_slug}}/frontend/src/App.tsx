@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { store } from './store';
@@ -11,11 +11,19 @@ import VerifyAccount from './components/VerifyAccount';
 import VerifyLogin from './components/VerifyLogin';
 import ServerDown from './pages/ServerDown';
 import ServerStartPage from './pages/ServerStartPage';
+import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import ItemsPage from './pages/ItemsPage';
 import SettingsPage from './pages/SettingsPage';
 import backendManager from './services/BackendManager';
 import environment from './config/environment';
+import NotFoundPage from './pages/NotFoundPage';
+
+const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const location = useLocation();
+  return isAuthenticated ? element : <Navigate to="/login" state={{ from: location }} replace />;
+};
 
 const AuthWrapper: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -108,30 +116,16 @@ const AuthWrapper: React.FC = () => {
           element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <VerifyLogin key="verify-login" />}
         />
 
-        <Route
-          path="/dashboard"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/items"
-          element={isAuthenticated ? <ItemsPage /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/items/:id"
-          element={isAuthenticated ? <ItemsPage /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/settings"
-          element={isAuthenticated ? <SettingsPage /> : <Navigate to="/login" replace />}
-        />
+        <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+        <Route path="/items" element={<PrivateRoute element={<ItemsPage />} />} />
+        <Route path="/items/:id" element={<PrivateRoute element={<ItemsPage />} />} />
+        <Route path="/settings" element={<PrivateRoute element={<SettingsPage />} />} />
 
         <Route path="/server-down" element={<ServerDown key="server-down" />} />
         <Route path="/start-server" element={<ServerStartPage key="start-server" />} />
 
-        <Route
-          path="/"
-          element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />}
-        />
+        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );

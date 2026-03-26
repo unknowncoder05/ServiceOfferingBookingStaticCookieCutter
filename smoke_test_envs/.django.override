@@ -1,0 +1,15 @@
+# Smoke test overrides — appended on top of .envs.example/.local/.django
+# These stub out external services so the app boots without real credentials.
+
+# Stub Stripe (billing app will disable itself when key is empty)
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+# Stub AI providers
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+
+# Stub AWS (no SSM/SQS calls during boot)
+AWS_CLIENT_ID=smoke_test
+AWS_CLIENT_SECRET=smoke_test
+AWS_REGION_NAME=us-east-1

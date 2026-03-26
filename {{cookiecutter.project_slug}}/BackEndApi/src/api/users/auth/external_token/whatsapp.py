@@ -1,9 +1,10 @@
 import json
 
 import requests
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
+from api.users.conf import users_settings
 
 
 def send_whatsapp_token(phone_number, message, language_code='en_US'):
@@ -12,10 +13,10 @@ def send_whatsapp_token(phone_number, message, language_code='en_US'):
 
 
 def send_whatsapp_template(phone_number, token, template, language_code='en_US'):
-    if not settings.WHATSAPP_MESSAGE_URI:
+    if not users_settings.whatsapp_message_uri:
         raise Exception('"WHATSAPP_MESSAGE_URI" is not set')
     headers = {
-        'Authorization': f'{settings.WHATSAPP_AUTHORIZATION_TYPE} {settings.WHATSAPP_AUTHORIZATION_TOKEN}',
+        'Authorization': f'{users_settings.whatsapp_authorization_type} {users_settings.whatsapp_authorization_token}',
         'Content-Type': 'application/json',
     }
     components = [{
@@ -53,6 +54,6 @@ def send_whatsapp_template(phone_number, token, template, language_code='en_US')
             'language': {'code': language_code},
         }
     }
-    res = requests.post(settings.WHATSAPP_MESSAGE_URI, data=json.dumps(data), headers=headers)
+    res = requests.post(users_settings.whatsapp_message_uri, data=json.dumps(data), headers=headers)
     if res.status_code != 200:
         raise serializers.ValidationError({"phone_number": _("Number not valid.")})

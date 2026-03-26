@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { signOut } from '../../store/authSlice';
 import { useTheme } from '../../context/ThemeContext';
@@ -13,10 +13,19 @@ const LANGUAGES = [
 export const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user } = useAppSelector((state) => state.auth);
   const { isDark, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const [langOpen, setLangOpen] = useState(false);
+
+  const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/');
+  const navLink = (path: string) =>
+    `inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors ${
+      isActive(path)
+        ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+        : 'border-transparent text-gray-700 dark:text-gray-200 hover:border-primary-400 hover:text-gray-900 dark:hover:text-white'
+    }`;
 
   const handleLogout = async () => {
     await dispatch(signOut());
@@ -35,16 +44,10 @@ export const Navbar: React.FC = () => {
               </span>
             </Link>
             <div className="hidden sm:flex sm:space-x-6">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 dark:text-gray-200 border-b-2 border-transparent hover:border-primary-500 transition-colors"
-              >
+              <Link to="/dashboard" className={navLink('/dashboard')}>
                 {t('nav.dashboard')}
               </Link>
-              <Link
-                to="/items"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 dark:text-gray-200 border-b-2 border-transparent hover:border-primary-500 transition-colors"
-              >
+              <Link to="/items" className={navLink('/items')}>
                 {t('nav.items')}
               </Link>
             </div>

@@ -37,6 +37,23 @@ commands:
     run: "python manage.py test --verbosity 2"
     service: backend
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Smoke test — steps run by smoke_test.sh during local CI / template testing.
+# Service names must match those in BackEndApi/local.yml.
+# ──────────────────────────────────────────────────────────────────────────────
+smoke_test:
+  on_start:
+    - label: "Migrations"
+      run: "python manage.py migrate --noinput"
+      service: django
+  steps:
+    - label: "No missing migrations"
+      run: "python manage.py makemigrations --check --dry-run"
+      service: django
+    - label: "Test suite"
+      run: "python manage.py test --verbosity 2 --keepdb"
+      service: django
+
 services:
 
   # ──────────────────────────────────────────────────────────────────────────
@@ -269,6 +286,48 @@ services:
           es:
             label: "Ruta del panel de administración"
             description: "Segmento de ruta URL del panel de administración de Django (oscuridad por seguridad). Cambiar el valor por defecto 'admin/' para dificultar su descubrimiento."
+
+      PASSWORD_RESET_METHOD:
+        type: select
+        label: "Password Reset Method"
+        description: "How users receive their password reset and account recovery tokens. 'email' sends a link; 'otp' sends a code via the user's preferred channel (SMS/WhatsApp); 'console' prints the code to container logs (development only)."
+        section: Security
+        required: false
+        default: "email"
+        options:
+          - "email"
+          - "otp"
+          - "console"
+        translations:
+          es:
+            label: "Método de restablecimiento de contraseña"
+            description: "Cómo los usuarios reciben sus tokens de restablecimiento de contraseña y recuperación de cuenta. 'email' envía un enlace; 'otp' envía un código por el canal preferido del usuario (SMS/WhatsApp); 'console' imprime el código en los logs del contenedor (solo desarrollo)."
+
+      PASSWORD_RESET_FRONTEND_URL:
+        type: url
+        label: "Password Reset Frontend URL"
+        description: "Frontend page that handles the password reset link. Receives ?uid=...&token=... query params. Only used when PASSWORD_RESET_METHOD is 'email'."
+        placeholder: "https://myapp.example.com/reset-password"
+        section: Security
+        required: false
+        default: "{{deployment_url}}/reset-password"
+        translations:
+          es:
+            label: "URL de restablecimiento de contraseña"
+            description: "Página del frontend que gestiona el enlace de restablecimiento de contraseña. Recibe los parámetros ?uid=...&token=... Solo se usa cuando PASSWORD_RESET_METHOD es 'email'."
+
+      ACCOUNT_RECOVERY_FRONTEND_URL:
+        type: url
+        label: "Account Recovery Frontend URL"
+        description: "Frontend page that handles the account recovery link. Receives ?uid=...&token=... query params. Only used when PASSWORD_RESET_METHOD is 'email'."
+        placeholder: "https://myapp.example.com/recover-account"
+        section: Security
+        required: false
+        default: "{{deployment_url}}/recover-account"
+        translations:
+          es:
+            label: "URL de recuperación de cuenta"
+            description: "Página del frontend que gestiona el enlace de recuperación de cuenta. Recibe los parámetros ?uid=...&token=... Solo se usa cuando PASSWORD_RESET_METHOD es 'email'."
 
       # ── Database ───────────────────────────────────────────────────────────
       POSTGRES_DB:

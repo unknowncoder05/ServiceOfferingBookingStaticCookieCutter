@@ -1,4 +1,63 @@
 {
+  "auth": {
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de vuelta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión...",
+      "noAccount": "¿No tienes cuenta?",
+      "signUp": "Regístrate"
+    },
+    "signup": {
+      "title": "Crear una cuenta",
+      "subtitle": "Empieza a construir hoy",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "middleName": "Segundo nombre",
+      "optional": "opcional",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "passwordHint": "Mín. 8 caracteres",
+      "passwordConfirm": "Confirmar contraseña",
+      "passwordStrength": {
+        "weak": "Débil",
+        "fair": "Regular",
+        "strong": "Fuerte"
+      },
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta...",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Inicia sesión"
+    },
+    "validation": {
+      "emailRequired": "El correo es obligatorio",
+      "emailInvalid": "Ingresa un correo válido",
+      "passwordRequired": "La contraseña es obligatoria",
+      "passwordMin": "La contraseña debe tener al menos 8 caracteres",
+      "passwordsNoMatch": "Las contraseñas no coinciden",
+      "firstNameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio"
+    }
+  },
+  "home": {
+    "nav": {
+      "login": "Iniciar sesión",
+      "signup": "Registrarse",
+      "dashboard": "Inicio"
+    },
+    "hero": {
+      "title": "{{cookiecutter.project_name}}",
+      "subtitle": "Un punto de partida listo para producción. Autenticación, actualizaciones en tiempo real, tareas asíncronas y despliegue en la nube — todo configurado y listo para usar.",
+      "ctaSignup": "Comenzar",
+      "ctaLogin": "Iniciar sesión",
+      "ctaDashboard": "Ir al inicio"
+    }
+  },
   "nav": {
     "dashboard": "Inicio",
     "items": "Elementos",

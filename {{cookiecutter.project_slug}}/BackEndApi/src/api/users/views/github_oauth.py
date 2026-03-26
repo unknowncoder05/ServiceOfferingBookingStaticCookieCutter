@@ -5,12 +5,13 @@ import secrets
 import requests
 from urllib.parse import urlencode
 
-from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+
+from api.users.conf import users_settings
 
 
 class GitHubOAuthViewSet(GenericViewSet):
@@ -25,7 +26,7 @@ class GitHubOAuthViewSet(GenericViewSet):
         Generate GitHub OAuth authorization URL with proper scopes.
         Returns the URL that the frontend should redirect to.
         """
-        if not settings.GITHUB_CLIENT_ID:
+        if not users_settings.github_client_id:
             return Response(
                 {'error': 'GitHub OAuth is not configured'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
@@ -40,9 +41,9 @@ class GitHubOAuthViewSet(GenericViewSet):
 
         # Build the authorization URL
         params = {
-            'client_id': settings.GITHUB_CLIENT_ID,
-            'redirect_uri': settings.GITHUB_REDIRECT_URI,
-            'scope': ' '.join(settings.GITHUB_OAUTH_SCOPES),
+            'client_id': users_settings.github_client_id,
+            'redirect_uri': users_settings.github_redirect_uri,
+            'scope': ' '.join(users_settings.github_oauth_scopes),
             'state': state,
             'allow_signup': 'false',
         }
@@ -85,10 +86,10 @@ class GitHubOAuthViewSet(GenericViewSet):
         token_response = requests.post(
             'https://github.com/login/oauth/access_token',
             data={
-                'client_id': settings.GITHUB_CLIENT_ID,
-                'client_secret': settings.GITHUB_CLIENT_SECRET,
+                'client_id': users_settings.github_client_id,
+                'client_secret': users_settings.github_client_secret,
                 'code': code,
-                'redirect_uri': settings.GITHUB_REDIRECT_URI,
+                'redirect_uri': users_settings.github_redirect_uri,
             },
             headers={'Accept': 'application/json'},
             timeout=30

@@ -5,3 +5,5 @@ from django.utils.translation import gettext_lazy as _
 class ExternalAuthenticationTokenType(models.TextChoices):
     VALIDATE_ACCOUNT = 'VA', _('Validate account')
     SIGN_IN = 'SI', _('Sign in')
+    RESET_PASSWORD = 'RP', _('Reset password')
+    RECOVER_ACCOUNT = 'RA', _('Recover account')

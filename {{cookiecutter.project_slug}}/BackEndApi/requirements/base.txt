@@ -1,5 +1,6 @@
 # Base
 pytz
+stripe
 python-slugify
 jinja2
 
