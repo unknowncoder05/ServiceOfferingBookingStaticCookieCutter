@@ -253,6 +253,10 @@ AUTHENTICATION_EXTERNAL_TOKEN_FORMATS = {
                              AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_DEFAULT),
         'validate_account': os.getenv(f'AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_{provider.upper()}_VALIDATE_ACCOUNT',
                                       AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_DEFAULT),
+        'reset_password': os.getenv(f'AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_{provider.upper()}_RESET_PASSWORD',
+                                    AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_DEFAULT),
+        'recover_account': os.getenv(f'AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_{provider.upper()}_RECOVER_ACCOUNT',
+                                     AUTHENTICATION_EXTERNAL_TOKEN_FORMAT_DEFAULT),
     } for provider in AUTHENTICATION_EXTERNAL_TOKEN_PROVIDERS
 }
 

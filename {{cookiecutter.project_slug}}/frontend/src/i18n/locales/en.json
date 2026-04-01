@@ -68,7 +68,7 @@
     "badge": "Cookiecutter Template",
     "welcome": "Welcome to My Project",
     "subtitle": "The beginning of something great",
-    "loggedInAs": "Logged in as {{cookiecutter.author_email}}",
+    "loggedInAs": "Logged in as",
     "features": "What's included",
     "cta": {
       "items": "Browse Items",

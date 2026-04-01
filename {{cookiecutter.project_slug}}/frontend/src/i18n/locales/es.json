@@ -68,7 +68,7 @@
     "badge": "Plantilla Cookiecutter",
     "welcome": "Bienvenido a My Project",
     "subtitle": "El comienzo de algo grandioso",
-    "loggedInAs": "Sesión iniciada como {{cookiecutter.author_email}}",
+    "loggedInAs": "Sesión iniciada como",
     "features": "Qué incluye",
     "cta": {
       "items": "Ver Elementos",

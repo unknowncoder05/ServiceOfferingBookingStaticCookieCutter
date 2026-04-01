@@ -8,6 +8,7 @@ import json
 from decimal import Decimal
 from unittest.mock import MagicMock, patch
 
+import stripe as _stripe
 from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -64,17 +65,16 @@ class StripeWebhookTests(APITestCase):
     # ── Invalid payloads ────────────────────────────────────────────────────
 
     def test_400_on_invalid_json_payload(self):
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            mock_stripe.Webhook.construct_event.side_effect = ValueError("Invalid JSON")
+        with patch.object(_stripe.Webhook, 'construct_event', side_effect=ValueError("Invalid JSON")):
             resp = self._post('not valid json at all')
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_400_on_invalid_signature(self):
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            import stripe as _stripe
-            mock_stripe.Webhook.construct_event.side_effect = (
-                _stripe.error.SignatureVerificationError('Bad sig', 'sig_header')
-            )
+        with patch.object(
+            _stripe.Webhook,
+            'construct_event',
+            side_effect=_stripe.error.SignatureVerificationError('Bad sig', 'sig_header'),
+        ):
             resp = self._post({'type': 'ping'}, sig='bad_sig')
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -85,9 +85,7 @@ class StripeWebhookTests(APITestCase):
         session = _make_session_payload(self.user.id)
         event = {'type': 'checkout.session.completed', 'data': {'object': session}}
 
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            mock_stripe.Webhook.construct_event.return_value = event
-            mock_stripe.error.SignatureVerificationError = Exception
+        with patch.object(_stripe.Webhook, 'construct_event', return_value=event):
             resp = self._post({'dummy': True})
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -101,9 +99,7 @@ class StripeWebhookTests(APITestCase):
         event = {'type': 'checkout.session.completed', 'data': {'object': session}}
 
         for _ in range(2):
-            with patch('api.billing.views.billing.stripe') as mock_stripe:
-                mock_stripe.Webhook.construct_event.return_value = event
-                mock_stripe.error.SignatureVerificationError = Exception
+            with patch.object(_stripe.Webhook, 'construct_event', return_value=event):
                 self.client.post(
                     WEBHOOK_URL,
                     data=json.dumps({'dummy': True}),
@@ -124,9 +120,7 @@ class StripeWebhookTests(APITestCase):
     def test_unknown_event_type_returns_ok(self):
         """Unknown event types are silently ignored and return 200."""
         event = {'type': 'customer.subscription.created', 'data': {'object': {}}}
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            mock_stripe.Webhook.construct_event.return_value = event
-            mock_stripe.error.SignatureVerificationError = Exception
+        with patch.object(_stripe.Webhook, 'construct_event', return_value=event):
             resp = self._post({'dummy': True})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
@@ -134,9 +128,7 @@ class StripeWebhookTests(APITestCase):
         """Webhook payload with missing user_id must not raise 500."""
         session = {'id': 'cs_no_user', 'metadata': {}, 'payment_intent': 'pi_x'}
         event = {'type': 'checkout.session.completed', 'data': {'object': session}}
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            mock_stripe.Webhook.construct_event.return_value = event
-            mock_stripe.error.SignatureVerificationError = Exception
+        with patch.object(_stripe.Webhook, 'construct_event', return_value=event):
             resp = self._post({'dummy': True})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
@@ -144,8 +136,6 @@ class StripeWebhookTests(APITestCase):
         """Webhook with a user_id that no longer exists must not raise 500."""
         session = _make_session_payload(user_id=999999)
         event = {'type': 'checkout.session.completed', 'data': {'object': session}}
-        with patch('api.billing.views.billing.stripe') as mock_stripe:
-            mock_stripe.Webhook.construct_event.return_value = event
-            mock_stripe.error.SignatureVerificationError = Exception
+        with patch.object(_stripe.Webhook, 'construct_event', return_value=event):
             resp = self._post({'dummy': True})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)

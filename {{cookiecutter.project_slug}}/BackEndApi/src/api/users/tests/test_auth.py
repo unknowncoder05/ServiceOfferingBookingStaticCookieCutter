@@ -150,7 +150,13 @@ class TokenRefreshTests(APITestCase):
         self.assertIn("access", resp.data)
 
     def test_refresh_invalid_token(self):
-        resp = self.client.post(REFRESH, {"refresh": "completely.invalid.token"}, format="json")
+        # Use a format-valid but bogus JWT so the JWT library rejects it cleanly (not UnicodeDecodeError)
+        fake_jwt = (
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+            ".eyJzdWIiOiIxMjM0NTY3ODkwIn0"
+            ".SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        )
+        resp = self.client.post(REFRESH, {"refresh": fake_jwt}, format="json")
         self.assertIn(resp.status_code, [status.HTTP_400_BAD_REQUEST, status.HTTP_401_UNAUTHORIZED])
         self.assertIn("error", resp.data)
 
@@ -262,7 +268,9 @@ class PasswordResetConsoleTests(APITestCase):
 
     def test_forgot_password_console_creates_token(self):
         from api.users.models import ExternalAuthenticationToken
-        resp = self.client.post(FORGOT_PW, {"phone_number": self.user.phone_number}, format="json")
+        # Mock send_token at the signal's import site to avoid hitting real delivery logic
+        with patch("api.users.models.auth.send_token"):
+            resp = self.client.post(FORGOT_PW, {"phone_number": self.user.phone_number}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
         self.assertTrue(ExternalAuthenticationToken.objects.filter(user=self.user).exists())
 
@@ -282,7 +290,7 @@ class EmailFailureGracefulTests(APITestCase):
 
     def test_forgot_password_email_failure_returns_200(self):
         """Even if sending mail raises, the endpoint must return 200."""
-        with patch("api.users.serializers.password_reset._send_email", side_effect=Exception("SMTP down")):
+        with patch("django.core.mail.send_mail", side_effect=Exception("SMTP down")):
             resp = self.client.post(FORGOT_PW, {"email": self.user.email}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
 
@@ -293,7 +301,7 @@ class EmailFailureGracefulTests(APITestCase):
         pw_rec_method = patch("api.users.conf.UsersSettings.password_reset_method",
                               new_callable=lambda: property(lambda self: "email"))
         pw_rec_method.start()
-        with patch("api.users.serializers.password_reset._send_email", side_effect=Exception("SMTP down")):
+        with patch("django.core.mail.send_mail", side_effect=Exception("SMTP down")):
             resp = self.client.post(REQ_REC, {"email": self.user.email}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
         pw_rec_method.stop()

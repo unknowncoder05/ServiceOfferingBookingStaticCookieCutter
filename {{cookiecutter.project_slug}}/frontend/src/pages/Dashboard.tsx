@@ -62,7 +62,7 @@ export const Dashboard: React.FC = () => {
           </p>
 
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            {t('dashboard.loggedInAs', { email: user?.email })}
+            {t('dashboard.loggedInAs')} {user?.email}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3 justify-center">

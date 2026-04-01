@@ -3,12 +3,14 @@ Authentication Views
 """
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+import rest_framework.exceptions
 from rest_framework.decorators import action
 # Persmissions
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 # Rest Framework
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.serializers import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -32,7 +34,10 @@ def post_cookie_set(view, request, refresh=False):
         request_data['refresh'] = refresh_token
     serializer = view.get_serializer(data=request.data)
     # you must call .is_valid() before accessing validated_data
-    serializer.is_valid(raise_exception=True)
+    try:
+        serializer.is_valid(raise_exception=True)
+    except TokenError as e:
+        raise rest_framework.exceptions.AuthenticationFailed(str(e))
 
     # get access and refresh tokens to do what you like with
     access_token = serializer.validated_data.get("access", None)
