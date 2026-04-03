@@ -108,7 +108,7 @@ services:
           placeholder: "https://myapp.example.com/api/v1"
           section: Application
           required: false
-          default: "{{backend.url}}/api/v1"
+          default: "{{backend.url}}/v1"
           translations:
             es:
               label: "URL base de la API"
