@@ -1,3 +1,4 @@
+{% raw %}
 version: "1"
 
 # Development variant — bind-mounted source, hot-reload servers, cached deps.
@@ -692,3 +693,4 @@ services:
     order: 6
     image: redis:7-alpine
     command: redis-server --appendonly yes
+{% endraw %}

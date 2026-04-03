@@ -1,3 +1,4 @@
+{% raw %}
 version: "1"
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -1050,3 +1051,4 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+{% endraw %}
