@@ -54,6 +54,37 @@ smoke_test:
       run: "python manage.py test --verbosity 2 --keepdb"
       service: django
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Sections — controls the display order of settings groups in the UI.
+# Lower order values appear first. Sections not listed here fall back to
+# field-level ordering and then alphabetical order.
+# ──────────────────────────────────────────────────────────────────────────────
+sections:
+  Security:
+    order: 1
+  Database:
+    order: 2
+  Application:
+    order: 3
+  Cache:
+    order: 4
+  Email:
+    order: 5
+  CORS:
+    order: 6
+  "GitHub OAuth":
+    order: 7
+  WhatsApp:
+    order: 8
+  Storage:
+    order: 9
+  Monitoring:
+    order: 10
+  "AI Integration":
+    order: 11
+  "Timeouts & Polling":
+    order: 12
+
 services:
 
   # ──────────────────────────────────────────────────────────────────────────
@@ -63,6 +94,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   frontend:
     type: frontend
+    order: 2
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -202,6 +234,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   backend:
     type: backend
+    order: 1
     build:
       context: ./BackEndApi
       dockerfile: compose/production/django/Dockerfile
@@ -269,6 +302,9 @@ services:
         section: Security
         required: true
         default: ""
+        generate: secret_key
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Clave secreta de Django"
@@ -338,6 +374,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 2
         translations:
           es:
             label: "Nombre de la base de datos"
@@ -351,6 +388,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 3
         translations:
           es:
             label: "Usuario de la base de datos"
@@ -363,6 +401,9 @@ services:
         section: Database
         required: true
         default: ""
+        generate: password
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Contraseña de la base de datos"
@@ -619,6 +660,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   celery-worker:
     type: worker
+    order: 3
     build:
       context: ./BackEndApi
       dockerfile: compose/production/django/Dockerfile
@@ -677,6 +719,9 @@ services:
         section: Security
         required: true
         default: ""
+        generate: secret_key
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Clave secreta de Django"
@@ -691,6 +736,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 2
         translations:
           es:
             label: "Nombre de la base de datos"
@@ -704,6 +750,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 3
         translations:
           es:
             label: "Usuario de la base de datos"
@@ -716,6 +763,9 @@ services:
         section: Database
         required: true
         default: ""
+        generate: password
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Contraseña de la base de datos"
@@ -782,6 +832,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   celery-beat:
     type: worker
+    order: 4
     build:
       context: ./BackEndApi
       dockerfile: compose/production/django/Dockerfile
@@ -840,6 +891,9 @@ services:
         section: Security
         required: true
         default: ""
+        generate: secret_key
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Clave secreta de Django"
@@ -854,6 +908,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 2
         translations:
           es:
             label: "Nombre de la base de datos"
@@ -867,6 +922,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 3
         translations:
           es:
             label: "Usuario de la base de datos"
@@ -879,6 +935,9 @@ services:
         section: Database
         required: true
         default: ""
+        generate: password
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Contraseña de la base de datos"
@@ -930,6 +989,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   postgres:
     type: internal
+    order: 5
     image: postgres:15-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -944,6 +1004,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 2
         translations:
           es:
             label: "Nombre de la base de datos"
@@ -957,6 +1018,7 @@ services:
         section: Database
         required: true
         default: "postgres"
+        order: 3
         translations:
           es:
             label: "Usuario de la base de datos"
@@ -969,6 +1031,9 @@ services:
         section: Database
         required: true
         default: ""
+        generate: password
+        immutable: true
+        order: 1
         translations:
           es:
             label: "Contraseña de la base de datos"
@@ -980,6 +1045,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   redis:
     type: internal
+    order: 6
     image: redis:7-alpine
     command: redis-server --appendonly yes
     volumes:
