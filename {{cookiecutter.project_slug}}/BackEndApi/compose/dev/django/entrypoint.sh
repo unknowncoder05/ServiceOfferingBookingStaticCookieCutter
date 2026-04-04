@@ -21,7 +21,7 @@ if [ -f "${REQ_PATH}" ]; then
 
     if [ "${CURRENT_HASH}" != "${CACHED_HASH}" ]; then
         echo "[dev] Requirements changed — installing packages..."
-        pip install --quiet -r "${REQ_PATH}"
+        pip install -r "${REQ_PATH}" 2>&1
         echo "${CURRENT_HASH}" > "${HASH_FILE}"
         echo "[dev] Packages installed."
     else

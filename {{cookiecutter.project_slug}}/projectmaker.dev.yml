@@ -167,7 +167,7 @@ services:
       interval: 20s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 300s
     env:
 
       # ── Application ────────────────────────────────────────────────────────
