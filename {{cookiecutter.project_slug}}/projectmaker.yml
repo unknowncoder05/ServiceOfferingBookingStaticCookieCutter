@@ -85,6 +85,8 @@ sections:
     order: 11
   "Timeouts & Polling":
     order: 12
+  Theme:
+    order: 13
 
 services:
 
@@ -204,6 +206,127 @@ services:
             es:
               label: "Retraso de navegación (ms)"
               description: "Retraso antes de salir de la pantalla de inicio cuando el backend responde correctamente."
+
+        # ── Theme ────────────────────────────────────────────────────────────────
+        REACT_APP_PRIMARY_50:
+          type: color
+          label: "Primary 50"
+          description: "Lightest primary tint — used for subtle backgrounds and hover states."
+          section: Theme
+          required: false
+          default: "#f0f9ff"
+          translations:
+            es:
+              label: "Primario 50"
+              description: "Tono primario más claro — usado para fondos sutiles y estados hover."
+
+        REACT_APP_PRIMARY_100:
+          type: color
+          label: "Primary 100"
+          description: "Very light primary tint."
+          section: Theme
+          required: false
+          default: "#e0f2fe"
+          translations:
+            es:
+              label: "Primario 100"
+              description: "Tono primario muy claro."
+
+        REACT_APP_PRIMARY_200:
+          type: color
+          label: "Primary 200"
+          description: "Light primary tint."
+          section: Theme
+          required: false
+          default: "#bae6fd"
+          translations:
+            es:
+              label: "Primario 200"
+              description: "Tono primario claro."
+
+        REACT_APP_PRIMARY_300:
+          type: color
+          label: "Primary 300"
+          description: "Soft primary — used for borders and disabled states."
+          section: Theme
+          required: false
+          default: "#7dd3fc"
+          translations:
+            es:
+              label: "Primario 300"
+              description: "Primario suave — usado para bordes y estados deshabilitados."
+
+        REACT_APP_PRIMARY_400:
+          type: color
+          label: "Primary 400"
+          description: "Mid-light primary — used for icons and secondary accents."
+          section: Theme
+          required: false
+          default: "#38bdf8"
+          translations:
+            es:
+              label: "Primario 400"
+              description: "Primario medio-claro — usado para íconos y acentos secundarios."
+
+        REACT_APP_PRIMARY_500:
+          type: color
+          label: "Primary 500"
+          description: "Base primary — used for highlights and active indicators."
+          section: Theme
+          required: false
+          default: "#0ea5e9"
+          translations:
+            es:
+              label: "Primario 500"
+              description: "Primario base — usado para resaltados e indicadores activos."
+
+        REACT_APP_PRIMARY_600:
+          type: color
+          label: "Primary 600"
+          description: "Main brand color — used for buttons, links, and interactive elements."
+          section: Theme
+          required: false
+          default: "#0284c7"
+          translations:
+            es:
+              label: "Primario 600"
+              description: "Color principal de marca — usado en botones, enlaces y elementos interactivos."
+
+        REACT_APP_PRIMARY_700:
+          type: color
+          label: "Primary 700"
+          description: "Dark primary — used for hover and pressed states on buttons."
+          section: Theme
+          required: false
+          default: "#0369a1"
+          translations:
+            es:
+              label: "Primario 700"
+              description: "Primario oscuro — usado para estados hover y presionado en botones."
+
+        REACT_APP_PRIMARY_800:
+          type: color
+          label: "Primary 800"
+          description: "Very dark primary — used for deep shadows and text on light backgrounds."
+          section: Theme
+          required: false
+          default: "#075985"
+          translations:
+            es:
+              label: "Primario 800"
+              description: "Primario muy oscuro — usado para sombras profundas y texto sobre fondos claros."
+
+        REACT_APP_PRIMARY_900:
+          type: color
+          label: "Primary 900"
+          description: "Darkest primary shade — used for high-contrast text and deep accents."
+          section: Theme
+          required: false
+          default: "#0c4a6e"
+          translations:
+            es:
+              label: "Primario 900"
+              description: "Tono primario más oscuro — usado para texto de alto contraste y acentos profundos."
 
     port: 80
     public: true

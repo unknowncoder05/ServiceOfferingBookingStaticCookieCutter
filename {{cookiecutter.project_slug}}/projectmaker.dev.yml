@@ -56,6 +56,8 @@ sections:
     order: 11
   "Timeouts & Polling":
     order: 12
+  Theme:
+    order: 13
 
 services:
 
@@ -149,6 +151,87 @@ services:
         min: 0
         max: 5000
         step: 250
+
+      # ── Theme ──────────────────────────────────────────────────────────────
+      REACT_APP_PRIMARY_50:
+        type: color
+        label: "Primary 50"
+        description: "Lightest primary tint — used for subtle backgrounds and hover states."
+        section: Theme
+        required: false
+        default: "#f0f9ff"
+
+      REACT_APP_PRIMARY_100:
+        type: color
+        label: "Primary 100"
+        description: "Very light primary tint."
+        section: Theme
+        required: false
+        default: "#e0f2fe"
+
+      REACT_APP_PRIMARY_200:
+        type: color
+        label: "Primary 200"
+        description: "Light primary tint."
+        section: Theme
+        required: false
+        default: "#bae6fd"
+
+      REACT_APP_PRIMARY_300:
+        type: color
+        label: "Primary 300"
+        description: "Soft primary — used for borders and disabled states."
+        section: Theme
+        required: false
+        default: "#7dd3fc"
+
+      REACT_APP_PRIMARY_400:
+        type: color
+        label: "Primary 400"
+        description: "Mid-light primary — used for icons and secondary accents."
+        section: Theme
+        required: false
+        default: "#38bdf8"
+
+      REACT_APP_PRIMARY_500:
+        type: color
+        label: "Primary 500"
+        description: "Base primary — used for highlights and active indicators."
+        section: Theme
+        required: false
+        default: "#0ea5e9"
+
+      REACT_APP_PRIMARY_600:
+        type: color
+        label: "Primary 600"
+        description: "Main brand color — used for buttons, links, and interactive elements."
+        section: Theme
+        required: false
+        default: "#0284c7"
+
+      REACT_APP_PRIMARY_700:
+        type: color
+        label: "Primary 700"
+        description: "Dark primary — used for hover and pressed states on buttons."
+        section: Theme
+        required: false
+        default: "#0369a1"
+
+      REACT_APP_PRIMARY_800:
+        type: color
+        label: "Primary 800"
+        description: "Very dark primary — used for deep shadows and text on light backgrounds."
+        section: Theme
+        required: false
+        default: "#075985"
+
+      REACT_APP_PRIMARY_900:
+        type: color
+        label: "Primary 900"
+        description: "Darkest primary shade — used for high-contrast text and deep accents."
+        section: Theme
+        required: false
+        default: "#0c4a6e"
 
   # ────────────────────────────────────────────────────────────────────────────
   # Backend — Django + uvicorn --reload (hot-reload on source change)
