@@ -71,7 +71,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-
+    volumes:
+      - ./frontend:/app
+      - pm_dev_frontend_node_modules:/app/node_modules
     port: 3000
     public: true
     route: /
@@ -151,6 +153,14 @@ services:
         min: 0
         max: 5000
         step: 250
+
+      CHOKIDAR_USEPOLLING:
+        type: boolean
+        label: "Chokidar Use Polling"
+        description: "Enable polling-based file watching for hot-reload inside Docker. Required when the source is bind-mounted."
+        section: Application
+        required: false
+        default: "true"
 
       # ── Theme ──────────────────────────────────────────────────────────────
       REACT_APP_PRIMARY_50:
