@@ -1,0 +1,12 @@
+- title: "Initial Setup for {{cookiecutter.project_name}}"
+  description: "Configure basic project settings."
+  priority: "high"
+  user_stories:
+    - title: "Project Identity"
+      as_a: "Developer"
+      i_want: "to update the app name and description"
+      so_that: "the project is properly labeled"
+      tasks:
+        - title: "Update README"
+          description: "Fill in the project documentation and goals."
+          task_type: "documentation"

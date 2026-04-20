@@ -36,6 +36,9 @@ static/
 .env
 .env.*
 !.env.example
+# Deployment credential snapshots written by ProjectMaker deployment service
+.projectmaker.*.env
+docker-compose.projectmaker.dev.yml
 .venv
 env/
 venv/
