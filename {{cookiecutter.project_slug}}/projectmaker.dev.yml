@@ -525,6 +525,12 @@ services:
     build:
       context: ./BackEndApi
       dockerfile: compose/dev/django/Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A config.celery inspect ping --timeout 5"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     env:
 
       DJANGO_SETTINGS_MODULE:
@@ -642,6 +648,12 @@ services:
     build:
       context: ./BackEndApi
       dockerfile: compose/dev/django/Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "kill -0 1"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     env:
 
       DJANGO_SETTINGS_MODULE:

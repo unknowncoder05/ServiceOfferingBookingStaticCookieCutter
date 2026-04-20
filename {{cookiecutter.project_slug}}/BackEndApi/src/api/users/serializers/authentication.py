@@ -9,7 +9,7 @@ from rest_framework import exceptions
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 # Serializers
-from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenRefreshSerializer, PasswordField
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer, TokenRefreshSerializer, PasswordField
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # Utilities
@@ -202,7 +202,7 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 
-class CustomTokenObtainPairSerializer(TokenObtainSerializer):
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     token_class = RefreshToken
 
     def __init__(self, *args, **kwargs):

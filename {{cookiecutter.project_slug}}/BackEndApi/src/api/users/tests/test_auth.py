@@ -17,7 +17,8 @@ from api.users.models import User
 
 BASE = f"/{settings.API_URI}"
 SIGN_UP    = f"{BASE}/auth/sign-up/"
-LOGIN      = f"{BASE}/auth/login/"
+LOGIN      = f"{BASE}/auth/login/"       # AuthViewSet.login — LoginSerializer + django_user_jwt
+TOKEN      = f"{BASE}/auth/token/"       # CustomTokenObtainPairView — CustomTokenObtainPairSerializer
 REFRESH    = f"{BASE}/auth/token-refresh/"
 SIGN_OUT   = f"{BASE}/auth/sign-out/"
 FORGOT_PW  = f"{BASE}/auth/forgot-password/"
@@ -125,6 +126,37 @@ class LoginTests(APITestCase):
         self.assertIn("error", resp.data)
 
 
+class JwtTokenPairTests(APITestCase):
+    """Tests for CustomTokenObtainPairView (/auth/token/).
+
+    This view uses CustomTokenObtainPairSerializer, which must inherit from
+    TokenObtainPairSerializer (not the base TokenObtainSerializer) so that
+    validate() populates refresh + access in the response.
+    """
+
+    def setUp(self):
+        self.mock_boto = patch("boto3.client").start()
+        self.user, self.password = _make_active_user(email="jwt.pair.test@example.com")
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_token_obtain_returns_access_and_refresh(self):
+        resp = self.client.post(TOKEN, {"email": self.user.email, "password": self.password}, format="json")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
+        self.assertIn("access", resp.data)
+
+    def test_token_obtain_wrong_password(self):
+        resp = self.client.post(TOKEN, {"email": self.user.email, "password": "WrongPass#9"}, format="json")
+        self.assertIn(resp.status_code, [status.HTTP_400_BAD_REQUEST, status.HTTP_401_UNAUTHORIZED])
+
+    def test_token_obtain_inactive_user(self):
+        self.user.is_active = False
+        self.user.save()
+        resp = self.client.post(TOKEN, {"email": self.user.email, "password": self.password}, format="json")
+        self.assertNotEqual(resp.status_code, status.HTTP_200_OK)
+
+
 class TokenRefreshTests(APITestCase):
 
     def setUp(self):
@@ -134,17 +166,10 @@ class TokenRefreshTests(APITestCase):
     def tearDown(self):
         patch.stopall()
 
-    def _get_tokens(self):
-        resp = self.client.post(LOGIN, {"email": self.user.email, "password": self.password}, format="json")
-        if resp.status_code != status.HTTP_200_OK:
-            self.skipTest("Login endpoint not returning tokens — skipping refresh test")
-        return resp.data
-
     def test_refresh_success(self):
-        tokens = self._get_tokens()
-        refresh = tokens.get("refresh")
-        if not refresh:
-            self.skipTest("No refresh token in login response")
+        login_resp = self.client.post(LOGIN, {"email": self.user.email, "password": self.password}, format="json")
+        self.assertEqual(login_resp.status_code, status.HTTP_200_OK, login_resp.data)
+        refresh = login_resp.data["refresh"]
         resp = self.client.post(REFRESH, {"refresh": refresh}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
         self.assertIn("access", resp.data)

@@ -52,7 +52,7 @@ WORKDIR /app
 RUN mkdir -p ./staticfiles ./api/staticfiles
 
 # Add health check endpoint support
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD curl -f http://localhost:8000/health/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s --retries=3 \
+  CMD curl -f http://localhost:8000/api/v1/health/ || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
