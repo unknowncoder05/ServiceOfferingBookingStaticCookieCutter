@@ -5,12 +5,12 @@ import { useAppSelector } from '../store/hooks';
 import { useTheme } from '../context/ThemeContext';
 
 const features = [
-  { key: 'auth',     icon: '🔐', color: 'bg-blue-50 dark:bg-blue-900/20' },
-  { key: 'items',    icon: '📦', color: 'bg-green-50 dark:bg-green-900/20' },
-  { key: 'realtime', icon: '⚡', color: 'bg-yellow-50 dark:bg-yellow-900/20' },
-  { key: 'async',    icon: '⚙️', color: 'bg-purple-50 dark:bg-purple-900/20' },
-  { key: 'cloud',    icon: '☁️', color: 'bg-sky-50 dark:bg-sky-900/20' },
-  { key: 'darkMode', icon: '🌙', color: 'bg-slate-50 dark:bg-slate-700/20' },
+  { key: 'auth',     icon: '🔐', color: 'bg-primary-50 dark:bg-primary-900/20' },
+  { key: 'items',    icon: '📦', color: 'bg-primary-50 dark:bg-primary-900/20' },
+  { key: 'realtime', icon: '⚡', color: 'bg-primary-50 dark:bg-primary-900/20' },
+  { key: 'async',    icon: '⚙️', color: 'bg-primary-50 dark:bg-primary-900/20' },
+  { key: 'cloud',    icon: '☁️', color: 'bg-primary-50 dark:bg-primary-900/20' },
+  { key: 'darkMode', icon: '🌙', color: 'bg-primary-50 dark:bg-primary-700/20' },
 ];
 
 const HomePage: React.FC = () => {
@@ -20,12 +20,12 @@ const HomePage: React.FC = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 transition-colors">
 
       {/* Top nav */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-white dark:bg-secondary-800 border-b border-secondary-200 dark:border-secondary-700">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-          <span className="text-base font-semibold text-gray-900 dark:text-white">
+          <span className="text-base font-semibold text-secondary-900 dark:text-white">
             {t('home.hero.title')}
           </span>
 
@@ -33,7 +33,7 @@ const HomePage: React.FC = () => {
             <button
               onClick={toggleTheme}
               aria-label={isDark ? t('theme.light') : t('theme.dark')}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors"
             >
               {isDark ? (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ const HomePage: React.FC = () => {
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 rounded-lg transition-colors"
                 >
                   {t('home.nav.login')}
                 </button>
@@ -83,11 +83,11 @@ const HomePage: React.FC = () => {
             {t('dashboard.badge')}
           </span>
 
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-bold text-secondary-900 dark:text-white mb-4 leading-tight">
             {t('home.hero.title')}
           </h1>
 
-          <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-secondary-500 dark:text-secondary-400 max-w-2xl mx-auto mb-8">
             {t('home.hero.subtitle')}
           </p>
 
@@ -109,7 +109,7 @@ const HomePage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => navigate('/login')}
-                  className="px-6 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg border border-gray-200 dark:border-gray-700 transition-colors shadow-sm"
+                  className="px-6 py-3 bg-white dark:bg-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-700 text-secondary-700 dark:text-secondary-200 font-medium rounded-lg border border-secondary-200 dark:border-secondary-700 transition-colors shadow-sm"
                 >
                   {t('home.hero.ctaLogin')}
                 </button>
@@ -120,7 +120,7 @@ const HomePage: React.FC = () => {
 
         {/* Features */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-center mb-8">
+          <p className="text-xs font-semibold uppercase tracking-widest text-secondary-400 dark:text-secondary-500 text-center mb-8">
             {t('dashboard.features')}
           </p>
 
@@ -128,16 +128,16 @@ const HomePage: React.FC = () => {
             {features.map((f) => (
               <div
                 key={f.key}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 flex gap-4 transition-colors"
+                className="bg-white dark:bg-secondary-800 rounded-xl border border-secondary-100 dark:border-secondary-700 p-5 flex gap-4 transition-colors"
               >
                 <div className={`${f.color} rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 text-lg`}>
                   {f.icon}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
+                  <h3 className="font-semibold text-secondary-900 dark:text-white text-sm mb-1">
                     {t(`features.${f.key}`)}
                   </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  <p className="text-xs text-secondary-500 dark:text-secondary-400 leading-relaxed">
                     {t(`features.${f.key}Desc`)}
                   </p>
                 </div>

@@ -4,7 +4,7 @@ import { TopBar } from './TopBar';
 
 export const MainLayout: React.FC = () => {
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="h-screen flex flex-col bg-secondary-50 dark:bg-secondary-900 transition-colors">
       <TopBar onMenuClick={() => {}} />
       <div className="flex-1 overflow-auto">
         <Outlet />

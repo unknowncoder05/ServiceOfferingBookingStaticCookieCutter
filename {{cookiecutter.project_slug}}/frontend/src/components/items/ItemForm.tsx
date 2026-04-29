@@ -94,7 +94,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-secondary-900 mb-4">
           {isEditMode ? 'Edit Item' : 'Create New Item'}
         </h2>
       </div>
@@ -108,7 +108,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
 
       {/* Name field */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-secondary-700 mb-1">
           Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -116,7 +116,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
           placeholder="Enter item name"
           maxLength={255}
           disabled={isLoading}
@@ -125,7 +125,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
 
       {/* Description field */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-secondary-700 mb-1">
           Description
         </label>
         <textarea
@@ -133,7 +133,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
           placeholder="Enter item description (optional)"
           disabled={isLoading}
         />
@@ -141,14 +141,14 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
 
       {/* Status field */}
       <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="status" className="block text-sm font-medium text-secondary-700 mb-1">
           Status
         </label>
         <select
           id="status"
           value={status}
           onChange={(e) => setStatus(e.target.value as ItemStatus)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
           disabled={isLoading}
         >
           <option value="draft">Draft</option>
@@ -162,14 +162,14 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           disabled={isLoading}
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
           {isLoading ? (

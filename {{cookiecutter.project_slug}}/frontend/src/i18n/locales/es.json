@@ -66,7 +66,7 @@
   },
   "dashboard": {
     "badge": "Plantilla Cookiecutter",
-    "welcome": "Bienvenido a My Project",
+    "welcome": "Bienvenido a {{cookiecutter.project_name}}",
     "subtitle": "El comienzo de algo grandioso",
     "loggedInAs": "Sesión iniciada como",
     "features": "Qué incluye",

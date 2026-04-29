@@ -16,26 +16,26 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
           {label}
         </label>
       )}
       <input
         className={`
-          block w-full rounded-md shadow-sm
+          block w-full rounded-lg shadow-sm transition-colors text-sm
           ${error
-            ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500'
-            : 'border-gray-300 focus:ring-primary-500 focus:border-primary-500'
+            ? 'border-danger-500 text-danger-900 dark:text-danger-400 placeholder-danger-300 focus:outline-none focus:ring-danger-500 focus:border-danger-500'
+            : 'border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 text-secondary-900 dark:text-white placeholder-secondary-400 dark:placeholder-secondary-500 focus:ring-primary-500 focus:border-primary-500'
           }
           ${className}
         `}
         {...props}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-1 text-xs text-danger-600 dark:text-danger-400">{error}</p>
       )}
       {helperText && !error && (
-        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+        <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">{helperText}</p>
       )}
     </div>
   );

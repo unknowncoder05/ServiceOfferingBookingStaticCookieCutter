@@ -20,6 +20,7 @@ import {
 } from '../../store/itemsSlice';
 import { ItemStatus } from '../../types/items';
 import ItemCard from './ItemCard';
+import { Button, EmptyState, Skeleton } from '../shared';
 
 interface ItemListProps {
   onViewItem: (id: number) => void;
@@ -68,8 +69,23 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
 
   if (isLoading && items.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="bg-white dark:bg-secondary-800 rounded-lg shadow-md p-4 border border-secondary-200 dark:border-secondary-700">
+            <div className="flex justify-between mb-3">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+            <div className="space-y-2 mb-4">
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-4 w-1/3" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -78,13 +94,12 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Items</h1>
-        <button
+        <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">Items</h1>
+        <Button
           onClick={onCreateItem}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Create Item
-        </button>
+        </Button>
       </div>
 
       {/* Error message */}
@@ -102,14 +117,14 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
 
       {/* Filter */}
       <div className="flex items-center gap-2">
-        <label htmlFor="status-filter" className="text-sm font-medium text-gray-700">
+        <label htmlFor="status-filter" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
           Filter by status:
         </label>
         <select
           id="status-filter"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as ItemStatus | 'all')}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-blue-500 focus:border-blue-500"
+          className="border border-secondary-300 dark:border-secondary-600 rounded-md px-3 py-1.5 text-sm focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-secondary-800 text-secondary-900 dark:text-white"
         >
           <option value="all">All</option>
           <option value="draft">Draft</option>
@@ -120,13 +135,11 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
 
       {/* Items grid */}
       {filteredItems.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">
-            {items.length === 0
-              ? 'No items yet. Create your first item!'
-              : 'No items match the selected filter.'}
-          </p>
-        </div>
+        <EmptyState 
+          title={items.length === 0 ? 'No items yet' : 'No matches found'}
+          description={items.length === 0 ? 'Create your first item to get started!' : 'Try adjusting your status filter.'}
+          action={items.length === 0 ? <Button onClick={onCreateItem}>Create Item</Button> : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredItems.map((item) => (
@@ -146,8 +159,8 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
       {isLoading && items.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-sm text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="mt-2 text-sm text-secondary-600">Loading...</p>
           </div>
         </div>
       )}

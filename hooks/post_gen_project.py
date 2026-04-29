@@ -60,7 +60,7 @@ def replace_project_references():
         'MyProject': PROJECT_NAME,
         'myproject': PROJECT_SLUG,
         'my-project': PROJECT_SLUG_DASHED,
-        'My Project': PROJECT_NAME,
+        '{{cookiecutter.project_name}}': PROJECT_NAME,
         # Legacy names that might still exist
         'BaseEphemeralCookieCutter': PROJECT_SLUG,
         'base-ephemeral-cookiecutter': PROJECT_SLUG_DASHED,

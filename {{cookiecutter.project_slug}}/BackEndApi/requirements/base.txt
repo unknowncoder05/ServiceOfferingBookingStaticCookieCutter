@@ -75,3 +75,5 @@ langchain-openai
 # Anthropic / Claude
 anthropic
 {%- endif %}
+
+drf-spectacular==0.27.2

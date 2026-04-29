@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { signOut } from '../../store/authSlice';
@@ -18,13 +18,22 @@ export const Navbar: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const [langOpen, setLangOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/');
   const navLink = (path: string) =>
     `inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors ${
       isActive(path)
         ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-        : 'border-transparent text-gray-700 dark:text-gray-200 hover:border-primary-400 hover:text-gray-900 dark:hover:text-white'
+        : 'border-transparent text-secondary-700 dark:text-secondary-200 hover:border-primary-400 hover:text-secondary-900 dark:hover:text-white'
     }`;
 
   const handleLogout = async () => {
@@ -33,14 +42,18 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
+    <nav className={`sticky top-0 z-40 transition-all duration-200 ${
+      isScrolled 
+        ? 'bg-white/80 dark:bg-secondary-800/80 backdrop-blur-md shadow-md py-1' 
+        : 'bg-white dark:bg-secondary-800 border-b border-secondary-200 dark:border-secondary-700 py-0'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Left: brand + nav links */}
           <div className="flex items-center">
             <Link to="/dashboard" className="flex items-center mr-8">
               <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                My Project
+                {process.env.REACT_APP_PROJECT_NAME || 'My App'}
               </span>
             </Link>
             <div className="hidden sm:flex sm:space-x-6">
@@ -59,7 +72,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={toggleTheme}
               title={isDark ? t('theme.light') : t('theme.dark')}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors"
             >
               {isDark ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,14 +93,14 @@ export const Navbar: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="px-2.5 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="px-2.5 py-1.5 text-xs font-semibold text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 rounded-lg transition-colors"
               >
                 {i18n.language.toUpperCase()}
               </button>
               {langOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
-                  <div className="absolute right-0 mt-1 w-20 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
+                  <div className="absolute right-0 mt-1 w-20 bg-white dark:bg-secondary-800 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 py-1 z-20">
                     {LANGUAGES.map((lang) => (
                       <button
                         key={lang.code}
@@ -96,10 +109,10 @@ export const Navbar: React.FC = () => {
                           localStorage.setItem('language', lang.code);
                           setLangOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                        className={`w-full text-left px-3 py-1.5 text-xs hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors ${
                           i18n.language === lang.code
                             ? 'text-primary-600 dark:text-primary-400 font-bold'
-                            : 'text-gray-700 dark:text-gray-300'
+                            : 'text-secondary-700 dark:text-secondary-300'
                         }`}
                       >
                         {lang.label}
@@ -110,13 +123,13 @@ export const Navbar: React.FC = () => {
               )}
             </div>
 
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2 mr-1 hidden sm:block">
+            <span className="text-sm text-secondary-500 dark:text-secondary-400 ml-2 mr-1 hidden sm:block">
               {user?.email}
             </span>
 
             <button
               onClick={handleLogout}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 px-3 py-1.5 hover:bg-secondary-100 dark:hover:bg-secondary-700 rounded-lg transition-colors"
             >
               {t('nav.logout')}
             </button>

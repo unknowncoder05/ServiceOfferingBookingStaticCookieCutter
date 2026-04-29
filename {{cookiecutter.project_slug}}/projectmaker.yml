@@ -38,6 +38,12 @@ commands:
     run: "python manage.py test --verbosity 2"
     service: backend
 
+  test_e2e:
+    label: "Run E2E Tests"
+    description: "Execute Playwright end-to-end tests."
+    run: "./node_modules/.bin/playwright test"
+    service: playwright
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Smoke test — steps run by smoke_test.sh during local CI / template testing.
 # Service names must match those in BackEndApi/local.yml.
@@ -46,14 +52,17 @@ smoke_test:
   on_start:
     - label: "Migrations"
       run: "python manage.py migrate --noinput"
-      service: django
+      service: backend
   steps:
     - label: "No missing migrations"
       run: "python manage.py makemigrations --check --dry-run"
-      service: django
+      service: backend
     - label: "Test suite"
       run: "python manage.py test --verbosity 2 --keepdb"
-      service: django
+      service: backend
+    - label: "E2E Tests"
+      run: "./node_modules/.bin/playwright test"
+      service: playwright
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Sections — controls the display order of settings groups in the UI.
@@ -104,6 +113,10 @@ services:
       args:
 
         # ── Application ──────────────────────────────────────────────────────
+        REACT_APP_PROJECT_NAME:
+          type: string
+          section: Application
+          default: "{{project_name}}"
         REACT_APP_API_URL:
           type: url
           label: "API Base URL"
@@ -214,7 +227,7 @@ services:
           description: "Lightest primary tint — used for subtle backgrounds and hover states."
           section: Theme
           required: false
-          default: "#f0f9ff"
+          default: "{{resources.theme.primary_50}}"
           translations:
             es:
               label: "Primario 50"
@@ -226,7 +239,7 @@ services:
           description: "Very light primary tint."
           section: Theme
           required: false
-          default: "#e0f2fe"
+          default: "{{resources.theme.primary_100}}"
           translations:
             es:
               label: "Primario 100"
@@ -238,7 +251,7 @@ services:
           description: "Light primary tint."
           section: Theme
           required: false
-          default: "#bae6fd"
+          default: "{{resources.theme.primary_200}}"
           translations:
             es:
               label: "Primario 200"
@@ -250,7 +263,7 @@ services:
           description: "Soft primary — used for borders and disabled states."
           section: Theme
           required: false
-          default: "#7dd3fc"
+          default: "{{resources.theme.primary_300}}"
           translations:
             es:
               label: "Primario 300"
@@ -262,7 +275,7 @@ services:
           description: "Mid-light primary — used for icons and secondary accents."
           section: Theme
           required: false
-          default: "#38bdf8"
+          default: "{{resources.theme.primary_400}}"
           translations:
             es:
               label: "Primario 400"
@@ -274,7 +287,7 @@ services:
           description: "Base primary — used for highlights and active indicators."
           section: Theme
           required: false
-          default: "#0ea5e9"
+          default: "{{resources.theme.primary_500}}"
           translations:
             es:
               label: "Primario 500"
@@ -286,7 +299,7 @@ services:
           description: "Main brand color — used for buttons, links, and interactive elements."
           section: Theme
           required: false
-          default: "#0284c7"
+          default: "{{resources.theme.primary_600}}"
           translations:
             es:
               label: "Primario 600"
@@ -298,7 +311,7 @@ services:
           description: "Dark primary — used for hover and pressed states on buttons."
           section: Theme
           required: false
-          default: "#0369a1"
+          default: "{{resources.theme.primary_700}}"
           translations:
             es:
               label: "Primario 700"
@@ -310,7 +323,7 @@ services:
           description: "Very dark primary — used for deep shadows and text on light backgrounds."
           section: Theme
           required: false
-          default: "#075985"
+          default: "{{resources.theme.primary_800}}"
           translations:
             es:
               label: "Primario 800"
@@ -322,7 +335,7 @@ services:
           description: "Darkest primary shade — used for high-contrast text and deep accents."
           section: Theme
           required: false
-          default: "#0c4a6e"
+          default: "{{resources.theme.primary_900}}"
           translations:
             es:
               label: "Primario 900"
@@ -356,6 +369,129 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   # Backend — Django REST Framework + Channels + Celery
   # ──────────────────────────────────────────────────────────────────────────
+        # ── Theme ──────────────────────────────────────────────────────────────
+        # ── Secondary Theme (Neutrals) ──────────────────────────────────────────
+        REACT_APP_SECONDARY_50:
+          type: color
+          label: "Secondary 50"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_50}}"
+
+        REACT_APP_SECONDARY_100:
+          type: color
+          label: "Secondary 100"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_100}}"
+
+        REACT_APP_SECONDARY_200:
+          type: color
+          label: "Secondary 200"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_200}}"
+
+        REACT_APP_SECONDARY_300:
+          type: color
+          label: "Secondary 300"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_300}}"
+
+        REACT_APP_SECONDARY_400:
+          type: color
+          label: "Secondary 400"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_400}}"
+
+        REACT_APP_SECONDARY_500:
+          type: color
+          label: "Secondary 500"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_500}}"
+
+        REACT_APP_SECONDARY_600:
+          type: color
+          label: "Secondary 600"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_600}}"
+
+        REACT_APP_SECONDARY_700:
+          type: color
+          label: "Secondary 700"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_700}}"
+
+        REACT_APP_SECONDARY_800:
+          type: color
+          label: "Secondary 800"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_800}}"
+
+        REACT_APP_SECONDARY_900:
+          type: color
+          label: "Secondary 900"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_900}}"
+        # ── Functional Colors ──────────────────────────────────────────────────
+        REACT_APP_SUCCESS_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_50}}"
+        REACT_APP_SUCCESS_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_500}}"
+        REACT_APP_SUCCESS_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_600}}"
+
+        REACT_APP_DANGER_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_50}}"
+        REACT_APP_DANGER_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_500}}"
+        REACT_APP_DANGER_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_600}}"
+
+        REACT_APP_WARNING_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_50}}"
+        REACT_APP_WARNING_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_500}}"
+        REACT_APP_WARNING_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_600}}"
+
+        REACT_APP_INFO_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_50}}"
+        REACT_APP_INFO_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_500}}"
+        REACT_APP_INFO_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_600}}"
   backend:
     type: backend
     order: 1

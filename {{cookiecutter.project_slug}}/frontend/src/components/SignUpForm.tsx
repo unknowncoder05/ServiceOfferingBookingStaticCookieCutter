@@ -32,7 +32,7 @@ function passwordStrength(pw: string): 0 | 1 | 2 | 3 {
   return 3;
 }
 
-const STRENGTH_COLOR = ['', 'bg-red-400', 'bg-yellow-400', 'bg-green-500'] as const;
+const STRENGTH_COLOR = ['', 'bg-red-400', 'bg-primary-400', 'bg-primary-500'] as const;
 const STRENGTH_KEY   = ['', 'weak', 'fair', 'strong'] as const;
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) => {
@@ -96,30 +96,30 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
   const strength = passwordStrength(form.password);
 
-  const fieldBase = "mt-1 block w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition-colors";
-  const ok  = "border-gray-300 dark:border-gray-600";
+  const fieldBase = "mt-1 block w-full px-3 py-2 rounded-lg border bg-white dark:bg-secondary-700 text-secondary-900 dark:text-secondary-100 placeholder-secondary-400 dark:placeholder-secondary-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition-colors";
+  const ok  = "border-secondary-300 dark:border-secondary-600";
   const err = "border-red-400 dark:border-red-500 focus:ring-red-400";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 transition-colors">
+    <div className="min-h-screen flex items-center justify-center bg-secondary-50 dark:bg-secondary-900 px-4 py-12 transition-colors">
       <div className="w-full max-w-sm">
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">
             {t('auth.signup.title')}
           </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
             {t('auth.signup.subtitle')}
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-secondary-800 rounded-xl shadow-sm border border-secondary-200 dark:border-secondary-700 p-6">
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
 
             {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="first_name" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                   {t('auth.signup.firstName')}
                 </label>
                 <input
@@ -137,7 +137,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
                 )}
               </div>
               <div>
-                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="last_name" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                   {t('auth.signup.lastName')}
                 </label>
                 <input
@@ -157,9 +157,9 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
             {/* Middle name (optional) */}
             <div>
-              <label htmlFor="middle_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="middle_name" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                 {t('auth.signup.middleName')}
-                <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">
+                <span className="ml-1 text-xs font-normal text-secondary-400 dark:text-secondary-500">
                   ({t('auth.signup.optional')})
                 </span>
               </label>
@@ -174,7 +174,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                 {t('auth.signup.email')}
               </label>
               <input
@@ -193,7 +193,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
             {/* Password + strength indicator */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                 {t('auth.signup.password')}
               </label>
               <div className="relative">
@@ -211,7 +211,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
                   aria-label={showPw ? t('auth.hidePassword') : t('auth.showPassword')}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 transition-colors"
                 >
                   <EyeIcon open={showPw} />
                 </button>
@@ -219,7 +219,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
               {errors.password ? (
                 <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.password}</p>
               ) : (
-                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{t('auth.signup.passwordHint')}</p>
+                <p className="mt-1 text-xs text-secondary-400 dark:text-secondary-500">{t('auth.signup.passwordHint')}</p>
               )}
               {form.password.length > 0 && (
                 <div className="mt-2">
@@ -228,12 +228,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
                       <div
                         key={level}
                         className={`h-1 flex-1 rounded-full transition-colors ${
-                          strength >= level ? STRENGTH_COLOR[strength] : 'bg-gray-200 dark:bg-gray-600'
+                          strength >= level ? STRENGTH_COLOR[strength] : 'bg-secondary-200 dark:bg-secondary-600'
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                  <p className="mt-1 text-xs text-secondary-400 dark:text-secondary-500">
                     {t(`auth.signup.passwordStrength.${STRENGTH_KEY[strength]}`)}
                   </p>
                 </div>
@@ -242,7 +242,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
             {/* Confirm password */}
             <div>
-              <label htmlFor="password_confirm" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="password_confirm" className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
                 {t('auth.signup.passwordConfirm')}
               </label>
               <div className="relative">
@@ -260,7 +260,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
                   type="button"
                   onClick={() => setShowPwConfirm((v) => !v)}
                   aria-label={showPwConfirm ? t('auth.hidePassword') : t('auth.showPassword')}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 transition-colors"
                 >
                   <EyeIcon open={showPwConfirm} />
                 </button>
@@ -280,7 +280,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2.5 px-4 bg-success-500 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-success-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
             >
               {isLoading && (
                 <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -290,7 +290,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
           </form>
         </div>
 
-        <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-4 text-center text-sm text-secondary-500 dark:text-secondary-400">
           {t('auth.signup.hasAccount')}{' '}
           <button
             type="button"

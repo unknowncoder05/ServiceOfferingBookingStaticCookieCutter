@@ -19,11 +19,21 @@ commands:
     run: "python manage.py migrate --noinput"
     service: backend
 
-  createsuperuser:
-    label: "Create Superuser"
-    description: "Create a Django admin superuser (interactive — check container logs)."
-    run: "python manage.py createsuperuser"
+  setup_admin:
+    label: "Setup Admin Account"
+    description: "Create or update an administrative account non-interactively."
+    run: "python manage.py shell -c \"from api.users.models import User; User.objects.filter(email='{email}').delete(); User.objects.create_superuser('{email}', '{password}')\""
     service: backend
+    params:
+      email:
+        type: string
+        label: "Email"
+        required: true
+      password:
+        type: secret
+        label: "Password"
+        required: true
+
 
   test:
     label: "Run Tests"
@@ -86,6 +96,10 @@ services:
     env:
 
       # ── Application ──────────────────────────────────────────────────────
+        REACT_APP_PROJECT_NAME:
+          type: string
+          section: Application
+          default: "{{project_name}}"
       REACT_APP_API_URL:
         type: url
         label: "API Base URL"
@@ -156,7 +170,7 @@ services:
 
       CHOKIDAR_USEPOLLING:
         type: boolean
-        label: "Chokidar Use Polling"
+        label: "CHOKIDAR_USEPOLLING"
         description: "Enable polling-based file watching for hot-reload inside Docker. Required when the source is bind-mounted."
         section: Application
         required: false
@@ -169,7 +183,7 @@ services:
         description: "Lightest primary tint — used for subtle backgrounds and hover states."
         section: Theme
         required: false
-        default: "#f0f9ff"
+        default: "{{resources.theme.primary_50}}"
 
       REACT_APP_PRIMARY_100:
         type: color
@@ -177,7 +191,7 @@ services:
         description: "Very light primary tint."
         section: Theme
         required: false
-        default: "#e0f2fe"
+        default: "{{resources.theme.primary_100}}"
 
       REACT_APP_PRIMARY_200:
         type: color
@@ -185,7 +199,7 @@ services:
         description: "Light primary tint."
         section: Theme
         required: false
-        default: "#bae6fd"
+        default: "{{resources.theme.primary_200}}"
 
       REACT_APP_PRIMARY_300:
         type: color
@@ -193,7 +207,7 @@ services:
         description: "Soft primary — used for borders and disabled states."
         section: Theme
         required: false
-        default: "#7dd3fc"
+        default: "{{resources.theme.primary_300}}"
 
       REACT_APP_PRIMARY_400:
         type: color
@@ -201,7 +215,7 @@ services:
         description: "Mid-light primary — used for icons and secondary accents."
         section: Theme
         required: false
-        default: "#38bdf8"
+        default: "{{resources.theme.primary_400}}"
 
       REACT_APP_PRIMARY_500:
         type: color
@@ -209,7 +223,7 @@ services:
         description: "Base primary — used for highlights and active indicators."
         section: Theme
         required: false
-        default: "#0ea5e9"
+        default: "{{resources.theme.primary_500}}"
 
       REACT_APP_PRIMARY_600:
         type: color
@@ -217,7 +231,7 @@ services:
         description: "Main brand color — used for buttons, links, and interactive elements."
         section: Theme
         required: false
-        default: "#0284c7"
+        default: "{{resources.theme.primary_600}}"
 
       REACT_APP_PRIMARY_700:
         type: color
@@ -225,7 +239,7 @@ services:
         description: "Dark primary — used for hover and pressed states on buttons."
         section: Theme
         required: false
-        default: "#0369a1"
+        default: "{{resources.theme.primary_700}}"
 
       REACT_APP_PRIMARY_800:
         type: color
@@ -233,7 +247,7 @@ services:
         description: "Very dark primary — used for deep shadows and text on light backgrounds."
         section: Theme
         required: false
-        default: "#075985"
+        default: "{{resources.theme.primary_800}}"
 
       REACT_APP_PRIMARY_900:
         type: color
@@ -241,11 +255,133 @@ services:
         description: "Darkest primary shade — used for high-contrast text and deep accents."
         section: Theme
         required: false
-        default: "#0c4a6e"
+        default: "{{resources.theme.primary_900}}"
 
   # ────────────────────────────────────────────────────────────────────────────
   # Backend — Django + uvicorn --reload (hot-reload on source change)
   # ────────────────────────────────────────────────────────────────────────────
+        # ── Secondary Theme (Neutrals) ──────────────────────────────────────────
+        REACT_APP_SECONDARY_50:
+          type: color
+          label: "Secondary 50"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_50}}"
+
+        REACT_APP_SECONDARY_100:
+          type: color
+          label: "Secondary 100"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_100}}"
+
+        REACT_APP_SECONDARY_200:
+          type: color
+          label: "Secondary 200"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_200}}"
+
+        REACT_APP_SECONDARY_300:
+          type: color
+          label: "Secondary 300"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_300}}"
+
+        REACT_APP_SECONDARY_400:
+          type: color
+          label: "Secondary 400"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_400}}"
+
+        REACT_APP_SECONDARY_500:
+          type: color
+          label: "Secondary 500"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_500}}"
+
+        REACT_APP_SECONDARY_600:
+          type: color
+          label: "Secondary 600"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_600}}"
+
+        REACT_APP_SECONDARY_700:
+          type: color
+          label: "Secondary 700"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_700}}"
+
+        REACT_APP_SECONDARY_800:
+          type: color
+          label: "Secondary 800"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_800}}"
+
+        REACT_APP_SECONDARY_900:
+          type: color
+          label: "Secondary 900"
+          section: Theme
+          required: false
+          default: "{{resources.theme.secondary_900}}"
+        # ── Functional Colors ──────────────────────────────────────────────────
+        REACT_APP_SUCCESS_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_50}}"
+        REACT_APP_SUCCESS_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_500}}"
+        REACT_APP_SUCCESS_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.success_600}}"
+
+        REACT_APP_DANGER_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_50}}"
+        REACT_APP_DANGER_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_500}}"
+        REACT_APP_DANGER_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.danger_600}}"
+
+        REACT_APP_WARNING_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_50}}"
+        REACT_APP_WARNING_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_500}}"
+        REACT_APP_WARNING_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.warning_600}}"
+
+        REACT_APP_INFO_50:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_50}}"
+        REACT_APP_INFO_500:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_500}}"
+        REACT_APP_INFO_600:
+          type: color
+          section: Theme
+          default: "{{resources.theme.info_600}}"
   backend:
     type: backend
     order: 1
@@ -565,6 +701,7 @@ services:
       REQUIREMENTS_FILE:
         type: select
         label: "Requirements File"
+        description: "pip requirements file installed at container startup from the named venv volume."
         section: Application
         required: false
         default: "local.txt"
@@ -688,6 +825,7 @@ services:
       REQUIREMENTS_FILE:
         type: select
         label: "Requirements File"
+        description: "pip requirements file installed at container startup from the named venv volume."
         section: Application
         required: false
         default: "local.txt"
@@ -790,12 +928,20 @@ services:
         order: 1
         default: ""
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # Redis — message broker and cache (same as production)
-  # ────────────────────────────────────────────────────────────────────────────
-  redis:
-    type: internal
-    order: 6
-    image: redis:7-alpine
-    command: redis-server --appendonly yes
+      POSTGRES_HOST:
+        type: string
+        label: "Database Host"
+        section: Database
+        required: false
+        default: "postgres"
+
+      POSTGRES_PORT:
+        type: number
+        label: "Database Port"
+        section: Database
+        required: false
+        default: "5432"
+        min: 1
+        max: 65535
+
 {% endraw %}

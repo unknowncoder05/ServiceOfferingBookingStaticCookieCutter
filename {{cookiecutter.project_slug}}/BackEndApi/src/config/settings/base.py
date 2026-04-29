@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     'modeltranslation',
     'channels',
     'rest_framework',
+    'drf_spectacular',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -186,6 +187,7 @@ ADMIN_URL = 'admin/'
 
 # Django REST Framework
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
@@ -353,5 +355,20 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
+    },
+}
+
+# SPECTACULAR SETTINGS
+SPECTACULAR_SETTINGS = {
+    'TITLE': '{{ cookiecutter.project_name }} API',
+    'DESCRIPTION': '{{ cookiecutter.description }}',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_PATCH': True,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': True,
     },
 }

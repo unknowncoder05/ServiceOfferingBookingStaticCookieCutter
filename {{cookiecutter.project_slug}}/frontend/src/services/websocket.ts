@@ -40,12 +40,13 @@ class WebSocketService {
    */
   private getWebSocketUrl(): string {
     const apiUrl = backendManager.getApiBaseUrl();
+    if (!apiUrl.startsWith('http')) {
+      // Relative API URL — derive WS URL from page origin so the dev-server proxy handles it
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      return `${wsProtocol}//${window.location.host}/ws/`;
+    }
     const wsProtocol = apiUrl.startsWith('https://') ? 'wss://' : 'ws://';
-
-    let baseUrl = apiUrl.replace(/^https?:/, '');
-    console.log(`${wsProtocol}${baseUrl}/ws/`)
-
-    // No token in URL - authentication happens via message after connection
+    const baseUrl = apiUrl.replace(/^https?:/, '');
     return `${wsProtocol}${baseUrl}/ws/`;
   }
 

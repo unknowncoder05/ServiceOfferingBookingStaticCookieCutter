@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.items.models import Item
-from api.items.serializers import ItemCreateSerializer, ItemListSerializer, ItemSerializer
+from api.items.serializers import ItemListSerializer, ItemSerializer
 
 
 class ItemViewSet(viewsets.ModelViewSet):
@@ -15,6 +15,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Item.objects.filter(owner=self.request.user)
@@ -22,8 +23,6 @@ class ItemViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return ItemListSerializer
-        elif self.action == 'create':
-            return ItemCreateSerializer
         return ItemSerializer
 
     def perform_create(self, serializer):

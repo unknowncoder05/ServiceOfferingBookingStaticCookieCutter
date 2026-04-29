@@ -2,114 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  --primary-50: #fef2f2;
+  --primary-100: #fee2e2;
+  --primary-200: #fecaca;
+  --primary-300: #fca5a5;
+  --primary-400: #f87171;
+  --primary-500: #ef4444;
+  --primary-600: #DC2626;
+  --primary-700: #b91c1c;
+  --primary-800: #991b1b;
+  --primary-900: #7f1d1d;
+
+  --secondary-50: #f9fafb;
+  --secondary-100: #f3f4f6;
+  --secondary-200: #e5e7eb;
+  --secondary-300: #d1d5db;
+  --secondary-400: #9ca3af;
+  --secondary-500: #6b7280;
+  --secondary-600: #4b5563;
+  --secondary-700: #374151;
+  --secondary-800: #1f2937;
+  --secondary-900: #111827;
+
+  --success-50: #f0fdf4;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+
+  --danger-50: #fef2f2;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+
+  --warning-50: #fffbeb;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+
+  --info-50: #f0f9ff;
+  --info-500: #0ea5e9;
+  --info-600: #0284c7;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer base {
+  body {
+    @apply bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white transition-colors;
+  }
 }
 
-/* TipTap Editor Styles */
-.ProseMirror {
-  font-family: Georgia, Cambria, "Times New Roman", serif;
-  font-size: 16px;
-  line-height: 1.8;
-  outline: none;
-}
-
-.ProseMirror p {
-  margin: 0.75em 0;
-}
-
-.ProseMirror h1 {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 1em 0 0.5em;
-}
-
-.ProseMirror h2 {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 0.83em 0 0.5em;
-}
-
-.ProseMirror h3 {
-  font-size: 1.17em;
-  font-weight: bold;
-  margin: 0.75em 0 0.5em;
-}
-
-.ProseMirror ul,
-.ProseMirror ol {
-  padding-left: 2em;
-  margin: 0.75em 0;
-}
-
-.ProseMirror blockquote {
-  border-left: 3px solid #cbd5e0;
-  padding-left: 1em;
-  margin: 1em 0;
-  font-style: italic;
-  color: #4a5568;
-}
-
-.ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  color: #adb5bd;
-  pointer-events: none;
-  float: left;
-  height: 0;
-}
-
-.ProseMirror a {
-  color: #2563eb;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.ProseMirror a:hover {
-  color: #1d4ed8;
-}
-
-/* Mention styling */
-.mention {
-  background-color: #e3f2fd;
-  border-radius: 4px;
-  padding: 2px 6px;
-  color: #1976d2;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.mention:hover {
-  background-color: #bbdefb;
-}
-
-/* Entity-specific mention colors */
-.mention.character {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.mention.event {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.mention.location {
-  background-color: #f3e5f5;
-  color: #7b1fa2;
-}
-
-.mention.group {
-  background-color: #fff3e0;
-  color: #e65100;
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 transition-colors px-4 py-2 rounded-lg font-bold uppercase tracking-widest text-xs;
+  }
 }

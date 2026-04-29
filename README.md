@@ -34,7 +34,7 @@ cookiecutter /path/to/BaseEphemeralCookieCutter
 
 | Variable | Default | Description |
 |---|---|---|
-| `project_name` | My Project | Human-readable project name |
+| `project_name` | {{cookiecutter.project_name}} | Human-readable project name |
 | `project_slug` | `my_project` | Python/directory-friendly name (auto-generated) |
 | `project_slug_dashed` | `my-project` | URL/Docker-friendly name (auto-generated) |
 | `description` | A full-stack web application | Project description |

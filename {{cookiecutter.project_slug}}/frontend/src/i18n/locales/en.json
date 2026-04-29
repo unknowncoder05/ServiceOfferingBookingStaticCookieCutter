@@ -66,7 +66,7 @@
   },
   "dashboard": {
     "badge": "Cookiecutter Template",
-    "welcome": "Welcome to My Project",
+    "welcome": "Welcome to {{cookiecutter.project_name}}",
     "subtitle": "The beginning of something great",
     "loggedInAs": "Logged in as",
     "features": "What's included",
