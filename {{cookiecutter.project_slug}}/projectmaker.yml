@@ -41,7 +41,7 @@ commands:
   test_e2e:
     label: "Run E2E Tests"
     description: "Execute Playwright end-to-end tests."
-    run: "./node_modules/.bin/playwright test"
+    run: "npm install && ./node_modules/.bin/playwright test"
     service: playwright
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -61,7 +61,7 @@ smoke_test:
       run: "python manage.py test --verbosity 2 --keepdb"
       service: backend
     - label: "E2E Tests"
-      run: "./node_modules/.bin/playwright test"
+      run: "npm install && ./node_modules/.bin/playwright test"
       service: playwright
 
 # ──────────────────────────────────────────────────────────────────────────────
