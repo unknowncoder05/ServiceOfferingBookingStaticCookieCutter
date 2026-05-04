@@ -18,7 +18,10 @@
 ## 4) Backlog to Execution
 1. Create/open backlog items in UI.
 2. Send item to developer agent from backlog flow.
-3. Review generated code changes and approve/reject.
+3. When UI behavior changes, update generated repo docs in the same change:
+   - `docs/UI_WORKFLOWS.md` for user flow/interaction changes
+   - `docs/UI_DESIGN.md` for component/view design rules and states
+4. Review generated code changes and approve/reject.
 
 ## 5) Deployment Lifecycle
 1. Open deployments page and prepare discovery/config.

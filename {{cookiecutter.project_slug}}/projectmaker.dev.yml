@@ -69,6 +69,12 @@ sections:
   Theme:
     order: 13
 
+resources:
+  storage:
+    buckets:
+      - key: media
+        provider: s3
+
 services:
 
   # ────────────────────────────────────────────────────────────────────────────
