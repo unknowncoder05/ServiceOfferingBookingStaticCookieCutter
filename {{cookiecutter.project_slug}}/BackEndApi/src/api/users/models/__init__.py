@@ -1,2 +1,2 @@
 from .user import *
-from .auth import *
+from pm_auth.api.users.models.auth import *

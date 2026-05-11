@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import backendManager from '../services/BackendManager';
 import env from '../config/environment';
 
@@ -7,6 +8,7 @@ const ServerStartPage: React.FC = () => {
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleStartServer = async () => {
     setIsStarting(true);
@@ -22,7 +24,7 @@ const ServerStartPage: React.FC = () => {
       navigate('/projects');
     } catch (err) {
       console.error('Failed to start server:', err);
-      setError('Failed to start server. Please try again.');
+      setError(t('serverStart.error'));
       setIsStarting(false);
     }
   };
@@ -50,13 +52,12 @@ const ServerStartPage: React.FC = () => {
 
           {/* Title */}
           <h1 className="text-2xl font-bold text-secondary-900 mb-2">
-            Backend Server Stopped
+            {t('serverStart.title')}
           </h1>
 
           {/* Description */}
           <p className="text-secondary-600 mb-6">
-            The backend server is currently stopped to save costs.
-            Click the button below to start it. This may take 30-60 seconds.
+            {t('serverStart.description')}
           </p>
 
           {/* Start Button */}
@@ -91,10 +92,10 @@ const ServerStartPage: React.FC = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                Starting Server...
+                {t('serverStart.starting')}
               </span>
             ) : (
-              'Start Server'
+              t('serverStart.action')
             )}
           </button>
 
@@ -109,15 +110,15 @@ const ServerStartPage: React.FC = () => {
           {isStarting && (
             <div className="mt-6 p-4 bg-primary-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-primary-800">
-                <strong>Please wait...</strong>
+                <strong>{t('serverStart.waiting')}</strong>
                 <br />
-                The server is starting up. This includes:
+                {t('serverStart.checklistIntro')}
               </p>
               <ul className="text-xs text-primary-700 mt-2 space-y-1 text-left">
-                <li>• Launching ECS task on AWS Fargate</li>
-                <li>• Assigning public IP address</li>
-                <li>• Starting Django application</li>
-                <li>• Syncing database from S3</li>
+                <li>{t('serverStart.steps.launch')}</li>
+                <li>{t('serverStart.steps.ip')}</li>
+                <li>{t('serverStart.steps.app')}</li>
+                <li>{t('serverStart.steps.sync')}</li>
               </ul>
             </div>
           )}

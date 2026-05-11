@@ -58,11 +58,59 @@
       "ctaDashboard": "Ir al inicio"
     }
   },
+  "app": {
+    "loading": "Cargando...",
+    "starterTemplate": "Plantilla inicial"
+  },
+  "common": {
+    "activate": "Activar",
+    "archive": "Archivar",
+    "back": "Volver",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "saving": "Guardando...",
+    "view": "Ver"
+  },
   "nav": {
     "dashboard": "Inicio",
     "items": "Elementos",
     "settings": "Configuración",
     "logout": "Cerrar sesión"
+  },
+  "commandPalette": {
+    "searchPlaceholder": "Buscar comandos...",
+    "noResults": "No se encontraron comandos para \"{% raw %}{{query}}{% endraw %}\"",
+    "escapeKey": "Esc",
+    "enterKey": "Enter",
+    "arrowKeys": "Flechas",
+    "select": "Seleccionar",
+    "navigate": "Navegar",
+    "commands": {
+      "dashboard": {
+        "name": "Ir al inicio",
+        "description": "Ver tu resumen y estadísticas"
+      },
+      "items": {
+        "name": "Ver elementos",
+        "description": "Gestiona tus elementos y recursos"
+      },
+      "settings": {
+        "name": "Configuración",
+        "description": "Ajustes de la cuenta y la aplicación"
+      },
+      "debug": {
+        "name": "Biblioteca de componentes",
+        "description": "Depura y previsualiza componentes compartidos"
+      }
+    }
+  },
+  "errors": {
+    "boundary": {
+      "title": "Algo salió mal",
+      "description": "Encontramos un error al renderizar este componente.",
+      "retry": "Intentar de nuevo"
+    }
   },
   "dashboard": {
     "badge": "Plantilla Cookiecutter",
@@ -88,6 +136,100 @@
     "cloudDesc": "Infraestructura con Terraform, backend bajo demanda en AWS ECS, persistencia en S3 y despliegue en un comando.",
     "darkMode": "Modo oscuro e i18n",
     "darkModeDesc": "Soporte integrado de modo oscuro y múltiples idiomas — solo agrega claves de traducción y listo."
+  },
+  "items": {
+    "title": "Elementos",
+    "notFound": "Elemento no encontrado",
+    "backToList": "Volver a elementos",
+    "noDescription": "No se proporcionó descripción",
+    "fields": {
+      "name": "Nombre",
+      "description": "Descripción",
+      "status": "Estado"
+    },
+    "placeholders": {
+      "name": "Ingresa el nombre del elemento",
+      "description": "Ingresa la descripción del elemento (opcional)"
+    },
+    "status": {
+      "draft": "Borrador",
+      "active": "Activo",
+      "archived": "Archivado"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "nameTooLong": "El nombre debe tener menos de 255 caracteres"
+    },
+    "filters": {
+      "status": "Filtrar por estado:",
+      "all": "Todos"
+    },
+    "empty": {
+      "noneTitle": "Aún no hay elementos",
+      "noneDescription": "Crea tu primer elemento para comenzar.",
+      "filteredTitle": "No se encontraron coincidencias",
+      "filteredDescription": "Prueba ajustando el filtro de estado."
+    },
+    "confirm": {
+      "archive": "¿Seguro que quieres archivar este elemento?",
+      "delete": "¿Seguro que quieres eliminar este elemento? Esta acción no se puede deshacer."
+    },
+    "form": {
+      "createTitle": "Crear nuevo elemento",
+      "editTitle": "Editar elemento",
+      "createAction": "Crear elemento",
+      "updateAction": "Actualizar elemento"
+    },
+    "detail": {
+      "owner": "Propietario",
+      "created": "Creado",
+      "metadata": "Metadatos"
+    },
+    "card": {
+      "by": "Por {% raw %}{{owner}}{% endraw %}",
+      "created": "Creado {% raw %}{{date}}{% endraw %}"
+    }
+  },
+  "serverStart": {
+    "title": "Servidor backend detenido",
+    "description": "El servidor backend está detenido actualmente para ahorrar costos. Haz clic en el botón para iniciarlo. Esto puede tardar entre 30 y 60 segundos.",
+    "action": "Iniciar servidor",
+    "starting": "Iniciando servidor...",
+    "error": "No se pudo iniciar el servidor. Inténtalo de nuevo.",
+    "waiting": "Espera por favor...",
+    "checklistIntro": "El servidor se está iniciando. Esto incluye:",
+    "steps": {
+      "launch": "• Lanzando tarea ECS en AWS Fargate",
+      "ip": "• Asignando dirección IP pública",
+      "app": "• Iniciando la aplicación Django",
+      "sync": "• Sincronizando la base de datos desde S3"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "profile": {
+      "title": "Perfil"
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "subtitle": "Conecta servicios externos para potenciar tus proyectos"
+    },
+    "github": {
+      "title": "GitHub",
+      "description": "Conéctate para clonar repositorios y gestionar código",
+      "connectedAs": "Conectado como",
+      "connect": "Conectar GitHub",
+      "connecting": "Conectando...",
+      "disconnect": "Desconectar",
+      "disconnecting": "Desconectando...",
+      "connectedSuccess": "Cuenta de GitHub conectada correctamente.",
+      "connectError": "No se pudo conectar la cuenta de GitHub",
+      "authUrlError": "No se pudo obtener la URL de autorización de GitHub",
+      "invalidState": "Estado de OAuth inválido. Inténtalo de nuevo.",
+      "disconnectConfirm": "¿Seguro que quieres desconectar tu cuenta de GitHub?",
+      "disconnectedSuccess": "Cuenta de GitHub desconectada",
+      "disconnectError": "No se pudo desconectar la cuenta de GitHub"
+    }
   },
   "theme": {
     "light": "Cambiar a modo claro",

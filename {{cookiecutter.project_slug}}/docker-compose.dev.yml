@@ -44,6 +44,10 @@ x-backend-base: &backend-base
     dockerfile: compose/dev/django/Dockerfile
   volumes:
     - .:/project                  # full repo bind-mount (read-write for manage.py artifacts)
+    - ./packages/pm-utils/pm_utils:/venv/lib/python3.12/site-packages/pm_utils
+    - ./packages/pm-auth/pm_auth:/venv/lib/python3.12/site-packages/pm_auth
+    - ./packages/pm-billing/pm_billing:/venv/lib/python3.12/site-packages/pm_billing
+    - ./packages/pm-ai/pm_ai:/venv/lib/python3.12/site-packages/pm_ai
     - dev_python_venv:/venv       # cached pip packages — survives restarts
   depends_on:
     postgres:

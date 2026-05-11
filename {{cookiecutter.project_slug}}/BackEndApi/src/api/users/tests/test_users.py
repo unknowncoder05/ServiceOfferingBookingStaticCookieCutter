@@ -9,8 +9,8 @@ from rest_framework.test import APITestCase
 from api.users.factories import UserFactory
 # Models
 from api.users.models import User
-from api.users.roles import UserRoles
-from api.utils.tests import DefaultTestHelper, response_error
+from pm_auth.api.users.roles import UserRoles
+from pm_utils.api.utils.tests import DefaultTestHelper, response_error
 
 
 # Users helper

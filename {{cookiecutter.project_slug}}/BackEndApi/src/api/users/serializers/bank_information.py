@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.users.models import BankInformation, Bank, BankAccountType
-from api.utils.date import validate_image
+from pm_utils.api.utils.date import validate_image
 
 
 class BankInformationSerializer(serializers.ModelSerializer):

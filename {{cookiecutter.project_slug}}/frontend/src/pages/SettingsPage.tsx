@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { useTranslation } from 'react-i18next';
 import { getCurrentUser } from '../store/authSlice';
 import apiService from '../services/api';
 import toast from 'react-hot-toast';
@@ -9,6 +10,7 @@ import { Breadcrumbs } from '../components/shared';
 export const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { user } = useAppSelector((state) => state.auth);
   const [isConnectingGitHub, setIsConnectingGitHub] = useState(false);
@@ -18,15 +20,15 @@ export const SettingsPage: React.FC = () => {
     setIsConnectingGitHub(true);
     try {
       await apiService.gitHubCallback({ code, state });
-      toast.success('GitHub account connected successfully!');
+      toast.success(t('settings.github.connectedSuccess'));
       // Refresh user data to get updated GitHub info
       dispatch(getCurrentUser());
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to connect GitHub account');
+      toast.error(error.response?.data?.error || t('settings.github.connectError'));
     } finally {
       setIsConnectingGitHub(false);
     }
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   // Handle GitHub OAuth callback
   useEffect(() => {
@@ -39,7 +41,7 @@ export const SettingsPage: React.FC = () => {
       window.history.replaceState({}, '', '/settings');
 
       if (state !== storedState) {
-        toast.error('Invalid OAuth state. Please try again.');
+        toast.error(t('settings.github.invalidState'));
         return;
       }
 
@@ -62,23 +64,23 @@ export const SettingsPage: React.FC = () => {
       // Redirect to GitHub OAuth
       window.location.href = auth_url;
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to get GitHub authorization URL');
+      toast.error(error.response?.data?.error || t('settings.github.authUrlError'));
       setIsConnectingGitHub(false);
     }
   };
 
   const handleDisconnectGitHub = async () => {
-    if (!window.confirm('Are you sure you want to disconnect your GitHub account?')) {
+    if (!window.confirm(t('settings.github.disconnectConfirm'))) {
       return;
     }
 
     setIsDisconnectingGitHub(true);
     try {
       await apiService.disconnectGitHub();
-      toast.success('GitHub account disconnected');
+      toast.success(t('settings.github.disconnectedSuccess'));
       dispatch(getCurrentUser());
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to disconnect GitHub account');
+      toast.error(error.response?.data?.error || t('settings.github.disconnectError'));
     } finally {
       setIsDisconnectingGitHub(false);
     }
@@ -98,7 +100,7 @@ export const SettingsPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <h1 className="text-xl font-semibold text-secondary-900 dark:text-white">Settings</h1>
+            <h1 className="text-xl font-semibold text-secondary-900 dark:text-white">{t('settings.title')}</h1>
           </div>
         </div>
       </div>
@@ -110,7 +112,7 @@ export const SettingsPage: React.FC = () => {
         {/* Profile Section */}
         <div className="bg-white rounded-lg shadow-sm border border-secondary-200 mb-6">
           <div className="px-6 py-4 border-b border-secondary-200">
-            <h2 className="text-lg font-semibold text-secondary-900">Profile</h2>
+            <h2 className="text-lg font-semibold text-secondary-900">{t('settings.profile.title')}</h2>
           </div>
           <div className="px-6 py-4">
             <div className="flex items-center gap-4">
@@ -130,8 +132,8 @@ export const SettingsPage: React.FC = () => {
         {/* Integrations Section */}
         <div className="bg-white rounded-lg shadow-sm border border-secondary-200">
           <div className="px-6 py-4 border-b border-secondary-200">
-            <h2 className="text-lg font-semibold text-secondary-900">Integrations</h2>
-            <p className="text-sm text-secondary-500 mt-1">Connect external services to enhance your projects</p>
+            <h2 className="text-lg font-semibold text-secondary-900">{t('settings.integrations.title')}</h2>
+            <p className="text-sm text-secondary-500 mt-1">{t('settings.integrations.subtitle')}</p>
           </div>
           <div className="px-6 py-4">
             {/* GitHub Integration */}
@@ -143,13 +145,13 @@ export const SettingsPage: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-base font-medium text-secondary-900">GitHub</h3>
+                  <h3 className="text-base font-medium text-secondary-900">{t('settings.github.title')}</h3>
                   {user?.github_connected ? (
                     <p className="text-sm text-primary-600">
-                      Connected as <span className="font-medium">@{user.github_username}</span>
+                      {t('settings.github.connectedAs')} <span className="font-medium">@{user.github_username}</span>
                     </p>
                   ) : (
-                    <p className="text-sm text-secondary-500">Connect to clone repositories and manage code</p>
+                    <p className="text-sm text-secondary-500">{t('settings.github.description')}</p>
                   )}
                 </div>
               </div>
@@ -160,7 +162,7 @@ export const SettingsPage: React.FC = () => {
                     disabled={isDisconnectingGitHub}
                     className="px-4 py-2 text-sm font-medium text-danger-600 bg-danger-50 hover:bg-danger-100 dark:bg-danger-900/20 dark:hover:bg-danger-900/30 rounded-lg transition-colors disabled:opacity-50"
                   >
-                    {isDisconnectingGitHub ? 'Disconnecting...' : 'Disconnect'}
+                    {isDisconnectingGitHub ? t('settings.github.disconnecting') : t('settings.github.disconnect')}
                   </button>
                 ) : (
                   <button
@@ -168,7 +170,7 @@ export const SettingsPage: React.FC = () => {
                     disabled={isConnectingGitHub}
                     className="px-4 py-2 text-sm font-medium text-white bg-secondary-900 hover:bg-secondary-800 dark:bg-primary-600 dark:hover:bg-primary-700 rounded-lg transition-colors disabled:opacity-50"
                   >
-                    {isConnectingGitHub ? 'Connecting...' : 'Connect GitHub'}
+                    {isConnectingGitHub ? t('settings.github.connecting') : t('settings.github.connect')}
                   </button>
                 )}
               </div>

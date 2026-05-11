@@ -34,6 +34,6 @@ urlpatterns = [
     # API routes
     re_path(settings.API_URI + '/', include('api.users.urls')),
     re_path(settings.API_URI + '/', include('api.items.urls')),
-    re_path(settings.API_URI + '/', include('api.billing.urls')),
+    re_path(settings.API_URI + '/', include('pm_billing.api.billing.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,11 +8,11 @@ from rest_framework.viewsets import GenericViewSet
 
 # Models
 from api.users.models import IdentityFiles
-from api.users.permissions import IsAdminPermission, CanCrudPermission
+from pm_auth.api.users.permissions import IsAdminPermission, CanCrudPermission
 # Serializers
 # Utils
 from api.users.serializers.identity_files import IdentityFileSerializer
-from api.utils.pagination import StartEndPagination
+from pm_utils.api.utils.pagination import StartEndPagination
 
 
 class IdentityFilesViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin,

@@ -14,11 +14,11 @@ from unittest.mock import MagicMock, patch
 from django.conf import settings
 from django.test import TestCase
 
-from api.users.auth.external_token.providers import (
+from pm_auth.api.users.auth.external_token.providers import (
     ExternalAuthenticationTokenProviders,
     send_token,
 )
-from api.users.enums import ExternalAuthenticationTokenType
+from pm_auth.api.users.enums import ExternalAuthenticationTokenType
 from api.users.factories import UserFactory
 
 
@@ -60,13 +60,13 @@ class SmsProviderTests(TestCase):
     def test_sends_sms_when_configured(self, mock_boto):
         mock_sns = MagicMock()
         mock_boto.return_value = mock_sns
-        with patch('api.users.conf.UsersSettings.aws_region_name',
+        with patch('pm_auth.api.users.conf.UsersSettings.aws_region_name',
                    new_callable=lambda: property(lambda self: 'us-east-1')):
             self._send()
         mock_sns.publish.assert_called_once()
 
     def test_raises_when_aws_region_not_set(self):
-        with patch('api.users.conf.UsersSettings.aws_region_name',
+        with patch('pm_auth.api.users.conf.UsersSettings.aws_region_name',
                    new_callable=lambda: property(lambda self: '')):
             with self.assertRaises(RuntimeError):
                 self._send()
@@ -74,17 +74,17 @@ class SmsProviderTests(TestCase):
     @patch('boto3.client')
     def test_raises_and_logs_on_sns_error(self, mock_boto):
         mock_boto.return_value.publish.side_effect = Exception("SNS error")
-        with patch('api.users.conf.UsersSettings.aws_region_name',
+        with patch('pm_auth.api.users.conf.UsersSettings.aws_region_name',
                    new_callable=lambda: property(lambda self: 'us-east-1')):
-            with self.assertLogs('api.users.auth.external_token.sms', level='ERROR'):
+            with self.assertLogs('pm_auth.api.users.auth.external_token.sms', level='ERROR'):
                 with self.assertRaises(Exception):
                     self._send()
 
     def test_logs_on_provider_delivery_failure(self):
         """send_token() must log the failure before re-raising."""
-        with patch('api.users.auth.external_token.providers.PROVIDERS',
+        with patch('pm_auth.api.users.auth.external_token.providers.PROVIDERS',
                    {ExternalAuthenticationTokenProviders.SMS: MagicMock(side_effect=RuntimeError("boom"))}):
-            with self.assertLogs('api.users.auth.external_token.providers', level='ERROR'):
+            with self.assertLogs('pm_auth.api.users.auth.external_token.providers', level='ERROR'):
                 with self.assertRaises(RuntimeError):
                     self._send()
 
@@ -105,15 +105,15 @@ class WhatsAppProviderTests(TestCase):
         mock_resp = MagicMock()
         mock_resp.status_code = 200
         mock_post.return_value = mock_resp
-        with patch('api.users.conf.UsersSettings.whatsapp_message_uri',
+        with patch('pm_auth.api.users.conf.UsersSettings.whatsapp_message_uri',
                    new_callable=lambda: property(lambda self: 'https://wa.example.com/send')):
-            with patch('api.users.conf.UsersSettings.whatsapp_authorization_token',
+            with patch('pm_auth.api.users.conf.UsersSettings.whatsapp_authorization_token',
                        new_callable=lambda: property(lambda self: 'Bearer token123')):
                 self._send()
         mock_post.assert_called_once()
 
     def test_raises_when_whatsapp_uri_not_set(self):
-        with patch('api.users.conf.UsersSettings.whatsapp_message_uri',
+        with patch('pm_auth.api.users.conf.UsersSettings.whatsapp_message_uri',
                    new_callable=lambda: property(lambda self: '')):
             with self.assertRaises(Exception):
                 self._send()
@@ -123,9 +123,9 @@ class WhatsAppProviderTests(TestCase):
         mock_resp = MagicMock()
         mock_resp.status_code = 400
         mock_post.return_value = mock_resp
-        with patch('api.users.conf.UsersSettings.whatsapp_message_uri',
+        with patch('pm_auth.api.users.conf.UsersSettings.whatsapp_message_uri',
                    new_callable=lambda: property(lambda self: 'https://wa.example.com/send')):
-            with patch('api.users.conf.UsersSettings.whatsapp_authorization_token',
+            with patch('pm_auth.api.users.conf.UsersSettings.whatsapp_authorization_token',
                        new_callable=lambda: property(lambda self: 'Bearer token123')):
                 with self.assertRaises(Exception):
                     self._send()
@@ -145,9 +145,9 @@ class SendTokenTests(TestCase):
 
     def test_delivery_failure_is_logged_before_raise(self):
         boom = RuntimeError("delivery failed")
-        with patch('api.users.auth.external_token.providers.PROVIDERS',
+        with patch('pm_auth.api.users.auth.external_token.providers.PROVIDERS',
                    {ExternalAuthenticationTokenProviders.CONSOLE: MagicMock(side_effect=boom)}):
-            with self.assertLogs('api.users.auth.external_token.providers', level='ERROR'):
+            with self.assertLogs('pm_auth.api.users.auth.external_token.providers', level='ERROR'):
                 with self.assertRaises(RuntimeError):
                     send_token(
                         phone_number='+15550000000',

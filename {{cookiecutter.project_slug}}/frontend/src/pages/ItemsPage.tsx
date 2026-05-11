@@ -10,6 +10,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { RootState, AppDispatch } from '../store';
 import { fetchItem, clearSelectedItem } from '../store/itemsSlice';
 import { ItemList, ItemForm } from '../components/items';
@@ -20,6 +21,7 @@ type ViewMode = 'list' | 'create' | 'edit' | 'view';
 const ItemsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { id } = useParams<{ id?: string }>();
   const { selectedItem, isLoading } = useSelector((state: RootState) => state.items);
 
@@ -80,12 +82,12 @@ const ItemsPage: React.FC = () => {
     if (!selectedItem) {
       return (
         <div className="text-center py-12 bg-white dark:bg-secondary-800 rounded-xl border border-secondary-200 dark:border-secondary-700">
-          <p className="text-secondary-500 dark:text-secondary-400">Item not found</p>
+          <p className="text-secondary-500 dark:text-secondary-400">{t('items.notFound')}</p>
           <Button
             onClick={handleBackToList}
             className="mt-4"
           >
-            Back to Items
+            {t('items.backToList')}
           </Button>
         </div>
       );
@@ -103,7 +105,7 @@ const ItemsPage: React.FC = () => {
           <div>
             <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">{selectedItem.name}</h1>
             <Badge variant={statusVariants[selectedItem.status] || 'secondary'} className="mt-2">
-              {selectedItem.status.charAt(0).toUpperCase() + selectedItem.status.slice(1)}
+              {t(`items.status.${selectedItem.status}`)}
             </Badge>
           </div>
           <div className="flex gap-2">
@@ -111,33 +113,33 @@ const ItemsPage: React.FC = () => {
               variant="secondary"
               onClick={handleBackToList}
             >
-              Back
+              {t('common.back')}
             </Button>
             <Button
               onClick={handleEditItem}
             >
-              Edit
+              {t('common.edit')}
             </Button>
           </div>
         </div>
 
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Description</h3>
+            <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">{t('items.fields.description')}</h3>
             <p className="mt-1 text-secondary-900 dark:text-secondary-200">
-              {selectedItem.description || 'No description provided'}
+              {selectedItem.description || t('items.noDescription')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Owner</h3>
+              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">{t('items.detail.owner')}</h3>
               <p className="mt-1 text-secondary-900 dark:text-secondary-200 font-medium">
                 {selectedItem.owner.first_name} {selectedItem.owner.last_name}
               </p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Created</h3>
+              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">{t('items.detail.created')}</h3>
               <p className="mt-1 text-secondary-900 dark:text-secondary-200">
                 {new Date(selectedItem.created_at).toLocaleString()}
               </p>
@@ -146,7 +148,7 @@ const ItemsPage: React.FC = () => {
 
           {Object.keys(selectedItem.metadata).length > 0 && (
             <div className="pt-4 border-t border-secondary-100 dark:border-secondary-700">
-              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider mb-2">Metadata</h3>
+              <h3 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider mb-2">{t('items.detail.metadata')}</h3>
               <pre className="p-4 bg-secondary-50 dark:bg-secondary-900/50 rounded-lg text-xs overflow-auto text-secondary-700 dark:text-secondary-300 border border-secondary-200 dark:border-secondary-800">
                 {JSON.stringify(selectedItem.metadata, null, 2)}
               </pre>

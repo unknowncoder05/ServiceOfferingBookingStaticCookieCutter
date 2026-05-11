@@ -86,8 +86,8 @@ export function useFunctionCallNotifications({
               position: 'bottom-right',
               style: {
                 borderRadius: '8px',
-                background: 'var(--secondary-800, #1f2937)',
-                color: '#fff',
+                background: 'var(--secondary-800)',
+                color: 'var(--toast-foreground)',
                 fontSize: '14px',
               },
             }

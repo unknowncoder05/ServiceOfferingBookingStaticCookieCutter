@@ -213,7 +213,7 @@ class PasswordResetEmailTests(APITestCase):
     def setUp(self):
         self.mock_boto = patch("boto3.client").start()
         # Override to email method for these tests
-        self.pw_method_patch = patch("api.users.conf.UsersSettings.password_reset_method",
+        self.pw_method_patch = patch("pm_auth.api.users.conf.UsersSettings.password_reset_method",
                                      new_callable=lambda: property(lambda self: "email"))
         self.pw_method_patch.start()
         self.user, self.password = _make_active_user(email="reset.email@example.com")
@@ -223,7 +223,7 @@ class PasswordResetEmailTests(APITestCase):
 
     def test_forgot_password_existing_email(self):
         """Returns 200 for an existing email (sends email)."""
-        with patch("api.users.serializers.password_reset._send_email") as mock_send:
+        with patch("pm_auth.api.users.serializers.password_reset._send_email") as mock_send:
             resp = self.client.post(FORGOT_PW, {"email": self.user.email}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
         mock_send.assert_called_once()
@@ -280,7 +280,7 @@ class PasswordResetConsoleTests(APITestCase):
 
     def setUp(self):
         self.mock_boto = patch("boto3.client").start()
-        self.pw_method_patch = patch("api.users.conf.UsersSettings.password_reset_method",
+        self.pw_method_patch = patch("pm_auth.api.users.conf.UsersSettings.password_reset_method",
                                      new_callable=lambda: property(lambda self: "console"))
         self.pw_method_patch.start()
         self.user, self.password = _make_active_user(
@@ -294,7 +294,7 @@ class PasswordResetConsoleTests(APITestCase):
     def test_forgot_password_console_creates_token(self):
         from api.users.models import ExternalAuthenticationToken
         # Mock send_token at the signal's import site to avoid hitting real delivery logic
-        with patch("api.users.models.auth.send_token"):
+        with patch("pm_auth.api.users.models.auth.send_token"):
             resp = self.client.post(FORGOT_PW, {"phone_number": self.user.phone_number}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
         self.assertTrue(ExternalAuthenticationToken.objects.filter(user=self.user).exists())
@@ -305,7 +305,7 @@ class EmailFailureGracefulTests(APITestCase):
 
     def setUp(self):
         self.mock_boto = patch("boto3.client").start()
-        self.pw_method_patch = patch("api.users.conf.UsersSettings.password_reset_method",
+        self.pw_method_patch = patch("pm_auth.api.users.conf.UsersSettings.password_reset_method",
                                      new_callable=lambda: property(lambda self: "email"))
         self.pw_method_patch.start()
         self.user, _ = _make_active_user(email="graceful@example.com")
@@ -323,7 +323,7 @@ class EmailFailureGracefulTests(APITestCase):
         """Account recovery email failure must also degrade gracefully."""
         self.user.is_active = False
         self.user.save()
-        pw_rec_method = patch("api.users.conf.UsersSettings.password_reset_method",
+        pw_rec_method = patch("pm_auth.api.users.conf.UsersSettings.password_reset_method",
                               new_callable=lambda: property(lambda self: "email"))
         pw_rec_method.start()
         with patch("django.core.mail.send_mail", side_effect=Exception("SMTP down")):
@@ -336,7 +336,7 @@ class AccountRecoveryTests(APITestCase):
 
     def setUp(self):
         self.mock_boto = patch("boto3.client").start()
-        self.pw_method_patch = patch("api.users.conf.UsersSettings.password_reset_method",
+        self.pw_method_patch = patch("pm_auth.api.users.conf.UsersSettings.password_reset_method",
                                      new_callable=lambda: property(lambda self: "email"))
         self.pw_method_patch.start()
         self.user, _ = _make_active_user(email="recovery@example.com")
@@ -347,7 +347,7 @@ class AccountRecoveryTests(APITestCase):
         patch.stopall()
 
     def test_request_recovery_inactive_user(self):
-        with patch("api.users.serializers.password_reset._send_email"):
+        with patch("pm_auth.api.users.serializers.password_reset._send_email"):
             resp = self.client.post(REQ_REC, {"email": self.user.email}, format="json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, resp.data)
 

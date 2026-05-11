@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest",
+    "plugin:i18next/recommended"
+  ],
+  "rules": {
+    "i18next/no-literal-string": [
+      "error",
+      {
+        "markupOnly": true,
+        "onlyAttribute": [
+          "aria-label",
+          "title",
+          "placeholder"
+        ]
+      }
+    ]
+  }
+}

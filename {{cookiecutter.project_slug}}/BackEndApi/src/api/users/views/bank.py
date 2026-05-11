@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 
 # Models
 from api.users.models import Bank, BankAccountType
-from api.users.permissions import IsAdminPermission, CanCrudPermission
+from pm_auth.api.users.permissions import IsAdminPermission, CanCrudPermission
 # Serializers
 # Utils
 from api.users.serializers.bank_information import BankSerializer, BankAccountTypeSerializer

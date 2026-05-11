@@ -10,6 +10,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { RootState, AppDispatch } from '../../store';
 import {
   fetchItems,
@@ -30,6 +31,7 @@ interface ItemListProps {
 export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { items, isLoading, error } = useSelector((state: RootState) => state.items);
+  const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState<ItemStatus | 'all'>('all');
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
   }, [error, dispatch]);
 
   const handleArchive = async (id: number) => {
-    if (window.confirm('Are you sure you want to archive this item?')) {
+    if (window.confirm(t('items.confirm.archive'))) {
       await dispatch(archiveItem(id));
     }
   };
@@ -57,7 +59,7 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+    if (window.confirm(t('items.confirm.delete'))) {
       await dispatch(deleteItem(id));
     }
   };
@@ -94,11 +96,11 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">Items</h1>
+        <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">{t('items.title')}</h1>
         <Button
           onClick={onCreateItem}
         >
-          Create Item
+          {t('items.form.createAction')}
         </Button>
       </div>
 
@@ -118,7 +120,7 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
       {/* Filter */}
       <div className="flex items-center gap-2">
         <label htmlFor="status-filter" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
-          Filter by status:
+          {t('items.filters.status')}
         </label>
         <select
           id="status-filter"
@@ -126,19 +128,19 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
           onChange={(e) => setStatusFilter(e.target.value as ItemStatus | 'all')}
           className="border border-secondary-300 dark:border-secondary-600 rounded-md px-3 py-1.5 text-sm focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-secondary-800 text-secondary-900 dark:text-white"
         >
-          <option value="all">All</option>
-          <option value="draft">Draft</option>
-          <option value="active">Active</option>
-          <option value="archived">Archived</option>
+          <option value="all">{t('items.filters.all')}</option>
+          <option value="draft">{t('items.status.draft')}</option>
+          <option value="active">{t('items.status.active')}</option>
+          <option value="archived">{t('items.status.archived')}</option>
         </select>
       </div>
 
       {/* Items grid */}
       {filteredItems.length === 0 ? (
         <EmptyState 
-          title={items.length === 0 ? 'No items yet' : 'No matches found'}
-          description={items.length === 0 ? 'Create your first item to get started!' : 'Try adjusting your status filter.'}
-          action={items.length === 0 ? <Button onClick={onCreateItem}>Create Item</Button> : undefined}
+          title={items.length === 0 ? t('items.empty.noneTitle') : t('items.empty.filteredTitle')}
+          description={items.length === 0 ? t('items.empty.noneDescription') : t('items.empty.filteredDescription')}
+          action={items.length === 0 ? <Button onClick={onCreateItem}>{t('items.form.createAction')}</Button> : undefined}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -160,7 +162,7 @@ export const ItemList: React.FC<ItemListProps> = ({ onViewItem, onCreateItem }) 
         <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-2 text-sm text-secondary-600">Loading...</p>
+            <p className="mt-2 text-sm text-secondary-600">{t('app.loading')}</p>
           </div>
         </div>
       )}

@@ -21,6 +21,7 @@ import ComponentLibrary from './pages/debug/ComponentLibrary';
 import backendManager from './services/BackendManager';
 import environment from './config/environment';
 import NotFoundPage from './pages/NotFoundPage';
+import { useTranslation } from 'react-i18next';
 
 const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -31,6 +32,7 @@ const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({ element }) =>
 const AuthWrapper: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const { t } = useTranslation();
   const [isInitialized, setIsInitialized] = useState(false);
   const [backendHealthy, setBackendHealthy] = useState<boolean | null>(null);
 
@@ -67,7 +69,7 @@ const AuthWrapper: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-secondary-50 dark:bg-secondary-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-secondary-600 dark:text-secondary-400">Loading...</p>
+          <p className="text-secondary-600 dark:text-secondary-400">{t('app.loading')}</p>
         </div>
       </div>
     );
@@ -92,23 +94,23 @@ const AuthWrapper: React.FC = () => {
         position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { 
-            background: 'var(--secondary-800, #1f2937)', 
-            color: '#fff',
+          style: {
+            background: 'var(--secondary-800)',
+            color: 'var(--toast-foreground)',
             borderRadius: '0.5rem',
           },
           success: {
             duration: 3000,
-            iconTheme: { 
-              primary: 'var(--success-500, #22c55e)', 
-              secondary: '#fff' 
+            iconTheme: {
+              primary: 'var(--success-500)',
+              secondary: 'var(--toast-foreground)'
             },
           },
           error: {
             duration: 4000,
-            iconTheme: { 
-              primary: 'var(--danger-500, #ef4444)', 
-              secondary: '#fff' 
+            iconTheme: {
+              primary: 'var(--danger-500)',
+              secondary: 'var(--toast-foreground)'
             },
           },
         }}

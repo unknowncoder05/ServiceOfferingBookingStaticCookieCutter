@@ -18,10 +18,16 @@
 ## 4) Backlog to Execution
 1. Create/open backlog items in UI.
 2. Send item to developer agent from backlog flow.
-3. When UI behavior changes, update generated repo docs in the same change:
+3. Frontend work must pass the built-in UI guardrails before completion:
+   - `npm run lint:i18n` runs `eslint-plugin-i18next` to block untranslated JSX copy
+   - `npm run lint:styles` runs `stylelint` to block raw color values in normal stylesheet files
+   - `npm run ui:guardrails` runs those open-source linters plus the repo custom JSX/color audit
+   - `npm run test:e2e:ci` runs the guardrails plus Playwright visual checks and screenshot capture
+4. Dark-mode verification is part of the default E2E path. The visual guardrail spec writes light/dark screenshots that ProjectMaker can attach to execution results and now runs `@axe-core/playwright` accessibility checks on the same critical shells.
+5. When UI behavior changes, update generated repo docs in the same change:
    - `docs/UI_WORKFLOWS.md` for user flow/interaction changes
    - `docs/UI_DESIGN.md` for component/view design rules and states
-4. Review generated code changes and approve/reject.
+6. Review generated code changes and approve/reject.
 
 ## 5) Deployment Lifecycle
 1. Open deployments page and prepare discovery/config.

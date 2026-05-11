@@ -43,7 +43,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
         </button>
         <div className="flex items-center gap-2">
           <span className="text-xl font-bold text-primary-600 dark:text-primary-400">{process.env.REACT_APP_PROJECT_NAME || 'My App'}</span>
-          <span className="hidden sm:inline text-sm text-secondary-500 dark:text-secondary-400">Starter Template</span>
+          <span className="hidden sm:inline text-sm text-secondary-500 dark:text-secondary-400">{t('app.starterTemplate')}</span>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface Command {
   id: string;
@@ -14,12 +15,13 @@ export const CommandPalette: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const commands: Command[] = [
     {
       id: 'dashboard',
-      name: 'Go to Dashboard',
-      description: 'View your overview and statistics',
+      name: t('commandPalette.commands.dashboard.name'),
+      description: t('commandPalette.commands.dashboard.description'),
       shortcut: ['g', 'd'],
       action: () => navigate('/dashboard'),
       icon: (
@@ -30,8 +32,8 @@ export const CommandPalette: React.FC = () => {
     },
     {
       id: 'items',
-      name: 'View Items',
-      description: 'Manage your items and resources',
+      name: t('commandPalette.commands.items.name'),
+      description: t('commandPalette.commands.items.description'),
       shortcut: ['g', 'i'],
       action: () => navigate('/items'),
       icon: (
@@ -42,8 +44,8 @@ export const CommandPalette: React.FC = () => {
     },
     {
       id: 'settings',
-      name: 'Settings',
-      description: 'Account and application settings',
+      name: t('commandPalette.commands.settings.name'),
+      description: t('commandPalette.commands.settings.description'),
       shortcut: ['g', 's'],
       action: () => navigate('/settings'),
       icon: (
@@ -55,8 +57,8 @@ export const CommandPalette: React.FC = () => {
     },
     {
       id: 'debug-components',
-      name: 'Component Library',
-      description: 'Debug and preview all shared components',
+      name: t('commandPalette.commands.debug.name'),
+      description: t('commandPalette.commands.debug.description'),
       shortcut: ['d', 'c'],
       action: () => navigate('/debug/components'),
       icon: (
@@ -103,12 +105,12 @@ export const CommandPalette: React.FC = () => {
             autoFocus
             type="text"
             className="flex-1 ml-3 text-secondary-900 dark:text-white bg-transparent border-none focus:ring-0 sm:text-sm placeholder-secondary-400"
-            placeholder="Search commands..."
+            placeholder={t('commandPalette.searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <div className="flex items-center gap-1">
-            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs font-semibold text-secondary-500 bg-secondary-50 dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">Esc</kbd>
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs font-semibold text-secondary-500 bg-secondary-50 dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">{t('commandPalette.escapeKey')}</kbd>
           </div>
         </div>
 
@@ -143,7 +145,7 @@ export const CommandPalette: React.FC = () => {
             ))
           ) : (
             <div className="px-4 py-8 text-center">
-              <p className="text-sm text-secondary-500">No commands found for "{query}"</p>
+              <p className="text-sm text-secondary-500">{t('commandPalette.noResults', { query })}</p>
             </div>
           )}
         </div>
@@ -151,10 +153,10 @@ export const CommandPalette: React.FC = () => {
         <div className="px-4 py-3 bg-secondary-50 dark:bg-secondary-800/50 border-t border-secondary-100 dark:border-secondary-700 flex justify-between items-center">
           <div className="flex gap-4">
             <span className="flex items-center text-[10px] text-secondary-400">
-              <kbd className="mr-1.5 px-1 py-0.5 bg-white dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">↵</kbd> Select
+              <kbd className="mr-1.5 px-1 py-0.5 bg-white dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">{t('commandPalette.enterKey')}</kbd> {t('commandPalette.select')}
             </span>
             <span className="flex items-center text-[10px] text-secondary-400">
-              <kbd className="mr-1.5 px-1 py-0.5 bg-white dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">↑↓</kbd> Navigate
+              <kbd className="mr-1.5 px-1 py-0.5 bg-white dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 rounded">{t('commandPalette.arrowKeys')}</kbd> {t('commandPalette.navigate')}
             </span>
           </div>
         </div>

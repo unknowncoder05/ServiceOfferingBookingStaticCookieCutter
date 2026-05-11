@@ -8,11 +8,11 @@ from rest_framework.viewsets import GenericViewSet
 
 # Models
 from api.users.models import DocumentType
-from api.users.permissions import IsAdminPermission, CanCrudPermission
+from pm_auth.api.users.permissions import IsAdminPermission, CanCrudPermission
 # Serializers
 # Utils
 from api.users.serializers.identity_files import DocumentsTypeSerializer
-from api.utils.pagination import StartEndPagination
+from pm_utils.api.utils.pagination import StartEndPagination
 
 
 class DocumentTypeViewSet(mixins.ListModelMixin, GenericViewSet):

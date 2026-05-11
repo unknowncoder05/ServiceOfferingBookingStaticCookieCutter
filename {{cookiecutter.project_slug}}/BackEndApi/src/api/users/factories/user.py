@@ -4,7 +4,7 @@ import random
 import factory
 from faker import Factory as FakerFactory
 
-from api.users.roles import UserRoles
+from pm_auth.api.users.roles import UserRoles
 
 faker = FakerFactory.create()
 

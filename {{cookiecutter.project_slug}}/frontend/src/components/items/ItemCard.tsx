@@ -7,6 +7,7 @@
  * - Event handler props for actions
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ItemListItem, ItemStatus } from '../../types/items';
 import { Card, Badge, Button } from '../shared';
 
@@ -24,12 +25,6 @@ const statusVariants: Record<ItemStatus, 'secondary' | 'primary' | 'info'> = {
   archived: 'info',
 };
 
-const statusLabels: Record<ItemStatus, string> = {
-  draft: 'Draft',
-  active: 'Active',
-  archived: 'Archived',
-};
-
 export const ItemCard: React.FC<ItemCardProps> = ({
   item,
   onView,
@@ -37,6 +32,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   onActivate,
   onDelete,
 }) => {
+  const { t } = useTranslation();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -52,13 +48,13 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           {item.name}
         </h3>
         <Badge variant={statusVariants[item.status]} className="ml-2">
-          {statusLabels[item.status]}
+          {t(`items.status.${item.status}`)}
         </Badge>
       </div>
 
       <div className="text-sm text-secondary-500 dark:text-secondary-400 mb-4">
-        <p>By {item.owner_name}</p>
-        <p>Created {formatDate(item.created_at)}</p>
+        <p>{t('items.card.by', { owner: item.owner_name })}</p>
+        <p>{t('items.card.created', { date: formatDate(item.created_at) })}</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -66,7 +62,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           size="sm"
           onClick={() => onView(item.id)}
         >
-          View
+          {t('common.view')}
         </Button>
 
         {item.status !== 'archived' && (
@@ -74,7 +70,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             size="sm"
             onClick={() => onArchive(item.id)}
           >
-            Archive
+            {t('common.archive')}
           </Button>
         )}
 
@@ -83,7 +79,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             size="sm"
             onClick={() => onActivate(item.id)}
           >
-            Activate
+            {t('common.activate')}
           </Button>
         )}
 
@@ -92,7 +88,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           variant="danger"
           onClick={() => onDelete(item.id)}
         >
-          Delete
+          {t('common.delete')}
         </Button>
       </div>
     </Card>

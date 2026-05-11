@@ -72,6 +72,10 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'djmoney',
     'djmoney.contrib.exchange',
+    'pm_auth',
+    'pm_utils',
+    'pm_billing',
+    'pm_ai',
 
     "admin_interface",
     "colorfield",
@@ -81,7 +85,6 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'api.users.apps.UsersAppConfig',
     'api.items.apps.ItemsConfig',
-    'api.billing.apps.BillingAppConfig',
     'api.ai.apps.AIConfig',
     'api.ws.apps.WebSocketConfig',
 ]
@@ -192,11 +195,11 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "api.users.auth.authentication.CookieOrHeaderAuthentication",
+        "pm_auth.api.users.auth.authentication.CookieOrHeaderAuthentication",
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
-    'EXCEPTION_HANDLER': 'api.utils.exceptions.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'pm_utils.api.utils.exceptions.custom_exception_handler',
 }
 
 # AUTOFIELD

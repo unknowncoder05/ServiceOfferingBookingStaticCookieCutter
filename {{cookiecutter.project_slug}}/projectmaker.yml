@@ -28,9 +28,23 @@ commands:
 
   createsuperuser:
     label: "Create Superuser"
-    description: "Create a Django admin superuser (interactive — check container logs)."
-    run: "python manage.py createsuperuser"
+    description: "Create a Django admin superuser non-interactively."
+    run: "DJANGO_SUPERUSER_PASSWORD={password} python manage.py createsuperuser --noinput --username {username} --email {email}"
     service: backend
+    params:
+      username:
+        type: string
+        label: "Username"
+        required: true
+        default: "admin"
+      email:
+        type: email
+        label: "Email"
+        required: true
+      password:
+        type: secret
+        label: "Password"
+        required: true
 
   test:
     label: "Run Tests"
@@ -60,8 +74,14 @@ smoke_test:
     - label: "Test suite"
       run: "python manage.py test --verbosity 2 --keepdb"
       service: backend
+    - label: "Package Tests (Auth)"
+      run: "python manage.py test pm_auth --verbosity 2 --noinput"
+      service: backend
+    - label: "Package Tests (Billing)"
+      run: "python manage.py test pm_billing --verbosity 2 --noinput"
+      service: backend
     - label: "E2E Tests"
-      run: "npm install && ./node_modules/.bin/playwright test"
+      run: "npm install && npm run test:e2e:ci"
       service: playwright
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -498,6 +518,24 @@ services:
           type: color
           section: Theme
           default: "{{resources.theme.info_600}}"
+  playwright:
+    type: internal
+    image: mcr.microsoft.com/playwright:v1.59.1-jammy
+    command: sh -c "npm install && ./node_modules/.bin/playwright test"
+    depends_on:
+      - frontend
+    volumes:
+      - ./frontend:/app
+      - playwright_node_modules:/app/node_modules
+    env:
+      REACT_APP_FRONTEND_URL:
+        type: string
+        label: "Playwright Frontend URL"
+        description: "Internal frontend URL used by the Playwright verification service."
+        section: Application
+        required: false
+        default: "http://frontend:80"
+
   backend:
     type: backend
     order: 1

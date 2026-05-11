@@ -9,6 +9,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { RootState, AppDispatch } from '../../store';
 import { createItem, updateItem, clearError } from '../../store/itemsSlice';
 import { Item, ItemStatus, CreateItemRequest, UpdateItemRequest } from '../../types/items';
@@ -22,6 +23,7 @@ interface ItemFormProps {
 export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.items);
+  const { t } = useTranslation();
 
   const [name, setName] = useState(item?.name || '');
   const [description, setDescription] = useState(item?.description || '');
@@ -51,11 +53,11 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
 
   const validateForm = (): boolean => {
     if (!name.trim()) {
-      setValidationError('Name is required');
+      setValidationError(t('items.validation.nameRequired'));
       return false;
     }
     if (name.length > 255) {
-      setValidationError('Name must be less than 255 characters');
+      setValidationError(t('items.validation.nameTooLong'));
       return false;
     }
     setValidationError(null);
@@ -95,7 +97,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-secondary-900 mb-4">
-          {isEditMode ? 'Edit Item' : 'Create New Item'}
+          {isEditMode ? t('items.form.editTitle') : t('items.form.createTitle')}
         </h2>
       </div>
 
@@ -109,7 +111,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
       {/* Name field */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-secondary-700 mb-1">
-          Name <span className="text-red-500">*</span>
+          {t('items.fields.name')} <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -117,7 +119,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
-          placeholder="Enter item name"
+          placeholder={t('items.placeholders.name')}
           maxLength={255}
           disabled={isLoading}
         />
@@ -126,7 +128,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
       {/* Description field */}
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-secondary-700 mb-1">
-          Description
+          {t('items.fields.description')}
         </label>
         <textarea
           id="description"
@@ -134,7 +136,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
           className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
-          placeholder="Enter item description (optional)"
+          placeholder={t('items.placeholders.description')}
           disabled={isLoading}
         />
       </div>
@@ -142,7 +144,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
       {/* Status field */}
       <div>
         <label htmlFor="status" className="block text-sm font-medium text-secondary-700 mb-1">
-          Status
+          {t('items.fields.status')}
         </label>
         <select
           id="status"
@@ -151,9 +153,9 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           className="w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
           disabled={isLoading}
         >
-          <option value="draft">Draft</option>
-          <option value="active">Active</option>
-          <option value="archived">Archived</option>
+          <option value="draft">{t('items.status.draft')}</option>
+          <option value="active">{t('items.status.active')}</option>
+          <option value="archived">{t('items.status.archived')}</option>
         </select>
       </div>
 
@@ -165,7 +167,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
           className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           disabled={isLoading}
         >
-          Cancel
+          {t('common.cancel')}
         </button>
         <button
           type="submit"
@@ -178,12 +180,12 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSuccess, onCancel })
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              Saving...
+              {t('common.saving')}
             </span>
           ) : isEditMode ? (
-            'Update Item'
+            t('items.form.updateAction')
           ) : (
-            'Create Item'
+            t('items.form.createAction')
           )}
         </button>
       </div>

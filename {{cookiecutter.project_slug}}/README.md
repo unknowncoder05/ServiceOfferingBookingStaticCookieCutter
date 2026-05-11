@@ -167,7 +167,7 @@ make logs           # Tail container logs
 # ProjectMaker deployment commands (from UI or CLI)
 migrate             # python manage.py migrate --noinput
 collectstatic       # python manage.py collectstatic --noinput
-createsuperuser     # python manage.py createsuperuser
+createsuperuser     # DJANGO_SUPERUSER_PASSWORD=... python manage.py createsuperuser --noinput --username ... --email ...
 test                # pytest
 \`\`\`
 
