@@ -24,10 +24,11 @@
    - `npm run ui:guardrails` runs those open-source linters plus the repo custom JSX/color audit
    - `npm run test:e2e:ci` runs the guardrails plus Playwright visual checks and screenshot capture
 4. Dark-mode verification is part of the default E2E path. The visual guardrail spec writes light/dark screenshots that ProjectMaker can attach to execution results and now runs `@axe-core/playwright` accessibility checks on the same critical shells.
-5. When UI behavior changes, update generated repo docs in the same change:
+5. Treat large UI surfaces such as sections, panels, cards, tables, modals, and major form containers as theme-safe surfaces by default. Do not leave raw bright backgrounds on those surfaces in dark mode, even if a `dark:*` override exists. Use shared theme tokens/primitives or an explicit exception marker such as `data-theme-exception="inverted-surface"` for intentional inverted treatments.
+6. When UI behavior changes, update generated repo docs in the same change:
    - `docs/UI_WORKFLOWS.md` for user flow/interaction changes
    - `docs/UI_DESIGN.md` for component/view design rules and states
-6. Review generated code changes and approve/reject.
+7. Review generated code changes and approve/reject.
 
 ## 5) Deployment Lifecycle
 1. Open deployments page and prepare discovery/config.

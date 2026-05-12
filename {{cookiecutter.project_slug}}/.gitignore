@@ -78,6 +78,7 @@ htmlcov/
 .nox/
 .hypothesis/
 .pytest_cache/
+playwright-report/
 cover/
 *.cover
 .cache
