@@ -165,15 +165,18 @@ if SENTRY_DSN and ENVIRONMENT == 'PRODUCTION':
 # Media
 # aws settings
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', None)
+AWS_PRIVATE_STORAGE_BUCKET_NAME = os.getenv('AWS_PRIVATE_STORAGE_BUCKET_NAME', AWS_STORAGE_BUCKET_NAME)
 AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 # s3 media settings
 AWS_LOCATION = 'media'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'api.utils.storage.PublicMediaStorage'
+PRIVATE_FILE_STORAGE = 'api.utils.storage.PrivateMediaStorage'
 
 PUBLIC_MEDIA_LOCATION = 'media'
+PRIVATE_MEDIA_LOCATION = 'private-media'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
 
 # CORS

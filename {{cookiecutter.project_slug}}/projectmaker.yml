@@ -122,6 +122,12 @@ resources:
     buckets:
       - key: media
         provider: s3
+        access: public
+        public_read: true
+      - key: private_media
+        provider: s3
+        access: private
+        public_read: false
 
 services:
 
@@ -132,6 +138,8 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   frontend:
     type: frontend
+    cpu: 0.5
+    memory: 512
     order: 2
     build:
       context: ./frontend
@@ -520,6 +528,8 @@ services:
           default: "{{resources.theme.info_600}}"
   playwright:
     type: internal
+    cpu: 0.25
+    memory: 512
     image: mcr.microsoft.com/playwright:v1.59.1-jammy
     command: sh -c "npm install && ./node_modules/.bin/playwright test"
     depends_on:
@@ -538,6 +548,8 @@ services:
 
   backend:
     type: backend
+    cpu: 1
+    memory: 1024
     order: 1
     build:
       context: ./BackEndApi
@@ -958,12 +970,27 @@ services:
             label: "Nombre del bucket S3"
             description: "Nombre del bucket S3 donde se almacenan los archivos multimedia subidos por usuarios."
 
+      AWS_PRIVATE_STORAGE_BUCKET_NAME:
+        type: string
+        label: "Private S3 Bucket Name"
+        description: "Name of the private S3 bucket used for non-public user uploads."
+        placeholder: "my-app-private-media-prod"
+        section: Storage
+        required: false
+        default: ""
+        translations:
+          es:
+            label: "Nombre del bucket S3 privado"
+            description: "Nombre del bucket S3 privado para archivos subidos que no deben ser públicos."
+
   # ──────────────────────────────────────────────────────────────────────────
   # Celery Worker — processes async background tasks
   # Shares most configuration with the backend service.
   # ──────────────────────────────────────────────────────────────────────────
   celery-worker:
     type: worker
+    cpu: 0.5
+    memory: 512
     order: 3
     build:
       context: ./BackEndApi
@@ -1142,6 +1169,8 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   celery-beat:
     type: worker
+    cpu: 0.5
+    memory: 512
     order: 4
     build:
       context: ./BackEndApi
@@ -1305,6 +1334,8 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   postgres:
     type: internal
+    cpu: 0.25
+    memory: 512
     order: 5
     image: postgres:15-alpine
     volumes:
@@ -1361,6 +1392,8 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   redis:
     type: internal
+    cpu: 0.25
+    memory: 512
     order: 6
     image: redis:7-alpine
     command: redis-server --appendonly yes

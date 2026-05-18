@@ -184,6 +184,43 @@ BackEndApi/.envs/{env}/
 
 See \`projectmaker.yml\` for the full schema with labels and descriptions.
 
+## Public vs Private S3 Uploads
+
+This template provisions and wires two S3 buckets:
+
+- \`AWS_STORAGE_BUCKET_NAME\`: public media bucket (for files that may be publicly accessible).
+- \`AWS_PRIVATE_STORAGE_BUCKET_NAME\`: private media bucket (for sensitive files; never publicly readable).
+
+Service resource reservations are declared per service in `projectmaker.yml` and `projectmaker.dev.yml` using:
+
+- `cpu`: CPU cores requested by the service (e.g. `0.5`, `1`)
+- `memory`: RAM in MB requested by the service (e.g. `512`, `1024`)
+
+Backend storage classes:
+
+- \`api.utils.storage.PublicMediaStorage\` (default for public uploads)
+- \`api.utils.storage.PrivateMediaStorage\` (private bucket + signed URLs)
+
+Use private storage explicitly on sensitive fields:
+
+\`\`\`python
+from django.db import models
+from api.utils.storage import PrivateMediaStorage
+
+class IdentityDocument(models.Model):
+    file = models.FileField(upload_to='identity/%Y/%m/%d/', storage=PrivateMediaStorage())
+\`\`\`
+
+Use public storage for non-sensitive assets:
+
+\`\`\`python
+from django.db import models
+from api.utils.storage import PublicMediaStorage
+
+class Profile(models.Model):
+    avatar = models.ImageField(upload_to='avatars/%Y/%m/%d/', storage=PublicMediaStorage())
+\`\`\`
+
 ---
 
 ## Codebase Status

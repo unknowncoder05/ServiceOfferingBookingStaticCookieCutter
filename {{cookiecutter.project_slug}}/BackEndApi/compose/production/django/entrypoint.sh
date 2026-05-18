@@ -9,8 +9,8 @@ set -e
 # Trap SIGTERM signal for graceful shutdown
 trap 'echo "Received SIGTERM, syncing database..."; /db-sync.sh shutdown; exit 0' SIGTERM
 
-# Start the application in the background
-/start &
+# Start the requested command (from compose) or default to /start
+"${@:-/start}" &
 
 # Get the PID of the background process
 APP_PID=$!

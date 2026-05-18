@@ -80,6 +80,12 @@ resources:
     buckets:
       - key: media
         provider: s3
+        access: public
+        public_read: true
+      - key: private_media
+        provider: s3
+        access: private
+        public_read: false
 
 services:
 
@@ -89,6 +95,8 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   frontend:
     type: frontend
+    cpu: 0.5
+    memory: 512
     order: 2
     build:
       context: ./frontend
@@ -108,7 +116,7 @@ services:
     env:
 
       # ── Application ──────────────────────────────────────────────────────
-        REACT_APP_PROJECT_NAME:
+      REACT_APP_PROJECT_NAME:
           type: string
           section: Application
           default: "{{project_name}}"
@@ -396,6 +404,8 @@ services:
           default: "{{resources.theme.info_600}}"
   playwright:
     type: internal
+    cpu: 0.25
+    memory: 512
     image: mcr.microsoft.com/playwright:v1.59.1-jammy
     command: sh -c "npm install && ./node_modules/.bin/playwright test"
     depends_on:
@@ -414,6 +424,8 @@ services:
 
   backend:
     type: backend
+    cpu: 1
+    memory: 1024
     order: 1
     build:
       context: ./BackEndApi
@@ -674,6 +686,13 @@ services:
         required: false
         default: ""
 
+      AWS_PRIVATE_STORAGE_BUCKET_NAME:
+        type: string
+        label: "Private S3 Bucket Name"
+        section: Storage
+        required: false
+        default: ""
+
       # ── Monitoring ─────────────────────────────────────────────────────────
       SENTRY_DSN:
         type: secret
@@ -687,6 +706,8 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   celery-worker:
     type: worker
+    cpu: 0.5
+    memory: 512
     order: 3
     build:
       context: ./BackEndApi
@@ -811,6 +832,8 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   celery-beat:
     type: worker
+    cpu: 0.5
+    memory: 512
     order: 4
     build:
       context: ./BackEndApi
@@ -928,6 +951,8 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   postgres:
     type: internal
+    cpu: 0.25
+    memory: 512
     order: 5
     image: postgres:15-alpine
     env:
