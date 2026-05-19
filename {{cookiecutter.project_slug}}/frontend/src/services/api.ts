@@ -26,6 +26,11 @@ import {
   CreateItemRequest,
   UpdateItemRequest,
 } from '../types/items';
+import {
+  Service,
+  Testimonial,
+  Booking,
+} from '../types/serviceBookings';
 import backendManager from './BackendManager';
 import env from '../config/environment';
 
@@ -246,6 +251,35 @@ class ApiService {
 
   async activateItem(id: number): Promise<AxiosResponse<Item>> {
     return this.api.post(`/items/${id}/activate/`);
+  }
+
+  // ==================================================================
+  // SERVICE BOOKING ENDPOINTS
+  // ==================================================================
+  async getServices(): Promise<AxiosResponse<Service[]>> {
+    return this.api.get('/services/');
+  }
+
+  async getTestimonials(): Promise<AxiosResponse<Testimonial[]>> {
+    return this.api.get('/testimonials/');
+  }
+
+  async createBooking(data: FormData): Promise<AxiosResponse<Booking>> {
+    return this.api.post('/bookings/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  }
+
+  async getBookings(): Promise<AxiosResponse<any>> {
+    return this.api.get('/bookings/');
+  }
+
+  async confirmBooking(id: number): Promise<AxiosResponse<Booking>> {
+    return this.api.post(`/bookings/${id}/confirm/`);
+  }
+
+  async rejectBooking(id: number): Promise<AxiosResponse<Booking>> {
+    return this.api.post(`/bookings/${id}/reject/`);
   }
 }
 

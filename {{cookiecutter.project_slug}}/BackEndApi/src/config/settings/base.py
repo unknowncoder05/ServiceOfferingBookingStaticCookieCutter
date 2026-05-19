@@ -85,6 +85,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'api.users.apps.UsersAppConfig',
     'api.items.apps.ItemsConfig',
+    'api.service_bookings.apps.ServiceBookingsConfig',
     'api.ai.apps.AIConfig',
     'api.ws.apps.WebSocketConfig',
 ]

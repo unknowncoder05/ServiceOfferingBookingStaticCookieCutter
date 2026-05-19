@@ -1,8 +1,8 @@
 {
-  "project_name": "My Professional App",
+  "project_name": "Service Offering Platform",
   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "project_slug_dashed": "{{ cookiecutter.project_slug.replace('_', '-') }}",
-  "description": "A full-stack web application",
+  "description": "A full-stack service booking web application",
   "author_name": "Your Name",
   "author_email": "your@email.com",
   "domain_name": "example.com",

@@ -14,6 +14,8 @@ import VerifyLogin from './components/VerifyLogin';
 import ServerDown from './pages/ServerDown';
 import ServerStartPage from './pages/ServerStartPage';
 import HomePage from './pages/HomePage';
+import ServiceHomePage from './pages/ServiceHomePage';
+import ServiceAdminPage from './pages/ServiceAdminPage';
 import Dashboard from './pages/Dashboard';
 import ItemsPage from './pages/ItemsPage';
 import SettingsPage from './pages/SettingsPage';
@@ -134,6 +136,7 @@ const AuthWrapper: React.FC = () => {
         />
 
         <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+        <Route path="/service-admin" element={<PrivateRoute element={<ServiceAdminPage />} />} />
         <Route path="/items" element={<PrivateRoute element={<ItemsPage />} />} />
         <Route path="/items/:id" element={<PrivateRoute element={<ItemsPage />} />} />
         <Route path="/settings" element={<PrivateRoute element={<SettingsPage />} />} />
@@ -142,7 +145,8 @@ const AuthWrapper: React.FC = () => {
         <Route path="/server-down" element={<ServerDown key="server-down" />} />
         <Route path="/start-server" element={<ServerStartPage key="start-server" />} />
 
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<ServiceHomePage />} />
+        <Route path="/legacy-home" element={<HomePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
