@@ -4,10 +4,10 @@ This file tracks the implemented user-facing workflows for the Base Ephemeral te
 
 ## Flow: Public Landing To Authentication
 - Status: implemented
-- Last updated: 2026-05-03
+- Last updated: 2026-06-07
 - Entry points: `/`, `/login`, `/signup`
 - Steps:
-  1. Anonymous users land on `HomePage`.
+  1. Anonymous users land on `ServiceHomePage`.
   2. Top-right actions route to `/login` or `/signup`.
   3. `AuthPage` swaps between `LoginForm` and `SignUpForm` based on pathname.
   4. Successful auth redirects to the guarded destination or `/dashboard`.
@@ -15,12 +15,12 @@ This file tracks the implemented user-facing workflows for the Base Ephemeral te
   - Initial app bootstrap shows a full-screen spinner while auth state resolves.
   - Auth forms own their validation and API errors.
 - Dependencies:
-  - `frontend/src/pages/HomePage.tsx`
+  - `frontend/src/pages/ServiceHomePage.tsx`
   - `frontend/src/pages/AuthPage.tsx`
   - `frontend/src/components/LoginForm.tsx`
   - `frontend/src/components/SignUpForm.tsx`
 - Notes:
-  - The landing page is marketing-style and should stay lightweight.
+  - The landing page is service-booking oriented and should stay lightweight.
   - Auth route switching is path-driven, not modal-driven.
 
 ## Flow: OTP Verification

@@ -52,7 +52,7 @@
     },
     "hero": {
       "title": "{{cookiecutter.project_name}}",
-      "subtitle": "A production-ready starting point. Authentication, real-time updates, async tasks, and cloud deployment — all wired up and ready to go.",
+      "subtitle": "A focused service booking experience with public service content and an admin workspace.",
       "ctaSignup": "Get started",
       "ctaLogin": "Log in",
       "ctaDashboard": "Go to dashboard"
@@ -113,29 +113,29 @@
     }
   },
   "dashboard": {
-    "badge": "Cookiecutter Template",
+    "badge": "Service workspace",
     "welcome": "Welcome to {{cookiecutter.project_name}}",
-    "subtitle": "The beginning of something great",
+    "subtitle": "Manage services, requests, and account settings from one place.",
     "loggedInAs": "Logged in as",
-    "features": "What's included",
     "cta": {
       "items": "Browse Items",
       "settings": "Settings"
+    },
+    "actions": {
+      "label": "Workspace actions",
+      "serviceAdmin": {
+        "title": "Review bookings",
+        "description": "Open the service admin area to manage requests, services, and testimonials."
+      },
+      "items": {
+        "title": "Manage example items",
+        "description": "Use the starter resource area for internal records or replace it with your domain model."
+      },
+      "settings": {
+        "title": "Account settings",
+        "description": "Update account preferences and application-level configuration."
+      }
     }
-  },
-  "features": {
-    "auth": "Authentication",
-    "authDesc": "JWT-based user auth with signup, login, token refresh, and optional OTP via SMS or WhatsApp.",
-    "items": "Items CRUD",
-    "itemsDesc": "A ready-to-use example resource with full create, read, update, and delete support via REST API.",
-    "realtime": "Real-time WebSockets",
-    "realtimeDesc": "Django Channels + WebSocket service for live bidirectional updates between client and server.",
-    "async": "Async Tasks",
-    "asyncDesc": "Celery workers and beat scheduler for background processing and scheduled jobs.",
-    "cloud": "Cloud Ready",
-    "cloudDesc": "Terraform infrastructure, AWS ECS on-demand backend, S3 persistence, and one-command deploy.",
-    "darkMode": "Dark Mode & i18n",
-    "darkModeDesc": "Built-in dark mode and multi-language support — just add translation keys and go."
   },
   "items": {
     "title": "Items",
@@ -234,5 +234,51 @@
   "theme": {
     "light": "Switch to light mode",
     "dark": "Switch to dark mode"
+  },
+  "service": {
+    "home": {
+      "title": "Service Offering Website",
+      "nav": {
+        "login": "Login",
+        "admin": "Admin"
+      },
+      "hero": {
+        "title": "Clear outcomes, professionally delivered.",
+        "subtitle": "Service presentation, social proof, and direct booking flow."
+      },
+      "sections": {
+        "services": "Services",
+        "testimonials": "Testimonials",
+        "booking": "Book a Service"
+      },
+      "form": {
+        "submit": "Submit Reservation"
+      },
+      "status": {
+        "loadError": "Unable to load content right now.",
+        "submitSuccess": "Reservation submitted successfully.",
+        "submitError": "Failed to submit reservation. Please try again."
+      }
+    },
+    "admin": {
+      "title": "Reservations Admin",
+      "columns": {
+        "created": "Created",
+        "name": "Name",
+        "email": "Email",
+        "service": "Service",
+        "slot": "Slot",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "confirm": "Confirm",
+        "reject": "Reject"
+      },
+      "status": {
+        "loadError": "Failed to load bookings.",
+        "updateError": "Failed to update booking status."
+      }
+    }
   }
 }

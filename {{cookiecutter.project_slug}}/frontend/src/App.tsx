@@ -13,7 +13,6 @@ import VerifyAccount from './components/VerifyAccount';
 import VerifyLogin from './components/VerifyLogin';
 import ServerDown from './pages/ServerDown';
 import ServerStartPage from './pages/ServerStartPage';
-import HomePage from './pages/HomePage';
 import ServiceHomePage from './pages/ServiceHomePage';
 import ServiceAdminPage from './pages/ServiceAdminPage';
 import Dashboard from './pages/Dashboard';
@@ -71,7 +70,7 @@ const AuthWrapper: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-secondary-50 dark:bg-secondary-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-secondary-600 dark:text-secondary-400">{t('app.loading')}</p>
+          <p className="text-secondary-600 dark:text-secondary-300">{t('app.loading')}</p>
         </div>
       </div>
     );
@@ -146,7 +145,6 @@ const AuthWrapper: React.FC = () => {
         <Route path="/start-server" element={<ServerStartPage key="start-server" />} />
 
         <Route path="/" element={<ServiceHomePage />} />
-        <Route path="/legacy-home" element={<HomePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

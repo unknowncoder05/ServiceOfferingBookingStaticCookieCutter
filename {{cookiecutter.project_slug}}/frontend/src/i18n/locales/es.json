@@ -52,7 +52,7 @@
     },
     "hero": {
       "title": "{{cookiecutter.project_name}}",
-      "subtitle": "Un punto de partida listo para producción. Autenticación, actualizaciones en tiempo real, tareas asíncronas y despliegue en la nube — todo configurado y listo para usar.",
+      "subtitle": "Una experiencia enfocada en reservas de servicios con contenido publico y un espacio administrativo.",
       "ctaSignup": "Comenzar",
       "ctaLogin": "Iniciar sesión",
       "ctaDashboard": "Ir al inicio"
@@ -113,29 +113,29 @@
     }
   },
   "dashboard": {
-    "badge": "Plantilla Cookiecutter",
+    "badge": "Espacio de servicios",
     "welcome": "Bienvenido a {{cookiecutter.project_name}}",
-    "subtitle": "El comienzo de algo grandioso",
+    "subtitle": "Gestiona servicios, solicitudes y ajustes de cuenta desde un solo lugar.",
     "loggedInAs": "Sesión iniciada como",
-    "features": "Qué incluye",
     "cta": {
       "items": "Ver Elementos",
       "settings": "Configuración"
+    },
+    "actions": {
+      "label": "Acciones del espacio",
+      "serviceAdmin": {
+        "title": "Revisar reservas",
+        "description": "Abre el panel de servicios para gestionar solicitudes, servicios y testimonios."
+      },
+      "items": {
+        "title": "Gestionar elementos de ejemplo",
+        "description": "Usa el recurso inicial para registros internos o reemplázalo por tu modelo de dominio."
+      },
+      "settings": {
+        "title": "Ajustes de cuenta",
+        "description": "Actualiza preferencias de cuenta y configuración de la aplicación."
+      }
     }
-  },
-  "features": {
-    "auth": "Autenticación",
-    "authDesc": "Autenticación JWT con registro, inicio de sesión, renovación de tokens y OTP opcional por SMS o WhatsApp.",
-    "items": "CRUD de Elementos",
-    "itemsDesc": "Un recurso de ejemplo listo para usar con soporte completo de creación, lectura, actualización y eliminación.",
-    "realtime": "WebSockets en tiempo real",
-    "realtimeDesc": "Django Channels + servicio WebSocket para actualizaciones bidireccionales en vivo entre cliente y servidor.",
-    "async": "Tareas asíncronas",
-    "asyncDesc": "Workers de Celery y planificador beat para procesamiento en segundo plano y tareas programadas.",
-    "cloud": "Listo para la nube",
-    "cloudDesc": "Infraestructura con Terraform, backend bajo demanda en AWS ECS, persistencia en S3 y despliegue en un comando.",
-    "darkMode": "Modo oscuro e i18n",
-    "darkModeDesc": "Soporte integrado de modo oscuro y múltiples idiomas — solo agrega claves de traducción y listo."
   },
   "items": {
     "title": "Elementos",
@@ -234,5 +234,51 @@
   "theme": {
     "light": "Cambiar a modo claro",
     "dark": "Cambiar a modo oscuro"
+  },
+  "service": {
+    "home": {
+      "title": "Sitio de servicios",
+      "nav": {
+        "login": "Iniciar sesión",
+        "admin": "Admin"
+      },
+      "hero": {
+        "title": "Resultados claros, entregados profesionalmente.",
+        "subtitle": "Presentación de servicios, prueba social y flujo directo de reservas."
+      },
+      "sections": {
+        "services": "Servicios",
+        "testimonials": "Testimonios",
+        "booking": "Reservar un servicio"
+      },
+      "form": {
+        "submit": "Enviar reserva"
+      },
+      "status": {
+        "loadError": "No se pudo cargar el contenido en este momento.",
+        "submitSuccess": "Reserva enviada correctamente.",
+        "submitError": "No se pudo enviar la reserva. Inténtalo de nuevo."
+      }
+    },
+    "admin": {
+      "title": "Administración de reservas",
+      "columns": {
+        "created": "Creada",
+        "name": "Nombre",
+        "email": "Correo",
+        "service": "Servicio",
+        "slot": "Horario",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "confirm": "Confirmar",
+        "reject": "Rechazar"
+      },
+      "status": {
+        "loadError": "No se pudieron cargar las reservas.",
+        "updateError": "No se pudo actualizar el estado de la reserva."
+      }
+    }
   }
 }

@@ -57,13 +57,13 @@ const VerifyLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-secondary-50 dark:bg-secondary-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-secondary-900">
             Verify Your Login
           </h2>
-          <p className="mt-2 text-center text-sm text-secondary-600">
+          <p className="mt-2 text-center text-sm text-secondary-600 dark:text-secondary-300">
             Enter the verification code sent to your phone
           </p>
         </div>
@@ -113,7 +113,7 @@ const VerifyLogin: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-700 hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center">
@@ -132,7 +132,7 @@ const VerifyLogin: React.FC = () => {
             type="button"
             onClick={handleResendCode}
             disabled={isLoading || !phoneNumber.trim()}
-            className="text-sm text-primary-600 hover:text-primary-500 disabled:text-secondary-400"
+            className="text-sm text-primary-600 hover:text-primary-500 disabled:text-secondary-600 dark:text-secondary-300"
           >
             Resend verification code
           </button>
@@ -141,7 +141,7 @@ const VerifyLogin: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="text-sm text-secondary-600 hover:text-secondary-500"
+              className="text-sm text-secondary-600 dark:text-secondary-300 hover:text-secondary-500"
             >
               Back to login
             </button>

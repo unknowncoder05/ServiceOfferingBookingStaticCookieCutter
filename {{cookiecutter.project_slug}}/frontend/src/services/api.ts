@@ -4,7 +4,7 @@
  * This module provides:
  * - Axios instance with interceptors for auth and error handling
  * - Authentication endpoints (login, signup, etc.)
- * - Items CRUD endpoints (example module)
+ * - Example resource endpoints
  * - Generic HTTP methods for extending the API
  */
 import axios, { AxiosInstance, AxiosResponse } from 'axios';

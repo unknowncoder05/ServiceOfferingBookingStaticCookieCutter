@@ -1,3 +1,5 @@
+![Template preview](docs/template-preview.svg)
+
 # Service Offering Full-Stack Cookiecutter
 
 Full-stack template for service businesses and personal brands.

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import apiService from '../services/api';
 import { Service, Testimonial } from '../types/serviceBookings';
 
 const ServiceHomePage: React.FC = () => {
+  const { t } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [status, setStatus] = useState('');
@@ -30,8 +32,8 @@ const ServiceHomePage: React.FC = () => {
         setFormData((prev) => ({ ...prev, service: String(sRes.data[0].id) }));
       }
     };
-    load().catch(() => setStatus('Unable to load content right now.'));
-  }, []);
+    load().catch(() => setStatus(t('service.home.status.loadError')));
+  }, [t]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ const ServiceHomePage: React.FC = () => {
       Object.entries(formData).forEach(([key, val]) => payload.append(key, val));
       if (verificationFile) payload.append('verification_file', verificationFile);
       await apiService.createBooking(payload);
-      setStatus('Reservation submitted successfully.');
+      setStatus(t('service.home.status.submitSuccess'));
       setFormData({
         full_name: '',
         email: '',
@@ -52,7 +54,7 @@ const ServiceHomePage: React.FC = () => {
       });
       setVerificationFile(null);
     } catch {
-      setStatus('Failed to submit reservation. Please try again.');
+      setStatus(t('service.home.status.submitError'));
     }
   };
 
@@ -60,22 +62,22 @@ const ServiceHomePage: React.FC = () => {
     <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-100">
       <header className="border-b border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800">
         <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Service Offering Website</h1>
+          <h1 className="text-xl font-bold">{t('service.home.title')}</h1>
           <div className="flex gap-3">
-            <Link to="/login" className="text-sm px-3 py-2 rounded bg-secondary-100 dark:bg-secondary-700">Login</Link>
-            <Link to="/service-admin" className="text-sm px-3 py-2 rounded bg-primary-600 text-white">Admin</Link>
+            <Link to="/login" className="text-sm px-3 py-2 rounded bg-secondary-100 dark:bg-secondary-700">{t('service.home.nav.login')}</Link>
+            <Link to="/service-admin" className="text-sm px-3 py-2 rounded bg-primary-700 text-white">{t('service.home.nav.admin')}</Link>
           </div>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-10 space-y-10">
         <section>
-          <h2 className="text-3xl font-bold mb-2">Clear outcomes, professionally delivered.</h2>
-          <p className="text-secondary-600 dark:text-secondary-300">Service presentation, social proof, and direct booking flow.</p>
+          <h2 className="text-3xl font-bold mb-2">{t('service.home.hero.title')}</h2>
+          <p className="text-secondary-600 dark:text-secondary-300">{t('service.home.hero.subtitle')}</p>
         </section>
 
         <section>
-          <h3 className="text-2xl font-semibold mb-4">Services</h3>
+          <h3 className="text-2xl font-semibold mb-4">{t('service.home.sections.services')}</h3>
           <div className="grid md:grid-cols-3 gap-4">
             {services.map((service) => (
               <article key={service.id} className="p-4 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800">
@@ -88,7 +90,7 @@ const ServiceHomePage: React.FC = () => {
         </section>
 
         <section>
-          <h3 className="text-2xl font-semibold mb-4">Testimonials</h3>
+          <h3 className="text-2xl font-semibold mb-4">{t('service.home.sections.testimonials')}</h3>
           <div className="grid md:grid-cols-3 gap-4">
             {testimonials.map((testimonial) => (
               <article key={testimonial.id} className="p-4 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800">
@@ -100,7 +102,7 @@ const ServiceHomePage: React.FC = () => {
         </section>
 
         <section id="booking">
-          <h3 className="text-2xl font-semibold mb-4">Book a Service</h3>
+          <h3 className="text-2xl font-semibold mb-4">{t('service.home.sections.booking')}</h3>
           <form className="grid gap-3 max-w-2xl" onSubmit={onSubmit}>
             <input className="px-3 py-2 rounded border border-secondary-300 bg-white dark:bg-secondary-800" required placeholder="Full name" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} />
             <input className="px-3 py-2 rounded border border-secondary-300 bg-white dark:bg-secondary-800" required type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))} />
@@ -114,7 +116,7 @@ const ServiceHomePage: React.FC = () => {
             <textarea className="px-3 py-2 rounded border border-secondary-300 bg-white dark:bg-secondary-800" placeholder="Notes" value={formData.notes} onChange={(e) => setFormData((p) => ({ ...p, notes: e.target.value }))} />
             <input className="px-3 py-2 rounded border border-secondary-300 bg-white dark:bg-secondary-800" placeholder="Transaction reference" value={formData.transaction_code} onChange={(e) => setFormData((p) => ({ ...p, transaction_code: e.target.value }))} />
             <input className="px-3 py-2 rounded border border-secondary-300 bg-white dark:bg-secondary-800" type="file" onChange={(e) => setVerificationFile(e.target.files?.[0] ?? null)} />
-            <button className="px-4 py-2 rounded bg-primary-600 text-white font-medium" type="submit">Submit Reservation</button>
+            <button className="px-4 py-2 rounded bg-primary-700 text-white font-medium" type="submit">{t('service.home.form.submit')}</button>
             {status ? <p className="text-sm">{status}</p> : null}
           </form>
         </section>

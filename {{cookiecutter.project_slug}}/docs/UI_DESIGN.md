@@ -2,17 +2,17 @@
 
 This file describes the visual and interaction contract for the Base Ephemeral template UI.
 
-## View or Component: HomePage
-- Purpose: public landing page that introduces the starter app and funnels users into auth or dashboard.
-- Location: `frontend/src/pages/HomePage.tsx`
-- Layout structure: slim top header, centered hero, feature grid beneath.
-- Visual style: airy spacing, rounded buttons, neutral background with primary accent CTAs.
-- States: authenticated variant swaps auth CTAs for a dashboard CTA.
-- Interactions: theme toggle, auth navigation, dashboard navigation.
-- Responsive behavior: header compresses actions horizontally; feature grid collapses down to single-column.
-- Accessibility notes: icon buttons require labels; CTA hierarchy should remain obvious.
-- Reuse constraints: keep this page marketing-oriented and lighter than authenticated screens.
-- Last updated: 2026-05-03
+## View or Component: ServiceHomePage
+- Purpose: public landing page that presents services, testimonials, and a direct booking form.
+- Location: `frontend/src/pages/ServiceHomePage.tsx`
+- Layout structure: slim service header, service overview, service cards, testimonials, booking form.
+- Visual style: lightweight service-marketing surface using the template theme tokens.
+- States: loading content, service list, testimonials, booking form submission status.
+- Interactions: login/admin navigation, service selection, booking submission, file upload.
+- Responsive behavior: service and testimonial grids collapse to single-column on small screens.
+- Accessibility notes: form fields must remain labeled by placeholder or visible text and submit feedback must be readable.
+- Reuse constraints: this is the `/` route. Do not add a second legacy homepage route for public landing copy.
+- Last updated: 2026-06-07
 
 ## View or Component: AuthPage
 - Purpose: route wrapper that switches between login and signup experiences.
@@ -29,14 +29,14 @@ This file describes the visual and interaction contract for the Base Ephemeral t
 ## View or Component: Dashboard
 - Purpose: authenticated welcome surface with quick links into the app.
 - Location: `frontend/src/pages/Dashboard.tsx`
-- Layout structure: shared navbar, breadcrumbs, centered hero block, three-column-capable feature grid.
+- Layout structure: shared navbar, breadcrumbs, centered hero block, three-column-capable workspace action grid.
 - Visual style: white cards on neutral background, small badge above a large heading.
 - States: standard authenticated view only.
-- Interactions: CTA buttons route to items and settings.
-- Responsive behavior: hero stays centered; feature cards collapse from 3 to 1 column.
+- Interactions: CTA buttons route to items and settings; action cards route to service admin, records, and settings.
+- Responsive behavior: hero stays centered; action cards collapse from 3 to 1 column.
 - Accessibility notes: CTA buttons should stay keyboard-accessible and clearly labeled.
-- Reuse constraints: do not overload with dense tables or sidebars; this view is intentionally simple.
-- Last updated: 2026-05-03
+- Reuse constraints: do not use generic template feature claims on this page; keep the surface focused on service operations.
+- Last updated: 2026-06-07
 
 ## View or Component: ItemsPage
 - Purpose: single surface for item list, item detail, create, and edit modes.

@@ -29,11 +29,11 @@ const NotFoundPage: React.FC = () => {
             Page Not Found
           </h2>
 
-          <p className="mt-2 text-center text-sm text-secondary-600 dark:text-secondary-400">
+          <p className="mt-2 text-center text-sm text-secondary-600 dark:text-secondary-300">
             The page you're looking for doesn't exist or has been moved.
           </p>
 
-          <p className="mt-4 text-center text-xs text-secondary-400 dark:text-secondary-500">
+          <p className="mt-4 text-center text-xs text-secondary-600 dark:text-secondary-300">
             Error Code: 404
           </p>
         </div>
@@ -41,7 +41,7 @@ const NotFoundPage: React.FC = () => {
         <div className="mt-8">
           <button
             onClick={() => navigate('/')}
-            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-700 hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
             Go to Home
           </button>

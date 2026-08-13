@@ -16,7 +16,7 @@ commands:
   migrate:
     label: "Run Migrations"
     description: "Apply any pending database migrations."
-    run: "python manage.py migrate --noinput"
+    run: "python manage.py migrate_with_db_lock --noinput"
     service: backend
 
   createsuperuser:
@@ -427,7 +427,8 @@ services:
     cpu: 0.25
     memory: 512
     image: mcr.microsoft.com/playwright:v1.59.1-jammy
-    command: sh -c "./scripts/install-deps.sh && npm run test:e2e:mocked"
+    working_dir: /app
+    command: sh -c "cd /app && ./scripts/install-deps.sh && npm run test:e2e:mocked"
     depends_on:
       - frontend
     volumes:

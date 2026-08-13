@@ -41,7 +41,7 @@ Services:
 ├── BackEndApi/          # Django backend
 │   ├── src/
 │   │   ├── api/
-│   │   │   ├── items/  # Example CRUD module — copy this pattern for new modules
+│   │   │   ├── items/  # Removable scaffold CRUD module — copy this pattern for new modules
 │   │   │   ├── users/  # Authentication, profiles, GitHub OAuth
 │   │   │   ├── ws/     # WebSocket consumer
 │   │   │   └── utils/  # Shared utilities (health check, keep-alive)
@@ -70,7 +70,7 @@ Services:
 - **VerifyAccount**: OTP/Email verification after signup.
 - **VerifyLogin**: Second-factor or additional login verification if required.
 - **Dashboard**: Central hub for authenticated users.
-- **ItemsPage**: Generic CRUD interface for managing items (example module).
+- **ItemsPage**: Generic CRUD interface for managing removable scaffold items (example module, not a product surface).
 - **SettingsPage**: User profile and application preferences.
 - **ServerStartPage**: Initial state while waiting for backend/database to be ready.
 - **ServerDown**: Error view shown when the backend API is unreachable.
@@ -85,7 +85,7 @@ Services:
 
 ### Redundancy Check
 - `AuthPage` serves both Login and Signup to reduce boilerplate.
-- `ItemsPage` is a template for all future CRUD modules; do not create separate pages for simple list/detail views if they can be handled via dynamic routing or components within `ItemsPage`.
+- `ItemsPage` is removable scaffold for future CRUD modules; replace or delete it when product-specific surfaces are defined.
 
 ## Backend API Mapping
 
@@ -237,7 +237,7 @@ class Profile(models.Model):
 - [x] GitHub OAuth integration — \`api/users/\`
 - [x] WebSocket consumer with JWT auth — \`api/ws/consumers.py\`
 - [x] Background task processing (Celery + Redis) — \`api/items/tasks.py\`
-- [x] Example CRUD module (\`items\`) with ViewSet, serializers, service layer, tests — \`api/items/\`
+- [x] Removable scaffold CRUD module (\`items\`) with ViewSet, serializers, service layer, tests — \`api/items/\`
 - [x] S3 file upload integration — \`api/utils/\`
 - [x] Health check + keep-alive endpoints — \`api/utils/views.py\`
 - [x] React auth flow (login/signup/verify) — \`frontend/src/pages/AuthPage.tsx\`

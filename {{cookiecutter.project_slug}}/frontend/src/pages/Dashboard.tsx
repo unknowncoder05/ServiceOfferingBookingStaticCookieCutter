@@ -4,37 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../store/hooks';
 import { Navbar, Breadcrumbs } from '../components/shared';
 
-const features = [
-  {
-    key: 'auth',
-    icon: '🔐',
-    color: 'bg-primary-50 dark:bg-primary-900/20',
-  },
-  {
-    key: 'items',
-    icon: '📦',
-    color: 'bg-primary-50 dark:bg-primary-900/20',
-  },
-  {
-    key: 'realtime',
-    icon: '⚡',
-    color: 'bg-primary-50 dark:bg-primary-900/20',
-  },
-  {
-    key: 'async',
-    icon: '⚙️',
-    color: 'bg-primary-50 dark:bg-primary-900/20',
-  },
-  {
-    key: 'cloud',
-    icon: '☁️',
-    color: 'bg-primary-50 dark:bg-primary-900/20',
-  },
-  {
-    key: 'darkMode',
-    icon: '🌙',
-    color: 'bg-primary-50 dark:bg-primary-700/20',
-  },
+const dashboardActions = [
+  { key: 'serviceAdmin', route: '/service-admin', step: '01' },
+  { key: 'items', route: '/items', step: '02' },
+  { key: 'settings', route: '/settings', step: '03' },
 ];
 
 export const Dashboard: React.FC = () => {
@@ -59,18 +32,18 @@ export const Dashboard: React.FC = () => {
             {t('dashboard.welcome')}
           </h1>
 
-          <p className="text-xl text-secondary-500 dark:text-secondary-400 mb-2">
+          <p className="text-xl text-secondary-500 dark:text-secondary-300 mb-2">
             {t('dashboard.subtitle')}
           </p>
 
-          <p className="text-sm text-secondary-400 dark:text-secondary-500">
+          <p className="text-sm text-secondary-600 dark:text-secondary-300">
             {t('dashboard.loggedInAs')} {user?.email}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => navigate('/items')}
-              className="px-6 py-3 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-medium rounded-lg transition-colors shadow-sm"
+              className="px-6 py-3 bg-primary-700 hover:bg-primary-800 dark:bg-primary-700 dark:hover:bg-primary-800 text-white font-medium rounded-lg transition-colors shadow-sm"
             >
               {t('dashboard.cta.items')}
             </button>
@@ -83,32 +56,32 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Features */}
+        {/* Workspace actions */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-secondary-400 dark:text-secondary-500 text-center mb-8">
-            {t('dashboard.features')}
+          <p className="text-xs font-semibold uppercase tracking-widest text-secondary-600 dark:text-secondary-300 text-center mb-8">
+            {t('dashboard.actions.label')}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((f) => (
-              <div
-                key={f.key}
+            {dashboardActions.map((action) => (
+              <button
+                key={action.key}
+                type="button"
+                onClick={() => navigate(action.route)}
                 className="bg-white dark:bg-secondary-800 rounded-xl border border-secondary-100 dark:border-secondary-700 p-5 flex gap-4 transition-colors"
               >
-                <div
-                  className={`${f.color} rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 text-lg`}
-                >
-                  {f.icon}
+                <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 text-sm font-semibold text-primary-700 dark:text-primary-300">
+                  {action.step}
                 </div>
-                <div>
+                <div className="text-left">
                   <h3 className="font-semibold text-secondary-900 dark:text-white text-sm mb-1">
-                    {t(`features.${f.key}`)}
+                    {t(`dashboard.actions.${action.key}.title`)}
                   </h3>
-                  <p className="text-xs text-secondary-500 dark:text-secondary-400 leading-relaxed">
-                    {t(`features.${f.key}Desc`)}
+                  <p className="text-xs text-secondary-500 dark:text-secondary-300 leading-relaxed">
+                    {t(`dashboard.actions.${action.key}.description`)}
                   </p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
