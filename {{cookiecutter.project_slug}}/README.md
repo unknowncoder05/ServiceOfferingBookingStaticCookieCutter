@@ -263,3 +263,14 @@ class Profile(models.Model):
 
 ### Known Issues / TODOs
 - (none — add items here as you work on the project)
+
+## Backend application CLI
+
+This project includes `./cli/app`, a dependency-free Python CLI for its own
+backend. Run `./cli/app --help` and read [cli/README.md](cli/README.md) for
+login, API requests, uploads, downloads, and configuring a deployed API URL.
+The CLI uses the backend's normal authorization; it does not access the database
+directly. Extend the CLI and its tests alongside new application workflows.
+
+`python3 scripts/check-app-cli.py` checks the CLI without a running application.
+It runs during template generation and in the required pre-commit gate.

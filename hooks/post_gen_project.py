@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess
+import sys
 import json
 
 # Template variables (these will be replaced by Jinja2)
@@ -200,6 +201,9 @@ def main():
     if '{{ cookiecutter.use_ai_integration }}' != 'y':
         print("Removing AI integration files...")
         remove_ai_integration()
+
+    # An app without its backend CLI is not a complete template render.
+    subprocess.run([sys.executable, "scripts/check-app-cli.py"], check=True)
 
     # Initialize git repository
     print("Initializing git repository...")
