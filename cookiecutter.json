@@ -42,7 +42,6 @@
     "*.zip",
     "terraform/lambda_functions",
     "BackEndApi/src/api",
-    "*.html",
-    "projectmaker.yml"
+    "*.html"
   ]
 }
