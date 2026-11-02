@@ -1,6 +1,6 @@
 # ProjectMaker Shared Utilities
 pm-utils @ git+https://github.com/unknowncoder05/pm-utils.git@e8cee022d30a0ff48eb07dfcfaa26c330aadb7c6
-pm-auth @ git+https://github.com/unknowncoder05/pm-auth.git@6d92dcdeb404485b1211debe599e9eb2ed93a288
+pm-auth @ git+https://github.com/unknowncoder05/pm-auth.git@006165864561ac1b6647dca04fc539991c672376
 pm-billing @ git+https://github.com/unknowncoder05/pm-billing.git@6703d6a684e506973eef5e0d3f61dce63ad836be
 pm-ai @ git+https://github.com/unknowncoder05/pm-ai.git@c53e4e85eacb5d8301661158f49bd81b78def9ea
 pm-sqlite-snapshots @ git+https://github.com/unknowncoder05/pm-sqlite-snapshots.git@5ea32b81d58847ca877056a39331877020b768be
