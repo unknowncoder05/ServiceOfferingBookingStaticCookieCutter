@@ -1,6 +1,28 @@
 {% raw %}
 version: "1"
 
+hosting:
+  provider: ec2
+  build:
+    instance_type: t3.medium
+  runtime:
+    initial_instance_type: t3.medium
+    allowed_instance_types: [t3.small, t3.medium, t3.large, t3.xlarge]
+    usage_policy:
+      mode: automatic
+      observation_window_minutes: 60
+      min_samples: 12
+      max_sample_age_minutes: 10
+      scale_up:
+        cpu_percent: 70
+        memory_percent: 75
+      scale_down:
+        cpu_percent: 25
+        memory_percent: 30
+      headroom_percent: 25
+      cooldown_minutes: 60
+      missing_metrics: hold
+
 # Development variant — bind-mounted source, hot-reload servers, cached deps.
 # Used automatically when deployment.environment == 'development'.
 #
@@ -115,7 +137,7 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   frontend:
     type: frontend
-    cpu: 0.5
+    cpu: 0.25
     memory: 512
     order: 2
     build:
@@ -300,135 +322,135 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   # Backend — Django + uvicorn --reload (hot-reload on source change)
   # ────────────────────────────────────────────────────────────────────────────
-        # ── Secondary Theme (Neutrals) ──────────────────────────────────────────
-        REACT_APP_SECONDARY_50:
-          type: color
-          label: "Secondary 50"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_50}}"
+      # ── Secondary Theme (Neutrals) ──────────────────────────────────────────
+      REACT_APP_SECONDARY_50:
+        type: color
+        label: "Secondary 50"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_50}}"
 
-        REACT_APP_SECONDARY_100:
-          type: color
-          label: "Secondary 100"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_100}}"
+      REACT_APP_SECONDARY_100:
+        type: color
+        label: "Secondary 100"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_100}}"
 
-        REACT_APP_SECONDARY_200:
-          type: color
-          label: "Secondary 200"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_200}}"
+      REACT_APP_SECONDARY_200:
+        type: color
+        label: "Secondary 200"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_200}}"
 
-        REACT_APP_SECONDARY_300:
-          type: color
-          label: "Secondary 300"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_300}}"
+      REACT_APP_SECONDARY_300:
+        type: color
+        label: "Secondary 300"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_300}}"
 
-        REACT_APP_SECONDARY_400:
-          type: color
-          label: "Secondary 400"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_400}}"
+      REACT_APP_SECONDARY_400:
+        type: color
+        label: "Secondary 400"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_400}}"
 
-        REACT_APP_SECONDARY_500:
-          type: color
-          label: "Secondary 500"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_500}}"
+      REACT_APP_SECONDARY_500:
+        type: color
+        label: "Secondary 500"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_500}}"
 
-        REACT_APP_SECONDARY_600:
-          type: color
-          label: "Secondary 600"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_600}}"
+      REACT_APP_SECONDARY_600:
+        type: color
+        label: "Secondary 600"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_600}}"
 
-        REACT_APP_SECONDARY_700:
-          type: color
-          label: "Secondary 700"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_700}}"
+      REACT_APP_SECONDARY_700:
+        type: color
+        label: "Secondary 700"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_700}}"
 
-        REACT_APP_SECONDARY_800:
-          type: color
-          label: "Secondary 800"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_800}}"
+      REACT_APP_SECONDARY_800:
+        type: color
+        label: "Secondary 800"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_800}}"
 
-        REACT_APP_SECONDARY_900:
-          type: color
-          label: "Secondary 900"
-          section: Theme
-          required: false
-          default: "{{resources.theme.secondary_900}}"
-        # ── Functional Colors ──────────────────────────────────────────────────
-        REACT_APP_SUCCESS_50:
-          type: color
-          section: Theme
-          default: "{{resources.theme.success_50}}"
-        REACT_APP_SUCCESS_500:
-          type: color
-          section: Theme
-          default: "{{resources.theme.success_500}}"
-        REACT_APP_SUCCESS_600:
-          type: color
-          section: Theme
-          default: "{{resources.theme.success_600}}"
+      REACT_APP_SECONDARY_900:
+        type: color
+        label: "Secondary 900"
+        section: Theme
+        required: false
+        default: "{{resources.theme.secondary_900}}"
+      # ── Functional Colors ──────────────────────────────────────────────────
+      REACT_APP_SUCCESS_50:
+        type: color
+        section: Theme
+        default: "{{resources.theme.success_50}}"
+      REACT_APP_SUCCESS_500:
+        type: color
+        section: Theme
+        default: "{{resources.theme.success_500}}"
+      REACT_APP_SUCCESS_600:
+        type: color
+        section: Theme
+        default: "{{resources.theme.success_600}}"
 
-        REACT_APP_DANGER_50:
-          type: color
-          section: Theme
-          default: "{{resources.theme.danger_50}}"
-        REACT_APP_DANGER_500:
-          type: color
-          section: Theme
-          default: "{{resources.theme.danger_500}}"
-        REACT_APP_DANGER_600:
-          type: color
-          section: Theme
-          default: "{{resources.theme.danger_600}}"
+      REACT_APP_DANGER_50:
+        type: color
+        section: Theme
+        default: "{{resources.theme.danger_50}}"
+      REACT_APP_DANGER_500:
+        type: color
+        section: Theme
+        default: "{{resources.theme.danger_500}}"
+      REACT_APP_DANGER_600:
+        type: color
+        section: Theme
+        default: "{{resources.theme.danger_600}}"
 
-        REACT_APP_WARNING_50:
-          type: color
-          section: Theme
-          default: "{{resources.theme.warning_50}}"
-        REACT_APP_WARNING_500:
-          type: color
-          section: Theme
-          default: "{{resources.theme.warning_500}}"
-        REACT_APP_WARNING_600:
-          type: color
-          section: Theme
-          default: "{{resources.theme.warning_600}}"
+      REACT_APP_WARNING_50:
+        type: color
+        section: Theme
+        default: "{{resources.theme.warning_50}}"
+      REACT_APP_WARNING_500:
+        type: color
+        section: Theme
+        default: "{{resources.theme.warning_500}}"
+      REACT_APP_WARNING_600:
+        type: color
+        section: Theme
+        default: "{{resources.theme.warning_600}}"
 
-        REACT_APP_INFO_50:
-          type: color
-          section: Theme
-          default: "{{resources.theme.info_50}}"
-        REACT_APP_INFO_500:
-          type: color
-          section: Theme
-          default: "{{resources.theme.info_500}}"
-        REACT_APP_INFO_600:
-          type: color
-          section: Theme
-          default: "{{resources.theme.info_600}}"
+      REACT_APP_INFO_50:
+        type: color
+        section: Theme
+        default: "{{resources.theme.info_50}}"
+      REACT_APP_INFO_500:
+        type: color
+        section: Theme
+        default: "{{resources.theme.info_500}}"
+      REACT_APP_INFO_600:
+        type: color
+        section: Theme
+        default: "{{resources.theme.info_600}}"
   playwright:
     type: internal
     cpu: 0.25
     memory: 512
     image: mcr.microsoft.com/playwright:v1.59.1-jammy
     working_dir: /app
-    command: sh -c "cd /app && ./scripts/install-deps.sh && npm run test:e2e:mocked"
+    command: ["sh", "-c", "cd /app && ./scripts/install-deps.sh && npm run test:e2e:mocked"]
     depends_on:
       - frontend
     volumes:
@@ -445,527 +467,529 @@ services:
 
   backend:
     type: backend
-    cpu: 1
+    cpu: 0.75
     memory: 1024
     order: 1
     build:
-      context: ./BackEndApi
-      dockerfile: compose/dev/django/Dockerfile
+        context: ./BackEndApi
+        dockerfile: compose/dev/django/Dockerfile
     port: 8000
     public: true
     route: /api
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health/"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 300s
+        test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health/"]
+        interval: 20s
+        timeout: 10s
+        retries: 3
+        start_period: 300s
     env:
 
-      # ── Application ────────────────────────────────────────────────────────
-      DJANGO_SETTINGS_MODULE:
-        type: select
-        label: "Django Settings Module"
-        section: Application
-        required: false
-        default: "config.settings.local"
-        options:
-          - "config.settings.production"
-          - "config.settings.local"
+        # ── Application ────────────────────────────────────────────────────────
+        DJANGO_SETTINGS_MODULE:
+          type: select
+          label: "Django Settings Module"
+          section: Application
+          required: false
+          default: "config.settings.local"
+          options:
+            - "config.settings.production"
+            - "config.settings.local"
 
-      ENVIRONMENT:
-        type: select
-        label: "Environment"
-        section: Application
-        required: false
-        default: "development"
-        options:
-          - "development"
-          - "production"
-          - "staging"
-          - "local"
+        ENVIRONMENT:
+          type: select
+          label: "Environment"
+          section: Application
+          required: false
+          default: "development"
+          options:
+            - "development"
+            - "production"
+            - "staging"
+            - "local"
 
-      DJANGO_DEBUG:
-        type: boolean
-        label: "Debug Mode"
-        section: Application
-        required: false
-        default: "true"
+        DJANGO_DEBUG:
+          type: boolean
+          label: "Debug Mode"
+          section: Application
+          required: false
+          default: "true"
 
-      REQUIREMENTS_FILE:
-        type: select
-        label: "Requirements File"
-        description: "pip requirements file installed at container startup from the named venv volume."
-        section: Application
-        required: false
-        default: "local.txt"
-        options:
-          - "local.txt"
-          - "production.txt"
-          - "base.txt"
+        REQUIREMENTS_FILE:
+          type: select
+          label: "Requirements File"
+          description: "pip requirements file installed at container startup from the named venv volume."
+          section: Application
+          required: false
+          default: "local.txt"
+          options:
+            - "local.txt"
+            - "production.txt"
+            - "base.txt"
 
-      # ── Security ───────────────────────────────────────────────────────────
-      DJANGO_SECRET_KEY:
-        type: secret
-        label: "Django Secret Key"
-        section: Security
-        required: true
-        generate: secret_key
-        immutable: true
-        order: 1
-        default: ""
+        # ── Security ───────────────────────────────────────────────────────────
+        DJANGO_SECRET_KEY:
+          type: secret
+          label: "Django Secret Key"
+          section: Security
+          required: true
+          generate: secret_key
+          immutable: true
+          order: 1
+          default: ""
 
-      DJANGO_ADMIN_URL:
-        type: string
-        label: "Admin URL Path"
-        section: Security
-        required: false
-        default: "admin/"
+        DJANGO_ADMIN_URL:
+          type: string
+          label: "Admin URL Path"
+          section: Security
+          required: false
+          default: "admin/"
 
-      PASSWORD_RESET_METHOD:
-        type: select
-        label: "Password Reset Method"
-        description: "How users receive password reset and account recovery tokens. 'console' is recommended for dev — tokens print to container logs."
-        section: Security
-        required: false
-        default: "console"
-        options:
-          - "email"
-          - "otp"
-          - "console"
+        PASSWORD_RESET_METHOD:
+          type: select
+          label: "Password Reset Method"
+          description: "How users receive password reset and account recovery tokens. 'console' is recommended for dev — tokens print to container logs."
+          section: Security
+          required: false
+          default: "console"
+          options:
+            - "email"
+            - "otp"
+            - "console"
 
-      PASSWORD_RESET_FRONTEND_URL:
-        type: url
-        label: "Password Reset Frontend URL"
-        section: Security
-        required: false
-        default: "${DEPLOYMENT_URL}/reset-password"
+        PASSWORD_RESET_FRONTEND_URL:
+          type: url
+          label: "Password Reset Frontend URL"
+          section: Security
+          required: false
+          default: "${DEPLOYMENT_URL}/reset-password"
 
-      ACCOUNT_RECOVERY_FRONTEND_URL:
-        type: url
-        label: "Account Recovery Frontend URL"
-        section: Security
-        required: false
-        default: "${DEPLOYMENT_URL}/recover-account"
+        ACCOUNT_RECOVERY_FRONTEND_URL:
+          type: url
+          label: "Account Recovery Frontend URL"
+          section: Security
+          required: false
+          default: "${DEPLOYMENT_URL}/recover-account"
 
-      # ── Database ───────────────────────────────────────────────────────────
-      POSTGRES_DB:
-        type: string
-        label: "Database Name"
-        section: Database
-        required: true
-        order: 2
-        default: "postgres"
+        # ── Database ───────────────────────────────────────────────────────────
+        POSTGRES_DB:
+          type: string
+          label: "Database Name"
+          section: Database
+          required: true
+          order: 2
+          default: "postgres"
 
-      POSTGRES_USER:
-        type: string
-        label: "Database User"
-        section: Database
-        required: true
-        order: 3
-        default: "postgres"
+        POSTGRES_USER:
+          type: string
+          label: "Database User"
+          section: Database
+          required: true
+          order: 3
+          default: "postgres"
 
-      POSTGRES_PASSWORD:
-        type: secret
-        label: "Database Password"
-        section: Database
-        required: true
-        generate: password
-        immutable: true
-        order: 1
-        default: ""
+        POSTGRES_PASSWORD:
+          type: secret
+          label: "Database Password"
+          section: Database
+          required: true
+          generate: password
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_HOST:
-        type: string
-        label: "Database Host"
-        section: Database
-        required: false
-        default: "postgres"
+        POSTGRES_HOST:
+          type: string
+          label: "Database Host"
+          section: Database
+          required: false
+          default: "postgres"
 
-      POSTGRES_PORT:
-        type: number
-        label: "Database Port"
-        section: Database
-        required: false
-        default: "5432"
-        min: 1
-        max: 65535
+        POSTGRES_PORT:
+          type: number
+          label: "Database Port"
+          section: Database
+          required: false
+          default: "5432"
+          min: 1
+          max: 65535
 
-      # ── Cache ──────────────────────────────────────────────────────────────
-      REDIS_URL:
-        type: string
-        label: "Redis URL"
-        section: Cache
-        required: false
-        default: "redis://redis:6379/0"
+        # ── Cache ──────────────────────────────────────────────────────────────
+        REDIS_URL:
+          type: string
+          label: "Redis URL"
+          section: Cache
+          required: false
+          default: "redis://redis:6379/0"
 
-      REDIS_CHANNEL_LAYER_HOST:
-        type: string
-        label: "Redis Channel Layer Host"
-        section: Cache
-        required: false
-        default: "redis"
+        REDIS_CHANNEL_LAYER_HOST:
+          type: string
+          label: "Redis Channel Layer Host"
+          section: Cache
+          required: false
+          default: "redis"
 
-      # ── CORS ───────────────────────────────────────────────────────────────
-      CORS_ALLOWED_ORIGINS:
-        type: string
-        label: "CORS Allowed Origins"
-        section: CORS
-        required: false
-        default: "*"
+        # ── CORS ───────────────────────────────────────────────────────────────
+        CORS_ALLOWED_ORIGINS:
+          type: string
+          label: "CORS Allowed Origins"
+          section: CORS
+          required: false
+          default: "*"
 
-      # ── Email ──────────────────────────────────────────────────────────────
-      DJANGO_EMAIL_BACKEND:
-        type: select
-        label: "Email Backend"
-        section: Email
-        required: false
-        default: "django.core.mail.backends.console.EmailBackend"
-        options:
-          - "django.core.mail.backends.console.EmailBackend"
-          - "django.core.mail.backends.smtp.EmailBackend"
-          - "django.core.mail.backends.dummy.EmailBackend"
+        # ── Email ──────────────────────────────────────────────────────────────
+        DJANGO_EMAIL_BACKEND:
+          type: select
+          label: "Email Backend"
+          section: Email
+          required: false
+          default: "django.core.mail.backends.console.EmailBackend"
+          options:
+            - "django.core.mail.backends.console.EmailBackend"
+            - "django.core.mail.backends.smtp.EmailBackend"
+            - "django.core.mail.backends.dummy.EmailBackend"
 
-      EMAIL_NO_REPLY:
-        type: string
-        label: "No-Reply Email Address"
-        section: Email
-        required: false
-        default: "info@app.com"
+        EMAIL_NO_REPLY:
+          type: string
+          label: "No-Reply Email Address"
+          section: Email
+          required: false
+          default: "info@app.com"
 
-      # ── AI Integration ─────────────────────────────────────────────────────
-      OPENAI_API_KEY:
-        type: secret
-        label: "OpenAI API Key"
-        section: "AI Integration"
-        required: false
-        default: ""
+        # ── AI Integration ─────────────────────────────────────────────────────
+        OPENAI_API_KEY:
+          type: secret
+          label: "OpenAI API Key"
+          section: "AI Integration"
+          required: false
+          default: ""
 
-      # ── GitHub OAuth ───────────────────────────────────────────────────────
-      GITHUB_CLIENT_ID:
-        type: string
-        label: "GitHub OAuth Client ID"
-        section: "GitHub OAuth"
-        required: false
-        default: ""
+        # ── GitHub OAuth ───────────────────────────────────────────────────────
+        GITHUB_CLIENT_ID:
+          type: string
+          label: "GitHub OAuth Client ID"
+          section: "GitHub OAuth"
+          required: false
+          default: ""
 
-      GITHUB_CLIENT_SECRET:
-        type: secret
-        label: "GitHub OAuth Client Secret"
-        section: "GitHub OAuth"
-        required: false
-        default: ""
+        GITHUB_CLIENT_SECRET:
+          type: secret
+          label: "GitHub OAuth Client Secret"
+          section: "GitHub OAuth"
+          required: false
+          default: ""
 
-      GITHUB_REDIRECT_URI:
-        type: url
-        label: "GitHub OAuth Redirect URI"
-        section: "GitHub OAuth"
-        required: false
-        default: "${DEPLOYMENT_URL}/settings/github/callback"
+        GITHUB_REDIRECT_URI:
+          type: url
+          label: "GitHub OAuth Redirect URI"
+          section: "GitHub OAuth"
+          required: false
+          default: "${DEPLOYMENT_URL}/settings/github/callback"
 
-      # ── WhatsApp ───────────────────────────────────────────────────────────
-      WHATSAPP_AUTHORIZATION_TOKEN:
-        type: secret
-        label: "WhatsApp Authorization Token"
-        section: WhatsApp
-        required: false
-        default: ""
+        # ── WhatsApp ───────────────────────────────────────────────────────────
+        WHATSAPP_AUTHORIZATION_TOKEN:
+          type: secret
+          label: "WhatsApp Authorization Token"
+          section: WhatsApp
+          required: false
+          default: ""
 
-      WHATSAPP_MESSAGE_URI:
-        type: url
-        label: "WhatsApp Messages API URI"
-        section: WhatsApp
-        required: false
-        default: ""
+        WHATSAPP_MESSAGE_URI:
+          type: url
+          label: "WhatsApp Messages API URI"
+          section: WhatsApp
+          required: false
+          default: ""
 
-      # ── Storage ────────────────────────────────────────────────────────────
-      AWS_REGION_NAME:
-        type: string
-        label: "AWS Region"
-        section: Storage
-        required: false
-        default: "us-east-1"
+        # ── Storage ────────────────────────────────────────────────────────────
+        AWS_REGION_NAME:
+          type: string
+          label: "AWS Region"
+          section: Storage
+          required: false
+          default: "us-east-1"
 
-      AWS_ACCESS_KEY_ID:
-        type: secret
-        label: "AWS Access Key ID"
-        section: Storage
-        required: false
-        default: ""
+        AWS_ACCESS_KEY_ID:
+          type: secret
+          label: "AWS Access Key ID"
+          section: Storage
+          required: false
+          default: ""
 
-      AWS_SECRET_ACCESS_KEY:
-        type: secret
-        label: "AWS Secret Access Key"
-        section: Storage
-        required: false
-        default: ""
+        AWS_SECRET_ACCESS_KEY:
+          type: secret
+          label: "AWS Secret Access Key"
+          section: Storage
+          required: false
+          default: ""
 
-      AWS_STORAGE_BUCKET_NAME:
-        type: string
-        label: "S3 Bucket Name"
-        section: Storage
-        required: false
-        default: ""
+        AWS_STORAGE_BUCKET_NAME:
+          type: string
+          label: "S3 Bucket Name"
+          section: Storage
+          required: false
+          default: ""
 
-      AWS_PRIVATE_STORAGE_BUCKET_NAME:
-        type: string
-        label: "Private S3 Bucket Name"
-        section: Storage
-        required: false
-        default: ""
+        AWS_PRIVATE_STORAGE_BUCKET_NAME:
+          type: string
+          label: "Private S3 Bucket Name"
+          section: Storage
+          required: false
+          default: ""
 
-      # ── Monitoring ─────────────────────────────────────────────────────────
-      SENTRY_DSN:
-        type: secret
-        label: "Sentry DSN"
-        section: Monitoring
-        required: false
-        default: ""
+        # ── Monitoring ─────────────────────────────────────────────────────────
+        SENTRY_DSN:
+          type: secret
+          label: "Sentry DSN"
+          section: Monitoring
+          required: false
+          default: ""
 
   # ────────────────────────────────────────────────────────────────────────────
   # Celery Worker — async background tasks (hot-reload via watchfiles)
   # ────────────────────────────────────────────────────────────────────────────
   celery-worker:
     type: worker
-    cpu: 0.5
+    cpu: 0.25
     memory: 512
     order: 3
     build:
-      context: ./BackEndApi
-      dockerfile: compose/dev/django/Dockerfile
+        context: ./BackEndApi
+        dockerfile: compose/dev/django/Dockerfile
+    command: ["/start-celeryworker"]
     healthcheck:
-      test: ["CMD-SHELL", "celery -A config.celery inspect ping --timeout 5"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+        test: ["CMD-SHELL", "celery -A config.celery inspect ping --destination celery@$$HOSTNAME --timeout 10"]
+        interval: 300s
+        timeout: 45s
+        retries: 2
+        start_period: 60s
     env:
 
-      DJANGO_SETTINGS_MODULE:
-        type: select
-        label: "Django Settings Module"
-        section: Application
-        required: false
-        default: "config.settings.production"
-        options:
-          - "config.settings.production"
-          - "config.settings.local"
+        DJANGO_SETTINGS_MODULE:
+          type: select
+          label: "Django Settings Module"
+          section: Application
+          required: false
+          default: "config.settings.production"
+          options:
+            - "config.settings.production"
+            - "config.settings.local"
 
-      ENVIRONMENT:
-        type: select
-        label: "Environment"
-        section: Application
-        required: false
-        default: "development"
-        options:
-          - "development"
-          - "production"
-          - "staging"
-          - "local"
+        ENVIRONMENT:
+          type: select
+          label: "Environment"
+          section: Application
+          required: false
+          default: "development"
+          options:
+            - "development"
+            - "production"
+            - "staging"
+            - "local"
 
-      DJANGO_DEBUG:
-        type: boolean
-        label: "Debug Mode"
-        section: Application
-        required: false
-        default: "true"
+        DJANGO_DEBUG:
+          type: boolean
+          label: "Debug Mode"
+          section: Application
+          required: false
+          default: "true"
 
-      REQUIREMENTS_FILE:
-        type: select
-        label: "Requirements File"
-        description: "pip requirements file installed at container startup from the named venv volume."
-        section: Application
-        required: false
-        default: "local.txt"
-        options:
-          - "local.txt"
-          - "production.txt"
-          - "base.txt"
+        REQUIREMENTS_FILE:
+          type: select
+          label: "Requirements File"
+          description: "pip requirements file installed at container startup from the named venv volume."
+          section: Application
+          required: false
+          default: "local.txt"
+          options:
+            - "local.txt"
+            - "production.txt"
+            - "base.txt"
 
-      DJANGO_SECRET_KEY:
-        type: secret
-        label: "Django Secret Key"
-        section: Security
-        required: true
-        generate: secret_key
-        immutable: true
-        order: 1
-        default: ""
+        DJANGO_SECRET_KEY:
+          type: secret
+          label: "Django Secret Key"
+          section: Security
+          required: true
+          generate: secret_key
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_DB:
-        type: string
-        label: "Database Name"
-        section: Database
-        required: true
-        order: 2
-        default: "postgres"
+        POSTGRES_DB:
+          type: string
+          label: "Database Name"
+          section: Database
+          required: true
+          order: 2
+          default: "postgres"
 
-      POSTGRES_USER:
-        type: string
-        label: "Database User"
-        section: Database
-        required: true
-        order: 3
-        default: "postgres"
+        POSTGRES_USER:
+          type: string
+          label: "Database User"
+          section: Database
+          required: true
+          order: 3
+          default: "postgres"
 
-      POSTGRES_PASSWORD:
-        type: secret
-        label: "Database Password"
-        section: Database
-        required: true
-        generate: password
-        immutable: true
-        order: 1
-        default: ""
+        POSTGRES_PASSWORD:
+          type: secret
+          label: "Database Password"
+          section: Database
+          required: true
+          generate: password
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_HOST:
-        type: string
-        label: "Database Host"
-        section: Database
-        required: false
-        default: "postgres"
+        POSTGRES_HOST:
+          type: string
+          label: "Database Host"
+          section: Database
+          required: false
+          default: "postgres"
 
-      POSTGRES_PORT:
-        type: number
-        label: "Database Port"
-        section: Database
-        required: false
-        default: "5432"
-        min: 1
-        max: 65535
+        POSTGRES_PORT:
+          type: number
+          label: "Database Port"
+          section: Database
+          required: false
+          default: "5432"
+          min: 1
+          max: 65535
 
-      REDIS_URL:
-        type: string
-        label: "Redis URL"
-        section: Cache
-        required: false
-        default: "redis://redis:6379/0"
+        REDIS_URL:
+          type: string
+          label: "Redis URL"
+          section: Cache
+          required: false
+          default: "redis://redis:6379/0"
 
-      OPENAI_API_KEY:
-        type: secret
-        label: "OpenAI API Key"
-        section: "AI Integration"
-        required: false
-        default: ""
+        OPENAI_API_KEY:
+          type: secret
+          label: "OpenAI API Key"
+          section: "AI Integration"
+          required: false
+          default: ""
 
   # ────────────────────────────────────────────────────────────────────────────
   # Celery Beat — periodic task scheduler
   # ────────────────────────────────────────────────────────────────────────────
   celery-beat:
     type: worker
-    cpu: 0.5
+    cpu: 0.1
     memory: 512
     order: 4
     build:
-      context: ./BackEndApi
-      dockerfile: compose/dev/django/Dockerfile
+        context: ./BackEndApi
+        dockerfile: compose/dev/django/Dockerfile
+    command: ["/start-celerybeat"]
     healthcheck:
-      test: ["CMD-SHELL", "kill -0 1"]
-      interval: 60s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+        test: ["CMD-SHELL", "kill -0 1"]
+        interval: 60s
+        timeout: 5s
+        retries: 3
+        start_period: 10s
     env:
 
-      DJANGO_SETTINGS_MODULE:
-        type: select
-        label: "Django Settings Module"
-        section: Application
-        required: false
-        default: "config.settings.production"
-        options:
-          - "config.settings.production"
-          - "config.settings.local"
+        DJANGO_SETTINGS_MODULE:
+          type: select
+          label: "Django Settings Module"
+          section: Application
+          required: false
+          default: "config.settings.production"
+          options:
+            - "config.settings.production"
+            - "config.settings.local"
 
-      ENVIRONMENT:
-        type: select
-        label: "Environment"
-        section: Application
-        required: false
-        default: "development"
-        options:
-          - "development"
-          - "production"
-          - "staging"
-          - "local"
+        ENVIRONMENT:
+          type: select
+          label: "Environment"
+          section: Application
+          required: false
+          default: "development"
+          options:
+            - "development"
+            - "production"
+            - "staging"
+            - "local"
 
-      DJANGO_DEBUG:
-        type: boolean
-        label: "Debug Mode"
-        section: Application
-        required: false
-        default: "true"
+        DJANGO_DEBUG:
+          type: boolean
+          label: "Debug Mode"
+          section: Application
+          required: false
+          default: "true"
 
-      REQUIREMENTS_FILE:
-        type: select
-        label: "Requirements File"
-        description: "pip requirements file installed at container startup from the named venv volume."
-        section: Application
-        required: false
-        default: "local.txt"
-        options:
-          - "local.txt"
-          - "production.txt"
-          - "base.txt"
+        REQUIREMENTS_FILE:
+          type: select
+          label: "Requirements File"
+          description: "pip requirements file installed at container startup from the named venv volume."
+          section: Application
+          required: false
+          default: "local.txt"
+          options:
+            - "local.txt"
+            - "production.txt"
+            - "base.txt"
 
-      DJANGO_SECRET_KEY:
-        type: secret
-        label: "Django Secret Key"
-        section: Security
-        required: true
-        generate: secret_key
-        immutable: true
-        order: 1
-        default: ""
+        DJANGO_SECRET_KEY:
+          type: secret
+          label: "Django Secret Key"
+          section: Security
+          required: true
+          generate: secret_key
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_DB:
-        type: string
-        label: "Database Name"
-        section: Database
-        required: true
-        order: 2
-        default: "postgres"
+        POSTGRES_DB:
+          type: string
+          label: "Database Name"
+          section: Database
+          required: true
+          order: 2
+          default: "postgres"
 
-      POSTGRES_USER:
-        type: string
-        label: "Database User"
-        section: Database
-        required: true
-        order: 3
-        default: "postgres"
+        POSTGRES_USER:
+          type: string
+          label: "Database User"
+          section: Database
+          required: true
+          order: 3
+          default: "postgres"
 
-      POSTGRES_PASSWORD:
-        type: secret
-        label: "Database Password"
-        section: Database
-        required: true
-        generate: password
-        immutable: true
-        order: 1
-        default: ""
+        POSTGRES_PASSWORD:
+          type: secret
+          label: "Database Password"
+          section: Database
+          required: true
+          generate: password
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_HOST:
-        type: string
-        label: "Database Host"
-        section: Database
-        required: false
-        default: "postgres"
+        POSTGRES_HOST:
+          type: string
+          label: "Database Host"
+          section: Database
+          required: false
+          default: "postgres"
 
-      POSTGRES_PORT:
-        type: number
-        label: "Database Port"
-        section: Database
-        required: false
-        default: "5432"
-        min: 1
-        max: 65535
+        POSTGRES_PORT:
+          type: number
+          label: "Database Port"
+          section: Database
+          required: false
+          default: "5432"
+          min: 1
+          max: 65535
 
-      REDIS_URL:
-        type: string
-        label: "Redis URL"
-        section: Cache
-        required: false
-        default: "redis://redis:6379/0"
+        REDIS_URL:
+          type: string
+          label: "Redis URL"
+          section: Cache
+          required: false
+          default: "redis://redis:6379/0"
 
   # ────────────────────────────────────────────────────────────────────────────
   # PostgreSQL — relational database (same as production)
@@ -978,46 +1002,46 @@ services:
     image: postgres:15-alpine
     env:
 
-      POSTGRES_DB:
-        type: string
-        label: "Database Name"
-        section: Database
-        required: true
-        order: 2
-        default: "postgres"
+        POSTGRES_DB:
+          type: string
+          label: "Database Name"
+          section: Database
+          required: true
+          order: 2
+          default: "postgres"
 
-      POSTGRES_USER:
-        type: string
-        label: "Database User"
-        section: Database
-        required: true
-        order: 3
-        default: "postgres"
+        POSTGRES_USER:
+          type: string
+          label: "Database User"
+          section: Database
+          required: true
+          order: 3
+          default: "postgres"
 
-      POSTGRES_PASSWORD:
-        type: secret
-        label: "Database Password"
-        section: Database
-        required: true
-        generate: password
-        immutable: true
-        order: 1
-        default: ""
+        POSTGRES_PASSWORD:
+          type: secret
+          label: "Database Password"
+          section: Database
+          required: true
+          generate: password
+          immutable: true
+          order: 1
+          default: ""
 
-      POSTGRES_HOST:
-        type: string
-        label: "Database Host"
-        section: Database
-        required: false
-        default: "postgres"
+        POSTGRES_HOST:
+          type: string
+          label: "Database Host"
+          section: Database
+          required: false
+          default: "postgres"
 
-      POSTGRES_PORT:
-        type: number
-        label: "Database Port"
-        section: Database
-        required: false
-        default: "5432"
-        min: 1
-        max: 65535
+        POSTGRES_PORT:
+          type: number
+          label: "Database Port"
+          section: Database
+          required: false
+          default: "5432"
+          min: 1
+          max: 65535
 
 {% endraw %}
